@@ -16,6 +16,13 @@ class PurchaseOrder(models.Model):
                     'target': 'new',
                     'context': {
                         'purchase_order_ids': self.ids,
+                        'action': 'confirm'
                     },
                 }
         super(PurchaseOrder, self).button_confirm()
+
+    def check_and_warn(self):
+        for order in self:
+            if 0 <= order.partner_id.on_time_rate <= order.company_id.on_time_threshold and not self.env.context.get('ignore_threshold'):
+                return True
+        return False

@@ -10,7 +10,14 @@ class WarnVendorBelowThreshold(models.TransientModel):
     def _get_purchase_order_ids(self):
         return self.env['purchase.order'].browse(self.env.context.get('purchase_order_ids'))
 
+    def _get_action(self):
+        return self.env.context.get('action')
+
     purchase_order_ids = fields.Many2many(comodel_name='purchase.order', default=_get_purchase_order_ids)
+    action = fields.Selection(selection=[('write', 'Write'), ('confirm', 'Confirm')], default=_get_action)
 
     def button_confirm(self):
-        self.purchase_order_ids.with_context(ignore_threshold=True).button_confirm()
+        if self.action == 'write':
+            self.purchase_order_ids.with_context(ignore_threshold=True).write(self.env.context.get('vals'))
+        else:
+            self.purchase_order_ids.with_context(ignore_threshold=True).button_confirm()

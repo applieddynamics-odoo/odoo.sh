@@ -18,6 +18,7 @@
     'depends': ['purchase_stock'],
     'data': [
         'security/ir.model.access.csv',
+        'views/adi_purchase_stock_assets.xml',
         'views/res_config_settings_views.xml',
         'wizard/warn_vendor_below_threshold_views.xml',
     ],
