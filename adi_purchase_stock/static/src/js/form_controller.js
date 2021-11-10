@@ -32,7 +32,7 @@ odoo.define('adi_purchase_stock.FormController', function (require) {
 
     FormController.include({
         _saveRecord(recordId, options) {
-            if (this.modelName == 'purchase.order' && !options.stayInEdit) {
+            if (this.modelName == 'purchase.order' && !(options && options.stayInEdit)) {
                 var external_id = recordId || this.handle;
                 var record = this.model.localData[external_id];
                 var self = this;
