@@ -30,7 +30,7 @@ class ResPartner(models.Model):
             # ('state', '=', 'done')]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
             # client want with time as well
             ('state', '=', 'done')]).filtered(lambda m: datetime.strptime(str(m.date), "%Y-%m-%d %H:%M:%S") \
-                <= datetime.strptime(str(m.purchase_line_id.date_planned), "%Y-%m-%d %H:%M:%S"))
+                <= datetime.strptime(str(datetime.utcfromtimestamp(float(m.purchase_line_id.date_planned.replace(hour=23, minute=59).strftime("%s")))), "%Y-%m-%d %H:%M:%S"))
             # custom code ended
         for move, qty_done in zip(moves, moves.mapped('quantity_done')):
             lines_qty_done[move.purchase_line_id.id] += qty_done
