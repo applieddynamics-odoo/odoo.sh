@@ -15,9 +15,9 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine, self)._prepare_purchase_order_line_from_procurement(product_id, product_qty,
                                                                                        product_uom, company_id, values,
                                                                                        po)
-        if self.env.context.get('params'):
-            if self.env.context.get('params').get('model') == 'sale.order':
-                needed_quantity = product_qty - product_id.virtual_available if product_qty > product_id.virtual_available else 0
-                if needed_quantity:
-                    res['product_qty'] = needed_quantity
+        is_from_sale = bool(values.get('group_id').sale_id) if values.get('group_id') else False
+        if is_from_sale:
+            needed_quantity = product_qty - product_id.virtual_available if product_qty > product_id.virtual_available else 0
+            if needed_quantity:
+                res['product_qty'] = needed_quantity
         return res
