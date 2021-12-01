@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pytz
 from datetime import timedelta, datetime
 from collections import defaultdict
 
@@ -24,14 +25,16 @@ class ResPartner(models.Model):
             ('order_id.state', 'in', ['done', 'purchase'])
         ]).filtered(lambda l: l.product_id.sudo().product_tmpl_id.type != 'service')
         lines_qty_done = defaultdict(lambda: 0)
+        local_time = pytz.timezone(self.env.context.get('tz', 'utc') or 'utc')
         moves = self.env['stock.move'].search([
             ('purchase_line_id', 'in', order_lines.ids),
             # custom code started
             # ('state', '=', 'done')]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
             # client want with time as well
-            ('state', '=', 'done')]).filtered(lambda m: datetime.strptime(str(m.date), "%Y-%m-%d %H:%M:%S") \
+            ('state', '=', 'done')]).filtered(lambda m: datetime.strptime(str(m.date.astimezone(local_time).replace(tzinfo=None)), '%Y-%m-%d %H:%M:%S') \
                 <= datetime.strptime(str(datetime.utcfromtimestamp(float(m.purchase_line_id.date_planned.replace(hour=23, minute=59).strftime("%s")))), "%Y-%m-%d %H:%M:%S"))
             # custom code ended
+
         for move, qty_done in zip(moves, moves.mapped('quantity_done')):
             lines_qty_done[move.purchase_line_id.id] += qty_done
         partner_dict = {}
