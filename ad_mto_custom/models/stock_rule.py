@@ -12,8 +12,9 @@ class StockRule(models.Model):
             By changing the procure_method.
         """
         for procurement, rule in procurements:
+            requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
+                                                                           procurement.product_id.uom_id)
             product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-            requested_quantity = procurement.product_qty
             needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
             if needed_quantity:
                 rule.procure_method = 'make_to_order'
@@ -46,9 +47,10 @@ class StockRule(models.Model):
         """
         res = super(StockRule, self)._update_purchase_order_line(product_id, product_qty, product_uom,
                                                                  company_id, values, line)
-        qty_from_po = res['product_qty'] - line.product_qty
+        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
+        qty_from_po = line.product_qty
         product_virtual_available = product_id.virtual_available if product_id.virtual_available > 0 else 0
-        needed_quantity = line.product_qty - product_virtual_available if line.product_qty > product_virtual_available else 0
+        needed_quantity = requested_quantity - product_virtual_available if requested_quantity > product_virtual_available else 0
         if needed_quantity:
             res['product_qty'] = needed_quantity + qty_from_po
         return res
@@ -61,8 +63,9 @@ class StockRule(models.Model):
         """
         res = super(StockRule, self)._prepare_mo_vals(product_id, product_qty, product_uom, location_id, name,
                                                       origin, company_id, values, bom)
+        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
         product_virtual_quantity = product_id.virtual_available if product_id.virtual_available > 0 else 0
-        needed_quantity = product_qty - product_virtual_quantity if product_qty > product_virtual_quantity else 0
+        needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
         if needed_quantity:
             res['product_qty'] = needed_quantity
         return res
@@ -74,8 +77,9 @@ class StockRule(models.Model):
         """
         procurements_to_be_considered = []
         for procurement, rule in procurements:
+            requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
+                                                                           procurement.product_id.uom_id)
             product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-            requested_quantity = procurement.product_qty
             needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
             if needed_quantity:
                 procurements_to_be_considered.append([procurement, rule])
