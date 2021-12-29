@@ -16,8 +16,14 @@ class SaleOrderLine(models.Model):
                                                                                        product_uom, company_id, values,
                                                                                        po)
         requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
-        product_virtual_quantity = product_id.virtual_available if product_id.virtual_available > 0 else 0
-        needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-        if needed_quantity:
-            res['product_qty'] = needed_quantity
+        move_from_procurement = values.get('move_dest_ids')
+        quantity_already_processed_move = move_from_procurement.quantity_already_processed
+        if quantity_already_processed_move:
+            if requested_quantity > quantity_already_processed_move:
+                res['product_qty'] = requested_quantity - quantity_already_processed_move
+        else:
+            product_virtual_quantity = product_id.virtual_available if product_id.virtual_available > 0 else 0
+            needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
+            if needed_quantity:
+                res['product_qty'] = needed_quantity
         return res

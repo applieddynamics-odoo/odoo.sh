@@ -12,12 +12,19 @@ class StockRule(models.Model):
             By changing the procure_method.
         """
         for procurement, rule in procurements:
+            move_from_procurement = procurement.values.get('move_dest_ids')
             requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
                                                                            procurement.product_id.uom_id)
-            product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-            needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-            if needed_quantity:
-                rule.procure_method = 'make_to_order'
+            if move_from_procurement:
+                quantity_already_processed_move = move_from_procurement.quantity_already_processed
+                if quantity_already_processed_move:
+                    if requested_quantity > quantity_already_processed_move:
+                        rule.procure_method = 'make_to_order'
+            else:
+                product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
+                needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
+                if needed_quantity:
+                    rule.procure_method = 'make_to_order'
         super(StockRule, self)._run_pull(procurements)
 
     @api.model
@@ -47,12 +54,20 @@ class StockRule(models.Model):
         """
         res = super(StockRule, self)._update_purchase_order_line(product_id, product_qty, product_uom,
                                                                  company_id, values, line)
-        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
-        qty_from_po = line.product_qty
         product_virtual_available = product_id.virtual_available if product_id.virtual_available > 0 else 0
-        needed_quantity = requested_quantity - product_virtual_available if requested_quantity > product_virtual_available else 0
-        if needed_quantity:
-            res['product_qty'] = needed_quantity + qty_from_po
+        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
+        qty_from_po = abs(line.product_qty)
+        move_from_procurement = values.get('move_dest_ids')
+        rerun_quantity_data = self.calculate_qty_for_rerun_move(move_from_procurement,
+                                                                requested_quantity)
+        if bool(rerun_quantity_data):
+            res['product_qty'] = requested_quantity - rerun_quantity_data.get('previous_quantity') + qty_from_po
+            move_from_procurement.quantity_already_processed = requested_quantity
+        else:
+            needed_quantity = requested_quantity - product_virtual_available if requested_quantity > product_virtual_available else 0
+            if needed_quantity:
+                res['product_qty'] = res['product_qty'] + qty_from_po
+                move_from_procurement.quantity_already_processed = needed_quantity
         return res
 
     def _prepare_mo_vals(self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values,
@@ -63,11 +78,28 @@ class StockRule(models.Model):
         """
         res = super(StockRule, self)._prepare_mo_vals(product_id, product_qty, product_uom, location_id, name,
                                                       origin, company_id, values, bom)
-        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
         product_virtual_quantity = product_id.virtual_available if product_id.virtual_available > 0 else 0
-        needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-        if needed_quantity:
-            res['product_qty'] = needed_quantity
+        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
+        move_from_procurement = values.get('move_dest_ids')
+        rerun_quantity_data = self.calculate_qty_for_rerun_move(move_from_procurement, requested_quantity)
+        if bool(rerun_quantity_data):
+            child_ids_from_parent = move_from_procurement.reassign_by_mo_id.procurement_group_id.stock_move_ids.created_production_id.procurement_group_id.mrp_production_ids.ids
+            mrp_obj = self.env['mrp.production'].search(
+                [('id', 'in', child_ids_from_parent), ('product_id', '=', product_id.id)])
+            purchase_orders = mrp_obj.procurement_group_id.stock_move_ids.created_purchase_line_id.order_id | mrp_obj.procurement_group_id.stock_move_ids.move_orig_ids.purchase_line_id.order_id
+            purchase_lines = purchase_orders.mapped('order_line')
+            for component in mrp_obj.move_raw_ids:
+                purchase_line_to_edit = purchase_lines.filtered(lambda el: el.product_id.id == component.product_id.id)
+                purchase_line_to_edit.product_qty = purchase_line_to_edit.product_qty - component.product_uom_qty
+            mrp_obj.action_cancel()
+            self.cancelling_child_mo(mrp_obj)
+            res['product_qty'] = requested_quantity
+            move_from_procurement.quantity_already_processed = requested_quantity
+        else:
+            needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
+            if needed_quantity:
+                res['product_qty'] = needed_quantity
+                move_from_procurement.quantity_already_processed = needed_quantity
         return res
 
     # Custom or business methods
@@ -77,10 +109,47 @@ class StockRule(models.Model):
         """
         procurements_to_be_considered = []
         for procurement, rule in procurements:
+            product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
+            move_from_procurement = procurement.values.get('move_dest_ids')
             requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
                                                                            procurement.product_id.uom_id)
-            product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-            needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-            if needed_quantity:
-                procurements_to_be_considered.append([procurement, rule])
+            if move_from_procurement:
+                quantity_already_processed_move = move_from_procurement.quantity_already_processed
+                if quantity_already_processed_move:
+                    if requested_quantity > quantity_already_processed_move:
+                        procurements_to_be_considered.append([procurement, rule])
+                else:
+                    needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
+                    if needed_quantity:
+                        procurements_to_be_considered.append([procurement, rule])
+                        if move_from_procurement:
+                            move_from_procurement.quantity_already_processed = requested_quantity
         return procurements_to_be_considered
+
+    def calculate_qty_for_rerun_move(self, stock_move, requested_quantity):
+        """
+        Preparing the dictionary for the value of the move that has already been processed.
+        """
+        previous_quantity = stock_move.quantity_already_processed
+        difference_amount = requested_quantity - previous_quantity
+        rerun_data = {'difference_amount': difference_amount, 'previous_quantity': previous_quantity} if bool(
+            difference_amount) else {}
+        return rerun_data
+
+    def cancelling_child_mo(self, manufacturing_order):
+        """
+            This method is used for cancelling the Child MOs with recursion,
+            Also removes the component quantity from Purchase order line.
+        """
+        for order in manufacturing_order:
+            child_mo = order.procurement_group_id.stock_move_ids.created_production_id.procurement_group_id.mrp_production_ids
+            if child_mo:
+                self.cancelling_child_mo(child_mo)
+            else:
+                purchase_orders = order.procurement_group_id.stock_move_ids.created_purchase_line_id.order_id | order.procurement_group_id.stock_move_ids.move_orig_ids.purchase_line_id.order_id
+                purchase_lines = purchase_orders.mapped('order_line')
+                for component in order.move_raw_ids:
+                    purchase_line_to_edit = purchase_lines.filtered(
+                        lambda el: el.product_id.id == component.product_id.id)
+                    purchase_line_to_edit.product_qty = purchase_line_to_edit.product_qty - component.product_uom_qty
+                order.action_cancel()
