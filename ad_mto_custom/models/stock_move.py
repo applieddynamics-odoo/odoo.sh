@@ -23,16 +23,20 @@ class StockMove(models.Model):
             ]
             rules = self.env['procurement.group']._search_rule(False, product_id, move.warehouse_id, domain)
             if rules:
-                requested_quantity = move.product_uom._compute_quantity(move.product_uom_qty, move.product_id.uom_id)
-                product_virtual_quantity = move.product_id.virtual_available if move.product_id.virtual_available > 0 else 0
-                quantity_already_processed_move = move.quantity_already_processed
-                if quantity_already_processed_move:
-                    if requested_quantity > quantity_already_processed_move:
-                        move.procure_method = 'make_to_order'
+                if rules.procure_method == 'make_to_stock':
+                    move.procure_method = rules.procure_method
                 else:
-                    if requested_quantity > product_virtual_quantity:
-                        move.procure_method = 'make_to_order'
+                    requested_quantity = move.product_uom._compute_quantity(move.product_uom_qty,
+                                                                            move.product_id.uom_id)
+                    product_virtual_quantity = move.product_id.virtual_available if move.product_id.virtual_available > 0 else 0
+                    quantity_already_processed_move = move.quantity_already_processed
+                    if quantity_already_processed_move:
+                        if requested_quantity > quantity_already_processed_move:
+                            move.procure_method = 'make_to_order'
                     else:
-                        super(StockMove, self)._adjust_procure_method()
+                        if requested_quantity > product_virtual_quantity:
+                            move.procure_method = 'make_to_order'
+                        else:
+                            super(StockMove, self)._adjust_procure_method()
             else:
                 move.procure_method = 'make_to_stock'
