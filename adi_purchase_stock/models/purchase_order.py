@@ -1,10 +1,29 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+
 from odoo import api, fields, models
 
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
+
+    @api.model
+    def create(self, value):
+        date_planned = value.get('date_planned')
+        if date_planned:
+            dt = datetime.strptime(str(date_planned), '%Y-%m-%d %H:%M:%S')
+            value['date_planned'] = dt.replace(hour=12, minute=00)
+        res = super().create(value)
+        return res
+
+    def write(self, value):
+        date_planned = value.get('date_planned')
+        if date_planned:
+            dt = datetime.strptime(str(date_planned), '%Y-%m-%d %H:%M:%S')
+            value['date_planned'] = dt.replace(hour=12, minute=00)
+        res = super().write(value)
+        return res
 
     def button_confirm(self):
         for order in self:

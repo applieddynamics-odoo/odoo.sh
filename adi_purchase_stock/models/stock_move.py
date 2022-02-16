@@ -1,9 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields
+from datetime import datetime
+
+from odoo import models, fields, api
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+
+    @api.model
+    def create(self, value):
+        # 2022-02-16 20:00:00
+        date_done = value.get('date_done')
+        if date_done:
+            dt = datetime.strptime(str(date_done), '%Y-%m-%d %H:%M:%S')
+            value['date_done'] = dt.replace(hour=12, minute=00)
+        res = super().create(value)
+        return res
+
+    def write(self, value):
+        date_done = value.get('date_done')
+        if date_done:
+            dt = datetime.strptime(str(date_done), '%Y-%m-%d')
+            value['date_done'] = dt.replace(hour=12, minute=00)
+        res = super().write(value)
+        return res
+
 
     def _action_done(self):
         """Call `_action_done` on the `stock.move` of the `stock.picking` in `self`.
@@ -41,6 +62,8 @@ class StockMove(models.Model):
         picking = moves_todo.mapped('picking_id')
         picking = picking.browse(self.env.context.get('button_validate_picking_ids')) if not picking else picking
         if picking:
+            # dt = datetime.strptime(str(picking.date_done), '%Y-%m-%d %H:%M:%S')
+            # ddone = dt.replace(hour=12, minute=00)
             moves_todo.write({'date': picking.date_done})
         return moves_todo
 
