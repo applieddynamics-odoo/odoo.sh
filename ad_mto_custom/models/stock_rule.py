@@ -4,29 +4,6 @@ from odoo import api, models
 class StockRule(models.Model):
     _inherit = 'stock.rule'
 
-    # Inherited methods
-    @api.model
-    def _run_pull(self, procurements):
-        """
-            Inherited to call run_buy and _run_manufacture in some cases.
-            By changing the procure_method.
-        """
-        for procurement, rule in procurements:
-            move_from_procurement = procurement.values.get('move_dest_ids')
-            requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
-                                                                           procurement.product_id.uom_id)
-            if move_from_procurement:
-                quantity_already_processed_move = move_from_procurement.quantity_already_processed
-                if quantity_already_processed_move:
-                    if requested_quantity > quantity_already_processed_move:
-                        rule.procure_method = 'make_to_order'
-            else:
-                product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-                needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-                if needed_quantity:
-                    rule.procure_method = 'make_to_order'
-        super(StockRule, self)._run_pull(procurements)
-
     @api.model
     def _run_buy(self, procurements):
         """
