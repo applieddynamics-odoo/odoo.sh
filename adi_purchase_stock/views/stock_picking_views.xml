@@ -14,6 +14,7 @@
             </xpath>
             <xpath expr="//field[@name='date_done']" position="attributes">
                 <attribute name="widget">date</attribute>
+                <attribute name="attrs"></attribute>
                 <attribute name="invisible">0</attribute>
                 <attribute name="readonly">0</attribute>
                 <attribute name="required">1</attribute>
