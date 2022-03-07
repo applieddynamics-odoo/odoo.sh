@@ -4,29 +4,6 @@ from odoo import api, models
 class StockRule(models.Model):
     _inherit = 'stock.rule'
 
-    # Inherited methods
-    @api.model
-    def _run_pull(self, procurements):
-        """
-            Inherited to call run_buy and _run_manufacture in some cases.
-            By changing the procure_method.
-        """
-        for procurement, rule in procurements:
-            move_from_procurement = procurement.values.get('move_dest_ids')
-            requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
-                                                                           procurement.product_id.uom_id)
-            if move_from_procurement:
-                quantity_already_processed_move = move_from_procurement.quantity_already_processed
-                if quantity_already_processed_move:
-                    if requested_quantity > quantity_already_processed_move:
-                        rule.procure_method = 'make_to_order'
-            else:
-                product_virtual_quantity = procurement.product_id.virtual_available if procurement.product_id.virtual_available > 0 else 0
-                needed_quantity = requested_quantity - product_virtual_quantity if requested_quantity > product_virtual_quantity else 0
-                if needed_quantity:
-                    rule.procure_method = 'make_to_order'
-        super(StockRule, self)._run_pull(procurements)
-
     @api.model
     def _run_buy(self, procurements):
         """
@@ -67,7 +44,11 @@ class StockRule(models.Model):
             needed_quantity = requested_quantity - product_virtual_available if requested_quantity > product_virtual_available else 0
             if needed_quantity:
                 res['product_qty'] = res['product_qty'] + qty_from_po
-                move_from_procurement.quantity_already_processed = needed_quantity
+                if len(move_from_procurement) > 1:
+                    for move in move_from_procurement:
+                        move.quantity_already_processed = move.product_uom_qty
+                else:
+                    move_from_procurement.quantity_already_processed = needed_quantity
         return res
 
     def _prepare_mo_vals(self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values,
@@ -130,11 +111,23 @@ class StockRule(models.Model):
         """
         Preparing the dictionary for the value of the move that has already been processed.
         """
-        previous_quantity = stock_move.quantity_already_processed
-        difference_amount = requested_quantity - previous_quantity
-        rerun_data = {'difference_amount': difference_amount, 'previous_quantity': previous_quantity} if bool(
-            difference_amount) else {}
-        return rerun_data
+        if len(stock_move) <= 1:
+            previous_quantity = stock_move.quantity_already_processed
+            difference_amount = requested_quantity - previous_quantity
+            rerun_data = {'difference_amount': difference_amount, 'previous_quantity': previous_quantity} if bool(
+                difference_amount) else {}
+            return rerun_data
+        else:
+            total_previous_quantity = 0
+            total_requested_quantity = 0
+            for move in stock_move:
+                total_previous_quantity += move.quantity_already_processed
+                total_requested_quantity += move.product_uom_qty
+            total_difference_amount = total_previous_quantity - total_requested_quantity
+            rerun_data = {'difference_amount': total_difference_amount,
+                          'previous_quantity': total_previous_quantity} if bool(
+                total_difference_amount) else {}
+            return rerun_data
 
     def cancelling_child_mo(self, manufacturing_order):
         """
