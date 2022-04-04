@@ -95,7 +95,7 @@ class StockRule(models.Model):
             requested_quantity = procurement.product_uom._compute_quantity(procurement.product_qty,
                                                                            procurement.product_id.uom_id)
             if move_from_procurement:
-                quantity_already_processed_move = move_from_procurement.quantity_already_processed
+                quantity_already_processed_move = sum(move_from_procurement.mapped('quantity_already_processed'))
                 if quantity_already_processed_move:
                     if requested_quantity > quantity_already_processed_move:
                         procurements_to_be_considered.append([procurement, rule])
