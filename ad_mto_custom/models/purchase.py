@@ -17,7 +17,7 @@ class SaleOrderLine(models.Model):
                                                                                        po)
         requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
         move_from_procurement = values.get('move_dest_ids')
-        quantity_already_processed_move = move_from_procurement.quantity_already_processed
+        quantity_already_processed_move = sum(move_from_procurement.mapped('quantity_already_processed'))
         if quantity_already_processed_move:
             if requested_quantity > quantity_already_processed_move:
                 res['product_qty'] = requested_quantity - quantity_already_processed_move
