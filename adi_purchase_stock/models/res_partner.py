@@ -27,7 +27,8 @@ class ResPartner(models.Model):
         lines_qty_done = defaultdict(lambda: 0)
         local_time = pytz.timezone(self.env.context.get('tz', 'utc') or 'utc')
         ctx = self.env.context
-        tzInfo = pytz.timezone(ctx.get('tz'))
+        tz = ctx.get('tz')
+        tzInfo = pytz.timezone(tz) if tz else pytz.timezone('utc')
         moves = self.env['stock.move'].search([
             ('purchase_line_id', 'in', order_lines.ids),
             # custom code started
