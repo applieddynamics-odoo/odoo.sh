@@ -4,9 +4,9 @@
     'name': 'ADI: Warning Msg Upon PO Confirmation If the On Rate is =< threshold value',
     'summary': 'ADI: Warning Msg Upon PO Confirmation If the On Rate is =< threshold value',
     'sequence': 100,
-    'license': 'OEEL-1',
+    'license': 'OPL-1',
     'website': 'https://www.odoo.com',
-    'version': '1.1',
+    'version': '15.0.1.0.1',
     'author': 'Odoo Inc',
     'description': """
         Task ID: 2648487
@@ -15,16 +15,20 @@
     'category': 'Custom Development',
 
     # any module necessary for this one to work correctly
-    'depends': ['purchase_stock'],
+    'depends': ['purchase_stock','web'],
     'data': [
         'security/ir.model.access.csv',
-        'views/adi_purchase_stock_assets.xml',
         'views/purchase_order_views.xml',
         'views/stock_move_views.xml',
         'views/stock_picking_views.xml',
         'views/res_config_settings_views.xml',
         'wizard/warn_vendor_below_threshold_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'adi_purchase_stock/static/src/js/form_controller.js'
+        ]
+    },
     'installable': True,
     'application': False,
     'auto_install': False,
