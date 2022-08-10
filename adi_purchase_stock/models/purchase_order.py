@@ -10,8 +10,10 @@ class PurchaseOrder(models.Model):
         date_planned = value.get('date_planned')
         if date_planned:
             try:
+                date_planned = date_planned.strftime("%Y-%m-%d")
                 dt = datetime.strptime(date_planned, '%Y-%m-%d')
             except:
+                date_planned = date_planned.strftime("%Y-%m-%d %H:%M:%S")
                 dt = datetime.strptime(date_planned, '%Y-%m-%d %H:%M:%S')
             value['date_planned'] = dt.replace(hour=12, minute=00)
         res = super().create(value)
@@ -21,8 +23,10 @@ class PurchaseOrder(models.Model):
         date_planned = value.get('date_planned')
         if date_planned:
             try:
+                date_planned = date_planned.strftime("%Y-%m-%d")
                 dt = datetime.strptime(date_planned, '%Y-%m-%d')
             except:
+                date_planned = date_planned.strftime("%Y-%m-%d %H:%M:%S")
                 dt = datetime.strptime(date_planned, '%Y-%m-%d %H:%M:%S')
             # dt = datetime.strptime(date_planned, '%Y-%m-%d').date()
             value['date_planned'] = dt.replace(hour=12, minute=00)
