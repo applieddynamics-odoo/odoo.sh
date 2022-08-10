@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
 from datetime import datetime
-
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class PurchaseOrder(models.Model):
@@ -37,11 +34,13 @@ class PurchaseOrder(models.Model):
         if self.date_planned:
             dt = datetime.strptime(str(self.date_planned.date()), '%Y-%m-%d')
             date_planned = dt.replace(hour=12, minute=00)
-            self.order_line.filtered(lambda line: not line.display_type).date_planned = date_planned
+            self.order_line.filtered(
+                lambda line: not line.display_type).date_planned = date_planned
 
     def button_confirm(self):
         for order in self:
-            if order.partner_id.should_warn() and not self._context.get('ignore_threshold', False):
+            if order.partner_id.should_warn() and not self._context.get(
+                    'ignore_threshold', False):
                 return {
                     'type': 'ir.actions.act_window',
                     'res_model': 'warn.vendor.below.threshold',
@@ -52,4 +51,3 @@ class PurchaseOrder(models.Model):
                     },
                 }
         super(PurchaseOrder, self).button_confirm()
-
