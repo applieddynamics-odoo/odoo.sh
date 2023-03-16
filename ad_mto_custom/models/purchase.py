@@ -1,7 +1,7 @@
 from odoo import api, models
 
 
-class SaleOrderLine(models.Model):
+class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     # Inherited method
@@ -13,8 +13,7 @@ class SaleOrderLine(models.Model):
             Inherited the method to make the changes in the value of the quantity,
             while making new Purchase order from sale order.
         """
-        res = super(SaleOrderLine,
-                    self)._prepare_purchase_order_line_from_procurement(
+        res = super()._prepare_purchase_order_line_from_procurement(
                         product_id, product_qty, product_uom, company_id,
                         values, po)
         requested_quantity = product_uom._compute_quantity(

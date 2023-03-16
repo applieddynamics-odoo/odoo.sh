@@ -69,8 +69,6 @@ class StockMove(models.Model):
             self.env.context.get(
                 'button_validate_picking_ids')) if not picking else picking
         if picking:
-            # dt = datetime.strptime(str(picking.date_done), '%Y-%m-%d %H:%M:%S')
-            # ddone = dt.replace(hour=12, minute=00)
             moves_todo.write({'date': picking.date_done})
         return moves_todo
 

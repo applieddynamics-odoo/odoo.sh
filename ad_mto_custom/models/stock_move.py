@@ -1,4 +1,4 @@
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class StockMove(models.Model):
@@ -36,6 +36,6 @@ class StockMove(models.Model):
                     if requested_quantity > product_virtual_quantity:
                         move.procure_method = 'make_to_order'
                     else:
-                        super(StockMove, self)._adjust_procure_method()
+                        super()._adjust_procure_method()
             else:
                 move.procure_method = 'make_to_stock'

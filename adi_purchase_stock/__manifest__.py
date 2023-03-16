@@ -1,16 +1,16 @@
 {
     'name':'ADI: Warning Msg Upon PO Confirmation If the On Rate is =< threshold value',
     'summary':'ADI: Warning Msg Upon PO Confirmation If the On Rate is =< threshold value',
-    'sequence':100,
-    'license':'OPL-1',
-    'website':'https://www.odoo.com',
-    'version':'15.0.1.0.1',
-    'author':'Odoo Inc',
     'description':
     """
         Task ID: 2648487
         - Add Warning when on time percent is less than threshold
     """,
+    'sequence':100,
+    'license':'OPL-1',
+    'website':'https://www.odoo.com',
+    'version':'1.1.1',
+    'author':'Odoo, Inc',
     'category':'Custom Development',
 
     # any module necessary for this one to work correctly

@@ -8,12 +8,12 @@
         Task id:  2658636
         This module is to create RFQ qty for the product should consider the 'Forecasted qty'.
     """,
-    'author': 'Odoo Ps',
-    'version': '15.0.1.0.1',
+    'author': 'Odoo, Inc',
+    'license': 'OPL-1',
+    'version': '1.1.1',
     'depends': ['sale_management', 'stock', 'purchase', 'mrp'],
     'data': [
         'views/mrp_production.xml',
     ],
     'installable': True,
-    'license': 'OPL-1'
 }

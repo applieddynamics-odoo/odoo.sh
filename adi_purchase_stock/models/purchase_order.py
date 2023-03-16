@@ -50,4 +50,4 @@ class PurchaseOrder(models.Model):
                         'purchase_order_ids': self.ids,
                     },
                 }
-        super(PurchaseOrder, self).button_confirm()
+        super().button_confirm()

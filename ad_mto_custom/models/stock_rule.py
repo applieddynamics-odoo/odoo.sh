@@ -13,7 +13,7 @@ class StockRule(models.Model):
         filtered_procurements = self.filter_procurements_on_forecast_qty(
             procurements=procurements)
         if filtered_procurements:
-            super(StockRule, self)._run_buy(filtered_procurements)
+            super()._run_buy(filtered_procurements)
 
     @api.model
     def _run_manufacture(self, procurements):
@@ -24,7 +24,7 @@ class StockRule(models.Model):
         filtered_procurements = self.filter_procurements_on_forecast_qty(
             procurements=procurements)
         if filtered_procurements:
-            super(StockRule, self)._run_manufacture(filtered_procurements)
+            super()._run_manufacture(filtered_procurements)
 
     def _update_purchase_order_line(self, product_id, product_qty, product_uom,
                                     company_id, values, line):
@@ -32,8 +32,7 @@ class StockRule(models.Model):
             Inherited the method to make the changes in the value of the quantity,
             while changing the existing Purchase order from sale order.
         """
-        res = super(StockRule,
-                    self)._update_purchase_order_line(product_id, product_qty,
+        res = super()._update_purchase_order_line(product_id, product_qty,
                                                       product_uom, company_id,
                                                       values, line)
         product_virtual_available = product_id.virtual_available if product_id.virtual_available > 0 else 0
@@ -64,8 +63,7 @@ class StockRule(models.Model):
             Inherited so that we can change the quantity of the quantity of the MTO
             on the basis of forecasted quantity.
         """
-        res = super(StockRule,
-                    self)._prepare_mo_vals(product_id, product_qty,
+        res = super()._prepare_mo_vals(product_id, product_qty,
                                            product_uom, location_id, name,
                                            origin, company_id, values, bom)
         product_virtual_quantity = product_id.virtual_available if product_id.virtual_available > 0 else 0
