@@ -9,8 +9,8 @@
                     The selected vendor has an on-time delivery rate below the current threshold. Please ensure there are no better alternatives for this order. Do you want to continue?
                 </div>
                 <footer>
-                    <button name="button_confirm" type="object" string="YES" class="oe_highlight" />
-                    <button special="cancel" string="NO" />
+                    <button name="button_confirm" type="object" string="YES" class="oe_highlight"/>
+                    <button special="cancel" string="NO"/>
                 </footer>
             </form>
         </field>

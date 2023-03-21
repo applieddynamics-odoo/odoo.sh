@@ -25,22 +25,19 @@ class PurchaseOrder(models.Model):
                 dt = datetime.strptime(date_planned, '%Y-%m-%d')
             except:
                 dt = datetime.strptime(date_planned, '%Y-%m-%d %H:%M:%S')
-            value['date_planned'] = dt.replace(hour=12, minute=00)
-        res = super().write(value)
-        return res
+            value['date_planned'] = dt.replace(hour=12, minute=00) 
+        return super().write(value)
 
     @api.onchange('date_planned')
     def onchange_date_planned(self):
         if self.date_planned:
             dt = datetime.strptime(str(self.date_planned.date()), '%Y-%m-%d')
             date_planned = dt.replace(hour=12, minute=00)
-            self.order_line.filtered(
-                lambda line: not line.display_type).date_planned = date_planned
+            self.order_line.filtered(lambda line: not line.display_type).date_planned = date_planned
 
     def button_confirm(self):
         for order in self:
-            if order.partner_id.should_warn() and not self._context.get(
-                    'ignore_threshold', False):
+            if order.partner_id.should_warn() and not self._context.get('ignore_threshold', False):
                 return {
                     'type': 'ir.actions.act_window',
                     'res_model': 'warn.vendor.below.threshold',

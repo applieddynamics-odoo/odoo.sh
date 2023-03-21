@@ -5,10 +5,8 @@ class StockMove(models.Model):
     _inherit = "stock.move"
 
     # Field declarations
-    quantity_already_processed = fields.Float(
-        string="Quantity already processed")
-    reassign_by_mo_id = fields.Many2one('mrp.production',
-                                        string='Reassign by MO')
+    quantity_already_processed = fields.Float(string="Quantity already processed")
+    reassign_by_mo_id = fields.Many2one('mrp.production', string='Reassign by MO')
 
     # Inherited methods
     def _adjust_procure_method(self):
@@ -25,8 +23,7 @@ class StockMove(models.Model):
             rules = self.env['procurement.group']._search_rule(
                 False, packaging_id, product_id, move.warehouse_id, domain)
             if rules:
-                requested_quantity = move.product_uom._compute_quantity(
-                    move.product_uom_qty, move.product_id.uom_id)
+                requested_quantity = move.product_uom._compute_quantity(move.product_uom_qty, move.product_id.uom_id)
                 product_virtual_quantity = move.product_id.virtual_available if move.product_id.virtual_available > 0 else 0
                 quantity_already_processed_move = move.quantity_already_processed
                 if quantity_already_processed_move:

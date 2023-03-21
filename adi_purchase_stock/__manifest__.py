@@ -14,7 +14,7 @@
     'category':'Custom Development',
 
     # any module necessary for this one to work correctly
-    'depends': ['purchase_stock', 'web'],
+    'depends': ['purchase_stock'],
     'data': [
         'security/ir.model.access.csv',
         'views/purchase_order_views.xml',

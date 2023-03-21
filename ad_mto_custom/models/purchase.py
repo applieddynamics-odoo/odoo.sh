@@ -6,21 +6,18 @@ class PurchaseOrderLine(models.Model):
 
     # Inherited method
     @api.model
-    def _prepare_purchase_order_line_from_procurement(self, product_id,
-                                                      product_qty, product_uom,
-                                                      company_id, values, po):
+    def _prepare_purchase_order_line_from_procurement(self, product_id, product_qty, product_uom, company_id, values,
+                                                      po):
         """
             Inherited the method to make the changes in the value of the quantity,
             while making new Purchase order from sale order.
         """
-        res = super()._prepare_purchase_order_line_from_procurement(
-                        product_id, product_qty, product_uom, company_id,
-                        values, po)
-        requested_quantity = product_uom._compute_quantity(
-            product_qty, product_id.uom_id)
+        res = super()._prepare_purchase_order_line_from_procurement(product_id, product_qty,
+                                                                                       product_uom, company_id, values,
+                                                                                       po)
+        requested_quantity = product_uom._compute_quantity(product_qty, product_id.uom_id)
         move_from_procurement = values.get('move_dest_ids')
-        quantity_already_processed_move = sum(
-            move_from_procurement.mapped('quantity_already_processed'))
+        quantity_already_processed_move = sum(move_from_procurement.mapped('quantity_already_processed'))
         if quantity_already_processed_move:
             if requested_quantity > quantity_already_processed_move:
                 res['product_qty'] = requested_quantity - quantity_already_processed_move
