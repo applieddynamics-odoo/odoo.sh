@@ -22,10 +22,7 @@ class ResPartner(models.Model):
             ('order_id.state', 'in', ['done', 'purchase'])
         ]).filtered(lambda l: l.product_id.sudo().product_tmpl_id.type != 'service')
         lines_qty_done = defaultdict(lambda: 0)
-        local_time = pytz.timezone(self.env.context.get('tz', 'utc') or 'utc')
-        ctx = self.env.context
-        tz = ctx.get('tz')
-        tzInfo = pytz.timezone(tz) if tz else pytz.timezone('utc')
+        tzInfo = pytz.timezone(self.env.context.get('tz')) if self.env.context.get('tz') else pytz.timezone('utc')
         moves = self.env['stock.move'].search([
             ('purchase_line_id', 'in', order_lines.ids),
             # custom code started
@@ -37,9 +34,7 @@ class ResPartner(models.Model):
         partner_dict = {}
         for line in order_lines:
             on_time, ordered = partner_dict.get(line.partner_id, (0, 0))
-            ordered += line.product_uom_qty
-            on_time += lines_qty_done[line.id]
-            partner_dict[line.partner_id] = (on_time, ordered)
+            partner_dict[line.partner_id] = (on_time + lines_qty_done[line.id], ordered + line.product_uom_qty)
         seen_partner = self.env['res.partner']
         for partner, numbers in partner_dict.items():
             seen_partner |= partner
