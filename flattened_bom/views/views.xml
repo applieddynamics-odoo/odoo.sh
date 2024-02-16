@@ -1,0 +1,107 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="bom_tree_view">
+      <field name="name">Flattened BOM View</field>
+      <field name="model">flattened_bom.flattened_bom</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="bom_depth" string="Level"/>
+          <field name="part_number" string="ADI PN"/>
+          <field name="product_name"/>
+          <field name="quantity"/>
+          <field name="rma_count"/>
+          <field name="product_category"/>
+          <field name="product_classification"/>
+          <field name="manufacturer"/>
+          <field name="manufacturer_pn"/>
+          <field name="origin_country"/>
+          <field name="us_eccn"/>
+          <field name="lifecycle_status"/>
+          <field name="computed_lifecycle_status"/>
+          <field name="last_time_purchased"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="bom_form_view">
+      <field name="name">Flattened BOM View</field>
+      <field name="model">flattened_bom.flattened_bom</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field string="BOM" name="bom_id"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="bom_partner_form_view">
+      <field name="name">Flattened BOM View</field>
+      <field name="model">flattened_bom.flattened_bom</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <p>Please only select one of the partner or order fields</p>
+              <field string="Partner" name="partner_id"/>
+              <field string="Sale Order" name="order_id"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+        
+    <record model="ir.ui.view" id="bom_tree_view_search">
+      <field name="name">Filter Search</field>
+      <field name="model">flattened_bom.flattened_bom</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+        <search>
+          <filter string="Remove Documents" name="filter_documents" domain="[('product_category', '!=', 'Documents')]"/>
+          <filter string="Maintenance Only" name="filter_maintenance" domain="[('exclude_from_maintenance', '!=', 'Yes'), ('product_category', '!=', 'Documents')]"/>
+        </search>
+      </field>
+    </record>
+        
+    <record id="flattened_bom.new_tree_action_window" model="ir.actions.act_window">
+      <field name="name">Flattened BOM View</field>
+      <field name="res_model">flattened_bom.flattened_bom</field>
+      <field name="view_mode">tree,form</field>
+      <field name="type">ir.actions.act_window</field>            
+      <field name="context">{'search_default_filter_maintenance': 1}</field>
+      <field name="view_id" ref="bom_tree_view"/>
+    </record>
+
+    <record id="flattened_bom.new_form_action_window" model="ir.actions.act_window">
+      <field name="name">Flattened BOM View</field>
+      <field name="res_model">flattened_bom.flattened_bom</field>
+      <field name="view_mode">form</field>
+      <field name="type">ir.actions.act_window</field>            
+      <field name="context">{'search_default_filter_maintenance': 1}</field>
+      <field name="view_id" ref="bom_form_view"/>
+    </record>
+
+    <record id="flattened_bom.partner_form_action_window" model="ir.actions.act_window">
+      <field name="name">Flattened BOM View</field>
+      <field name="res_model">flattened_bom.flattened_bom</field>
+      <field name="view_mode">form</field>
+      <field name="type">ir.actions.act_window</field>            
+      <field name="context">{'search_default_filter_maintenance': 1}</field>
+      <field name="view_id" ref="bom_partner_form_view"/>
+    </record>
+        
+
+    <menuitem name="Flattened BOM" id="flattened_bom.menu_root"/>
+    <menuitem name="View" id="flattened_bom.menu_view" parent="flattened_bom.menu_root"
+        action="flattened_bom.new_tree_action_window"/>
+    <menuitem name="From Company" id="flattened_bom.menu_from_company" parent="flattened_bom.menu_root" 
+        action="flattened_bom.partner_form_action_window"/>
+    <menuitem name="From BOM" id="flattened_bom.menu_new_from_bom" parent="flattened_bom.menu_root"
+        action="flattened_bom.new_form_action_window"/>
+  </data>
+</odoo>
