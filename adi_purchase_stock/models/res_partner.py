@@ -23,6 +23,8 @@ class ResPartner(models.Model):
                 ('product_id.product_tmpl_id.type', '!=', 'service'),
                 ('product_id.product_tmpl_id.type', '!=', 'consumable'),
                 ('product_id.x_studio_product_classification', '!=', ''),
+                ('product_id.categ_id.name', '!=', 'Office Supplies'),
+                ('product_id.categ_id.name', '!=', 'Production Supplies'),
             ])
             if len(order_lines) == 0:
                 record['on_time_rate'] = -1

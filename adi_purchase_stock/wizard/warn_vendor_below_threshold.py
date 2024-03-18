@@ -1,6 +1,5 @@
 from odoo import fields, models
 
-
 class WarnVendorBelowThreshold(models.TransientModel):
     _name = 'warn.vendor.below.threshold'
     _description = 'Require extra confirmation if the vendor is below the on time delivery threshold'

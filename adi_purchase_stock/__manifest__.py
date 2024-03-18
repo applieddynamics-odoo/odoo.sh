@@ -22,7 +22,7 @@
         'views/stock_picking_views.xml',
         'views/res_config_settings_views.xml',
         'views/res_partner_views.xml',
-        #'wizard/warn_vendor_below_threshold_views.xml',
+        'wizard/warn_effective_date.xml',
     ],
     'assets': {
         

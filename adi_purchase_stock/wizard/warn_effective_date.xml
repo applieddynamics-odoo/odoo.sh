@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="warn_effective_date_form" model="ir.ui.view">
+        <field name="name">warn.effective_date.form</field>
+        <field name="model">warn.effective_date</field>
+        <field name="arch" type="xml">
+            <form>
+                <div>
+                    The effective date hasn't been filled out? Continue to default fill with today's date.
+                </div>
+                <footer>
+                    <button name="button_confirm" type="object" string="YES" class="oe_highlight"/>
+                    <button special="cancel" string="NO"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
