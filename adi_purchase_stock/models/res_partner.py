@@ -27,10 +27,11 @@ class ResPartner(models.Model):
             if len(order_lines) == 0:
                 record['on_time_rate'] = -1
                 continue
-            move_ids = self.env['stock.move'].search([
+            moves = self.env['stock.move'].search([
                 ('purchase_line_id', 'in', order_lines.ids),
-            ])
-            raise Exception(move_ids)
+            ])#.filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
+            raise Exception(str(len(order_lines)) + ":" + str(len(moves)))
+            
         '''
         order_lines = self.env['purchase.order.line'].search([
             ('partner_id', 'in', self.ids),
