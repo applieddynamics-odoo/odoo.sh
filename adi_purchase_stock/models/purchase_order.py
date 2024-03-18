@@ -7,6 +7,8 @@ class PurchaseOrder(models.Model):
 
     def button_confirm(self):
         for order in self:
+            if order.state == "done":
+                raise Exception("Do something")
             if order.state == "done" and not order.effective_date:
                 return {
                     'type': 'ir.actions.act_window',
