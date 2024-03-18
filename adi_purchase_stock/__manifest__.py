@@ -21,7 +21,7 @@
         'views/stock_move_views.xml',
         'views/stock_picking_views.xml',
         'views/res_config_settings_views.xml',
-        'wizard/warn_vendor_below_threshold_views.xml',
+        #'wizard/warn_vendor_below_threshold_views.xml',
     ],
     'assets': {
         
