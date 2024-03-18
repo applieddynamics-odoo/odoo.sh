@@ -29,9 +29,8 @@ class ResPartner(models.Model):
                 continue
             moves = self.env['stock.move'].search([
                 ('purchase_line_id', 'in', order_lines.ids),
-            ])#.filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
-            raise Exception(str(len(order_lines)) + ":" + str(len(moves)))
-            
+            ]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
+            record['on_time_rate'] = len(moves)/len(order_lines) * 100
         '''
         order_lines = self.env['purchase.order.line'].search([
             ('partner_id', 'in', self.ids),
