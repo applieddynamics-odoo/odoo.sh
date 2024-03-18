@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='on_time_rate']" position="attributes">
 	      <attribute name="style">color: red;</attribute>
-	      <attribute name="attrs">{"invisible":[("on_time_rate", "<", "90")]}</attribute>
+	      <attribute name="attrs">{"invisible":[("on_time_rate", "&lt;", "90")]}</attribute>
             </xpath>
 	    <xpath expr="//field[@name='on_time_rate']" position="after">
 	      <field name="on_time_rate"></field>
