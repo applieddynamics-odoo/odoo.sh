@@ -15,6 +15,23 @@ class ResPartner(models.Model):
 
     @api.depends('purchase_line_ids')
     def _compute_on_time_rate(self):
+        for record in self:
+            order_lines = self.env['purchase.order.line'].search([
+                ('partner_id', '=', self.id),
+                ('date_order', '>', fields.Date.today() - timedelta(365)),
+                ('order_id.state', 'in', ['done', 'purchase']),
+                ('product_id.product_tmpl_id.type', '!=', 'service'),
+                ('product_id.product_tmpl_id.type', '!=', 'consumable'),
+                ('product_id.x_studio_product_classification', '!=', ''),
+            ])
+            if len(order_lines) == 0:
+                record['on_time_rate'] = -1
+                continue
+            move_ids = self.env['stock.move'].search([
+                ('purchase_line_id', 'in', order_lines.ids),
+            ])
+            raise Exception(move_ids)
+        '''
         order_lines = self.env['purchase.order.line'].search([
             ('partner_id', 'in', self.ids),
             ('date_order', '>', fields.Date.today() - timedelta(365)),
@@ -41,3 +58,4 @@ class ResPartner(models.Model):
             on_time, ordered = numbers
             partner.on_time_rate = on_time / ordered * 100 if ordered else -1   # use negative number to indicate no data
         (self - seen_partner).on_time_rate = -1
+        '''
