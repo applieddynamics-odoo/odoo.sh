@@ -24,8 +24,9 @@
         'wizard/warn_vendor_below_threshold_views.xml',
     ],
     'assets': {
-        'web.assets_backend':
-        ['adi_purchase_stock/static/src/js/form_controller.js']
+        
+        # 'web.assets_backend':
+        # ['adi_purchase_stock/static/src/js/form_controller.js']
     },
     'installable':True,
     'application':False,
