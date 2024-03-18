@@ -5,8 +5,8 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='on_time_rate']" position="after">
-	      <p>Help</p>
+            <xpath expr="//field[@name='on_time_rate']" position="attributes">
+	      <attribute name="style">color: red;</attribute>
             </xpath>
         </field>
     </record>
