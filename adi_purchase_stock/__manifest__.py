@@ -16,7 +16,7 @@
     # any module necessary for this one to work correctly
     'depends': ['purchase_stock'],
     'data': [
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/purchase_order_views.xml',
         'views/stock_move_views.xml',
         'views/stock_picking_views.xml',

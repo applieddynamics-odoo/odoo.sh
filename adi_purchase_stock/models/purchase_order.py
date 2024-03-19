@@ -7,7 +7,7 @@ class PurchaseOrder(models.Model):
 
     def button_done(self):
         for order in self:
-            if order.state == "done" and not order.effective_date:
+            if not order.effective_date:
                 return {
                     'type': 'ir.actions.act_window',
                     'res_model': 'warn.effective_date',
