@@ -1,5 +1,5 @@
 from datetime import datetime
-from odoo import api, models
+from odoo import api, models, fields
 
 
 class PurchaseOrder(models.Model):
