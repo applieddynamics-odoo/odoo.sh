@@ -6,6 +6,7 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     def button_confirm(self):
+        raise Exception("AAAAAAAAAAAAAAAAAAAAAAAAAAA")
         for order in self:
             if order.state == "done":
                 raise Exception("Do something")
