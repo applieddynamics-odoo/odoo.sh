@@ -25,7 +25,7 @@ class PurchaseOrder(models.Model):
                                         on m.picking_id = sp.id
                                         WHERE m.purchase_line_id = pol.id
                                         AND m.state = 'done')
-                    AND po.date_order::date < '%s'::date
+                    AND po.date_order::date < '%s'::date)
                 );
         """ % (datetime.now().strftime("%Y-%m-%d")))
         
