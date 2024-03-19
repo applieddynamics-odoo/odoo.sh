@@ -21,7 +21,8 @@ class ResPartner(models.Model):
                 FROM purchase_order_line pol JOIN purchase_order po
                     ON pol.order_id = po.id
                 JOIN product_product p ON pol.product_id = p.id
-                JOIN product_category pc ON p.categ_id = pc.id
+                JOIN product_template pt ON p.product_tmpl_id = pt.id
+                JOIN product_category pc ON pt.categ_id = pc.id
                 WHERE pol.partner_id = %d AND po.date_order::date >= '%s'::date
                     AND p.detailed_type != 'service'
                     AND pc.name != 'Office Supplies'
