@@ -10,16 +10,24 @@ class PurchaseOrder(models.Model):
         self._cr.execute("""
         UPDATE purchase_order_line pol
             SET arrived_late = true
-        FROM purchase_order po
-            WHERE po.id = pol.order_id AND
-            (
-                po.date_order < (SELECT MAX(m.date) FROM stock_move m
-                    WHERE m.purchase_line_id = pol.id AND m.state like 'done')
-             OR
-                (SELECT COUNT(m.id) FROM stock_move m
-                    WHERE m.purchase_line_id = pol.id AND m.state like 'done') = 0
-            );
-        """)
+        FROM purchase.order po
+            WHERE                
+                pol.order_id = po.id AND 
+                (
+                    po.date_order < (SELECT MAX(sp.date_done)
+                                     FROM stock_move m JOIN stock.picking sp
+                                     WHERE m.picking_id = sp.id
+                                     AND m.purchase_line_id = pol.id
+                                     AND m.state = 'done')
+                OR
+                    (pol.product_qty > (SELECT SUM(m.quantity_done)
+                                        FROM stock_move m JOIN stock.picking sp
+                                        WHERE m.picking_id = sp.id
+                                        AND m.purchase_line_id = pol.id
+                                        AND m.state = 'done')
+                    AND po.date_order::date < '%s'::date
+                );
+        """ % (datetime.now().strftime("%Y-%m-%d")))
         
     def button_done(self):
         for order in self:
