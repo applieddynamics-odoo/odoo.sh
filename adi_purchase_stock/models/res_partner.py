@@ -33,7 +33,7 @@ class ResPartner(models.Model):
                 ('purchase_line_id', 'in', order_lines.ids),
                 ('state', '=', 'done'),
             ]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
-            line_qty_totals = dict(l.id, l.product_qty for l in order_lines)
+            line_qty_totals = {l.id : l.product_qty for l in order_lines}
             move_totals = defaultdict(lambda: 0)
             for m in moves:
                 move_totals[m.purchase_line_id] += m.quantity_done
