@@ -20,7 +20,7 @@ class PurchaseOrder(models.Model):
                                      WHERE m.purchase_line_id = pol.id
                                      AND m.state = 'done')
                 OR
-                    (pol.product_qty > (SELECT SUM(m.quantity_done)
+                    (pol.product_qty > (SELECT SUM(m.product_qty)
                                         FROM stock_move m JOIN stock_picking sp
                                         on m.picking_id = sp.id
                                         WHERE m.purchase_line_id = pol.id
