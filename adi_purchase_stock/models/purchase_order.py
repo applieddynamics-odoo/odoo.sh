@@ -16,14 +16,14 @@ class PurchaseOrder(models.Model):
                 (
                     po.date_order < (SELECT MAX(sp.date_done)
                                      FROM stock_move m JOIN stock.picking sp
-                                     WHERE m.picking_id = sp.id
-                                     AND m.purchase_line_id = pol.id
+                                     ON m.picking_id = sp.id
+                                     WHERE m.purchase_line_id = pol.id
                                      AND m.state = 'done')
                 OR
                     (pol.product_qty > (SELECT SUM(m.quantity_done)
                                         FROM stock_move m JOIN stock.picking sp
-                                        WHERE m.picking_id = sp.id
-                                        AND m.purchase_line_id = pol.id
+                                        on m.picking_id = sp.id
+                                        WHERE m.purchase_line_id = pol.id
                                         AND m.state = 'done')
                     AND po.date_order::date < '%s'::date
                 );
