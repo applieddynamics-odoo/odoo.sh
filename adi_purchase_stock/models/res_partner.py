@@ -33,12 +33,15 @@ class ResPartner(models.Model):
                 ('purchase_line_id', 'in', order_lines.ids),
                 ('state', '=', 'done'),
             ]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
+            moves = set(moves.mapped("product_id"))
+            """
             line_qty_totals = {l.id : l.product_qty for l in order_lines}
             move_totals = defaultdict(lambda: 0)
             for m in moves:
                 move_totals[m.purchase_line_id] += m.quantity_done
             total_finished = sum([0 if move_totals[i] < line_qty_totals[i] else 1 for i in line_qty_totals.keys()])
-            record['on_time_rate'] = total_finished/len(order_lines) * 100
+            """
+            record['on_time_rate'] = len(moves)/len(order_lines) * 100
         '''
         order_lines = self.env['purchase.order.line'].search([
             ('partner_id', 'in', self.ids),
