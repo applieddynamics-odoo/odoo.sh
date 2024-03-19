@@ -1,17 +1,2 @@
-id,
-name,
-model_id:id,
-group_id:id,
-perm_read,
-perm_write,
-perm_create,
-perm_unlink
-
-purchase_users_can_access_warn_wizard,
-Purchase Users can access warn.vendor.below.threshold,
-adi_purchase_stock.model_warn_vendor_below_threshold,
-purchase.group_purchase_user,
-1,
-1,
-1,
-1
+id,name,model_id:id,group_id:id,perm_perm_write,perm_create,perm_unlink
+purchase_users_can_access_warn_wizard,Purchase Users can access warn.effective_date,adi_purchase_stock.model_warn_effective_date,purchase.group_purchase_user,1,1,1,1
