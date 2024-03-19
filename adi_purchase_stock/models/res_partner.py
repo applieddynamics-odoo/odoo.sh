@@ -24,7 +24,7 @@ class ResPartner(models.Model):
                 JOIN product_template pt ON p.product_tmpl_id = pt.id
                 JOIN product_category pc ON pt.categ_id = pc.id
                 WHERE pol.partner_id = %d AND po.date_order::date >= '%s'::date
-                    AND p.detailed_type != 'service'
+                    AND pt.detailed_type != 'service'
                     AND pc.name != 'Office Supplies'
                     AND pc.name != 'Production Supplies';"""
                 % (record.id, (datetime.now() - timedelta(365)).strftime("%Y-%m-%d")))
