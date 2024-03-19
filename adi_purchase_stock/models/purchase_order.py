@@ -36,11 +36,11 @@ class PurchaseOrder(models.Model):
             WHERE                
                 pol.order_id = po.id AND 
                 (
-                    po.date_order < (SELECT MAX(sp.date_done)
-                                     FROM stock_move m JOIN stock_picking sp
-                                     ON m.picking_id = sp.id
-                                     WHERE m.purchase_line_id = pol.id
-                                     AND m.state = 'done')
+                    po.date_planned < (SELECT MAX(sp.date_done)
+                                       FROM stock_move m JOIN stock_picking sp
+                                       ON m.picking_id = sp.id
+                                       WHERE m.purchase_line_id = pol.id
+                                       AND m.state = 'done')
                 );
         """)
         
