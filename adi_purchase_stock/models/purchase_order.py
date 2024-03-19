@@ -21,6 +21,7 @@ from odoo import api, models, fields
                                         AND m.state = 'done')
                     AND po.date_order::date < '%s'::date)
                 );
+... % (datetime.now().strftime("%Y-%m-%d"))
 """
 
 class PurchaseOrder(models.Model):
@@ -41,7 +42,7 @@ class PurchaseOrder(models.Model):
                                      WHERE m.purchase_line_id = pol.id
                                      AND m.state = 'done')
                 );
-        """ % (datetime.now().strftime("%Y-%m-%d")))
+        """)
         
     def button_done(self):
         for order in self:
