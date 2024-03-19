@@ -22,7 +22,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    arrived_late = fields.Boolean(default=False)
+    arrived_late = fields.Boolean(required=True, default=False)
 
     @api.onchange('qty_received')
     def on_change_received(self):

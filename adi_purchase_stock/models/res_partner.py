@@ -16,6 +16,6 @@ class ResPartner(models.Model):
     @api.depends('purchase_line_ids')
     def _compute_on_time_rate(self):
         for record in self:
-            self._cr.execute("""SELECT AVG(pol.arrived_late::int), COUNT(pol.id) FROM purchase_order_line as pol WHERE pol.partner_id = """ + str(record.id) + ";")
+            self._cr.execute("""SELECT SUM(pol.arrived_late::int), COUNT(pol.id) FROM purchase_order_line as pol WHERE pol.partner_id = """ + str(record.id) + ";")
             raise Exception(self._cr.fetchall())
             record['on_time_rate'] = -1
