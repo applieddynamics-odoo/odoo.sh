@@ -5,6 +5,12 @@ from odoo import api, models, fields
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    def _approximate_on_time_rates(self):
+        self._cr.execute("UPDATE purchase_order_line SET arrived_late = false;");
+        self._cr.execute("""
+        UPDATE purchase_order_line pol SET arrived_late = true FROM purchase_order po WHERE po.id = pol.order_id AND po.date_order < (SELECT m.date FROM stock_move m WHERE m.purchase_line_id = pol.id AND m.state = "done");
+        """)
+        
     def button_done(self):
         for order in self:
             if not order.effective_date:
