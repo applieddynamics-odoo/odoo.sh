@@ -5,8 +5,7 @@ from odoo import api, models
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    def button_confirm(self):
-        raise Exception("AAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    def button_done(self):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'warn.effective_date',
@@ -29,4 +28,4 @@ class PurchaseOrder(models.Model):
                         'purchase_order_id': order.id,
                     },
                 }
-        super().button_confirm()
+        super().button_done()
