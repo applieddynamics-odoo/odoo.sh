@@ -33,6 +33,10 @@ class ResPartner(models.Model):
                 ('purchase_line_id', 'in', order_lines.ids),
                 ('state', '=', 'done'),
             ]).filtered(lambda m: m.date.date() <= m.purchase_line_id.date_planned.date())
+
+            # reduce the moves so that there is at most 1 per purchase order line
+            # this doesn't accurately capture the total number received vs
+            # expected so is not a full solution...
             moves = set(moves.mapped("purchase_line_id"))
             """
             line_qty_totals = {l.id : l.product_qty for l in order_lines}
