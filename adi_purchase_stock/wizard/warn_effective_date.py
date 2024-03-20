@@ -3,9 +3,9 @@ from datetime import datetime
 
 class WarnEffectiveDate(models.TransientModel):
     _name = 'warn.effective_date'
-    _description = "Remind user to fill in the effective date if they haven't already"
+    _description = "Ensure that the delivery is correctly being marked as late/on time"
 
-    def button_confirm(self):
-        po_id = self.env['purchase.order'].search([('id', '=', self.env.context.get('purchase_order_id'))])
-        po_id['effective_date'] = datetime.now()
-        po_id.button_done()
+    def button_change(self):
+        sp_id = self.env['stock.picking'].search([('id', '=', self.env.context.get('stock_picking_id'))])
+        sp_id['date_done'] = sp_id.scheduled_date
+        sp_id.button_validate()
