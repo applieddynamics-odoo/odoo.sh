@@ -33,11 +33,11 @@ class PurchaseOrder(models.Model):
         UPDATE purchase_order_line pol
             SET arrived_late = true
         WHERE                
-            1 = SELECT MAX(sp.date_done > sp.scheduled_date)
+            (SELECT MAX(sp.date_done > sp.scheduled_date)
                    FROM stock_move m JOIN stock_picking sp
                    ON m.picking_id = sp.id
                    WHERE m.purchase_line_id = pol.id
-                   AND m.state = 'done';
+                   AND m.state = 'done') = 1;
         """)
         
     def button_done(self):
