@@ -3,7 +3,6 @@ from datetime import timedelta
 from collections import defaultdict
 from odoo import api, fields, models
 
-
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -16,6 +15,43 @@ class ResPartner(models.Model):
     @api.depends('purchase_line_ids')
     def _compute_on_time_rate(self):
         for record in self:
+            self._cr.execute(
+                """
+                SELECT COUNT(pl.id) FROM purchase_order_line pl
+                    JOIN purchase_order   po ON pl.order_id = po.id
+                    JOIN product_product   p ON pl.product_id = p.id
+                    JOIN product_template pt ON p.product_tmpl_id = pt.id
+                    JOIN product_category pc ON pt.categ_id = pc.id
+                WHERE partner_id = %d AND po.date_order::date >= '%s'::date AND
+                      pt.detailed_type != 'service' AND
+                      pc.name != 'Office Supplies' AND
+                      pc.name != 'Production Supplies';
+                """ %
+                (record.id, (datetime.now() - timedelta(365)).strftime("%Y-%m-%d"))
+            )
+            order_lines_cnt = self._cr.fetchone()[0]
+            self._cr.execute(
+                """
+                SELECT COUNT(pl.id) FROM purchase_order_line pl
+                    JOIN purchase_order   po ON pl.order_id = po.id
+                    JOIN product_product   p ON pl.product_id = p.id
+                    JOIN product_template pt ON p.product_tmpl_id = pt.id
+                    JOIN product_category pc ON pt.categ_id = pc.id
+                WHERE partner_id = %d AND po.date_order::date >= '%s'::date AND
+                      pt.detailed_type != 'service' AND
+                      pc.name != 'Office Supplies' AND
+                      pc.name != 'Production Supplies' AND
+                      (SELECT BOOL_OR(sp.date_done > sp.scheduled_date)
+                           FROM stock_move m JOIN stock_picking sp
+                           ON m.picking_id = sp.id
+                       WHERE m.purchase_line_id = pl.id AND m.state = 'done') = true;
+                """ %
+                (record.id, (datetime.now() - timedelta(365)).strftime("%Y-%m-%d"))
+            )
+            on_time_cnt = order_lines_cnt - self._cr.fetchone()[0]
+            record['on_time_rate'] = on_time_cnt / order_lines_cnt * 100
+            # record['on_time_rate'] = len(moves)/len(order_lines) * 100
+            '''
             order_lines = self.env['purchase.order.line'].search([
                 ('partner_id', '=', self.id),
                 ('date_order', '>', fields.Date.today() - timedelta(365)),
@@ -45,7 +81,7 @@ class ResPartner(models.Model):
                 move_totals[m.purchase_line_id] += m.quantity_done
             total_finished = sum([0 if move_totals[i] < line_qty_totals[i] else 1 for i in line_qty_totals.keys()])
             """
-            record['on_time_rate'] = len(moves)/len(order_lines) * 100
+            '''
         '''
         order_lines = self.env['purchase.order.line'].search([
             ('partner_id', 'in', self.ids),
