@@ -62,11 +62,12 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('qty_received')
     def on_change_received(self):
         for r in self:
+            break
             # is the product fully received
             if r.product_qty != r.qty_received:
                 continue
             # is the product late
-            if r.order_line_id.date_order.date() < datetime.now().date():
+            if r.order_id.date_order.date() < datetime.now().date():
                 return {
                     'type': 'ir.actions.act_window',
                     'res_model': 'warn.is_po_line_late',
