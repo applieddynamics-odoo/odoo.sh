@@ -22,7 +22,7 @@ class ResPartner(models.Model):
                     JOIN product_product   p ON pl.product_id = p.id
                     JOIN product_template pt ON p.product_tmpl_id = pt.id
                     JOIN product_category pc ON pt.categ_id = pc.id
-                WHERE partner_id = %d AND po.date_order::date >= '%s'::date AND
+                WHERE pl.partner_id = %d AND po.date_order::date >= '%s'::date AND
                       pt.detailed_type != 'service' AND
                       pc.name != 'Office Supplies' AND
                       pc.name != 'Production Supplies';
@@ -37,7 +37,7 @@ class ResPartner(models.Model):
                     JOIN product_product   p ON pl.product_id = p.id
                     JOIN product_template pt ON p.product_tmpl_id = pt.id
                     JOIN product_category pc ON pt.categ_id = pc.id
-                WHERE partner_id = %d AND po.date_order::date >= '%s'::date AND
+                WHERE pl.partner_id = %d AND po.date_order::date >= '%s'::date AND
                       pt.detailed_type != 'service' AND
                       pc.name != 'Office Supplies' AND
                       pc.name != 'Production Supplies' AND
