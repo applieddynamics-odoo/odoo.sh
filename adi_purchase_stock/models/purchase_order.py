@@ -54,6 +54,7 @@ class PurchaseOrder(models.Model):
                 }
         super().button_done()
 
+        
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
