@@ -14,7 +14,7 @@
   <record id="purchase_order_lines_view_adi" model="ir.ui.view">
     <field name="name">purchase.order.line.view.adi</field>
     <field name="model">purchase.order.line</field>
-    <field name="type">tree</field>
+    <field name="type">tree,form</field>
     <field name="arch" type="xml">
       <tree>
 	<field name="arrived_late"/>
