@@ -22,7 +22,7 @@ class ResPartner(models.Model):
     def _compute_on_time_rate(self):
         for record in self:
             self._cr.execute(
-                """SELECT AVG(1.0 - pol.arrived_late::int)
+                """SELECT COALESCE(AVG(1.0 - pol.arrived_late::int), -0.01)
                 FROM purchase_order_line pol JOIN purchase_order po
                     ON pol.order_id = po.id
                 JOIN product_product p ON pol.product_id = p.id
