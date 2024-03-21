@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="purchase_order_form_inherit_adi" model="ir.ui.view">
-        <field name="name">purchase.order.form.inherit.adi</field>
-        <field name="model">purchase.order</field>
-        <field name="inherit_id" ref="purchase.purchase_order_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='date_planned']" position="attributes">
-                <attribute name="widget">date</attribute>
-            </xpath>
-        </field>
-    </record>
+  <record id="purchase_order_form_inherit_adi" model="ir.ui.view">
+    <field name="name">purchase.order.form.inherit.adi</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='date_planned']" position="attributes">
+        <attribute name="widget">date</attribute>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="purchase_order_lines_view_adi" model="ir.ui.view">
+    <field name="name">purchase.order.line.view.adi</field>
+    <field name="model">purchase.order.line</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree>
+	<field name="arrived_late"/>
+	<field name="product_id"/>
+	<field name="name"/>
+	<field name="product_qty"/>
+	<field name="qty_received"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="purchase.order.lines.new_tree.adi" model="ir.actions.act_window">
+    <field name="name">PO Lines View</field>
+    <field name="res_model">purchase.order.line</field>
+    <field name="view_mode">tree</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="view_id" ref="purchase_order_lines_view_adi"/>
+  </record>
+  
+  <menuitem name="PO Lines Test" id="purchase.order.lines.menuitem.adi"
+	    action="purchase.order.lines.new_tree.adi"/>
 </odoo>
