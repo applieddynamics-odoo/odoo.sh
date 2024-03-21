@@ -12,6 +12,9 @@
 	    <xpath expr="//field[@name='on_time_rate']" position="after">
 	      <field name="on_time_rate" attrs="{'invisible':[('on_time_rate', '&lt;', '90')]}"></field>
             </xpath>
+	    <div name="button_box" position="inside">
+	      <button type="object" name="action_view_order_lines">View PO Lines</button>
+	    </div>
         </field>
     </record>
 </odoo>

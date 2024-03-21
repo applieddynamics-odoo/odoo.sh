@@ -7,11 +7,16 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    def should_warn(self):
-        for partner in self:
-            if 0 <= partner.on_time_rate <= self.env.company.on_time_threshold:
-                return True
-        return False
+    def action_view_order_lines(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View OTD PO Lines (TEST)',
+            'res_model': 'purchase.order.line',
+            'view_type': 'tree',
+            'domain': [('partner_id', '=', self.id)],
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
 
     @api.depends('purchase_line_ids')
     def _compute_on_time_rate(self):

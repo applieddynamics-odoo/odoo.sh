@@ -35,5 +35,6 @@
   </record>
   
   <menuitem name="PO Lines Test" id="purchase_order_lines_menuitem_adi"
-	    action="purchase_order_line_new_tree_adi"/>
+	    action="purchase_order_line_new_tree_adi"
+	    parent="Purchases"/>
 </odoo>
