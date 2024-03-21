@@ -6,11 +6,11 @@
         <field name="arch" type="xml">
             <form>
                 <div>
-                    The effective date hasn't been filled out. Default fill with today's date?
+		  Was this stock picking really late?
                 </div>
                 <footer>
-                    <button name="button_confirm" type="object" string="YES" class="oe_highlight"/>
-                    <button special="cancel" string="NO"/>
+                    <button special="cancel" string="YES" class="oe_highlight"/>
+                    <button name="button_change" type="object" string="NO"/>
                 </footer>
             </form>
         </field>

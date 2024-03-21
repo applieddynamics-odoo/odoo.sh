@@ -39,20 +39,6 @@ class PurchaseOrder(models.Model):
                    WHERE m.purchase_line_id = pol.id
                    AND m.state = 'done') = true;
         """)
-        
-    def button_done(self):
-        for order in self:
-            if not order.effective_date:
-                return {
-                    'type': 'ir.actions.act_window',
-                    'res_model': 'warn.effective_date',
-                    'view_mode': 'form',
-                    'target': 'new',
-                    'context': {
-                        'purchase_order_id': order.id,
-                    },
-                }
-        super().button_done()
 
         
 class PurchaseOrderLine(models.Model):
