@@ -8,12 +8,11 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     def action_view_order_lines(self):
-        raise Exception(self.env.ref('adi_purchase_stock.purchase_order_lines_view_adi').id)
         return {
             'type': 'ir.actions.act_window',
             'name': 'View OTD PO Lines (TEST)',
             'res_model': 'purchase.order.line',
-            'view_ids': [(self.env.ref('adi_purchase_stock.purchase_order_lines_view_adi').id, 'tree')],
+            'view_ids': [(self.env.ref('adi_purchase_stock.purchase_order_lines_view_adi'), 'tree')],
             'domain': [('partner_id', '=', self.id),
                        ('date_order', '>', datetime.now() - timedelta(365))],
             'view_mode': 'tree,form',
