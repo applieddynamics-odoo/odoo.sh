@@ -12,8 +12,8 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'View OTD PO Lines (TEST)',
             'res_model': 'purchase.order.line',
-            'view_type': 'tree',
-            #'domain': [('partner_id', '=', self.id)],
+            'view_ids': [(False, 'tree')],
+            'domain': [('partner_id', '=', self.id)],
             'view_mode': 'tree,form',
             'target': 'current',
         }
