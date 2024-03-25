@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
-# from odoo import models, fields, api
+ from odoo import models, fields, api
 
 
-# class ci_app_adi(models.Model):
-#     _name = 'ci_app_adi.ci_app_adi'
-#     _description = 'ci_app_adi.ci_app_adi'
+class ci_app_adi(models.Model):
+    _name = 'ci_app_adi.ci_app_adi'
+    _description = 'ADI CI and CAR App'
 
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+    title = fields.Char()
+    description = fields.Text()
+    action_type = fields.Selection([("CI", "CI"), ("CAR", "CAR")])
+    status = fields.Selection([("Open", "Open"),
+                               ("Assigned", "Assigned"),
+                               ("Done", "Done")])
+    assignee = fields.Many2one("res.users")
+
+
+
+
