@@ -13,8 +13,8 @@ class ResPartner(models.Model):
             'name': 'View OTD PO Lines (TEST)',
             'res_model': 'purchase.order.line',
             'view_type': 'tree',
-            'domain': [('partner_id', '=', self.id)],
-            'view_mode': 'tree',
+            #'domain': [('partner_id', '=', self.id)],
+            'view_mode': 'tree,form',
             'target': 'current',
         }
 
