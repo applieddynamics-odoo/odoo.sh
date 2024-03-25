@@ -12,7 +12,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'View OTD PO Lines (TEST)',
             'res_model': 'purchase.order.line',
-            'view_ids': [('purchase.order.line.view.adi', 'tree')],
+            'view_ids': [(self.env.ref('purchase_order_line_view_adi').id, 'tree')],
             'domain': [('partner_id', '=', self.id),
                        ('date_order', '>', datetime.now() - timedelta(365))],
             'view_mode': 'tree,form',
