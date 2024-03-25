@@ -8,6 +8,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     def action_view_order_lines(self):
+        raise Exception(self.env.ref('adi_purchase_stock.purchase_order_lines_view_adi').id)
         return {
             'type': 'ir.actions.act_window',
             'name': 'View OTD PO Lines (TEST)',
