@@ -14,7 +14,7 @@ class ResPartner(models.Model):
             'res_model': 'purchase.order.line',
             'view_type': 'tree',
             'domain': [('partner_id', '=', self.id)],
-            'view_mode': 'tree,form',
+            'view_mode': 'tree',
             'target': 'current',
         }
 
