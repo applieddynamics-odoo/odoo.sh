@@ -23,8 +23,8 @@
 	      <field name="action_type" colspan="2" label="Type" style="width:100px;"/>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
 		<div>
-		  <span colspan="3">CI</span>
-		  <field colspan="3" name="status" attrs="{'widget': 'statusbar'}"/>
+		  <field colspan="3" name="status" widget="statusbar"/>
+		  <span colspan="3"><h1>CI</h1></span>
 		</div>
 		<field name="title"/>
 		<field name="description"/>
