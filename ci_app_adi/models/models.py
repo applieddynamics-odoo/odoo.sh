@@ -12,7 +12,7 @@ class ci_app_adi(models.Model):
     action_type = fields.Selection([("CI", "CI"), ("CAR", "CAR")])
     status = fields.Selection([("Open", "Open"),
                                ("Assigned", "Assigned"),
-                               ("Done", "Done")])
+                               ("Done", "Done")], default=("Open", "Open"))
     assignee = fields.Many2one("res.users")
 
 
