@@ -8,6 +8,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     def action_view_order_lines(self):
+        act = self.env.ref('adi_purchase_stock.purchase_order_line_new_tree_adi').read()[0]
+        return act
         return {
             'type': 'ir.actions.act_window',
             'name': 'View OTD PO Lines (TEST)',
