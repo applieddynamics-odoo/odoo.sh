@@ -7,7 +7,7 @@
         <tree>
           <field name="title"/>
           <field name="status"/>
-          <field name="asignee"/>
+          <field name="assignee"/>
         </tree>
       </field>
     </record>
