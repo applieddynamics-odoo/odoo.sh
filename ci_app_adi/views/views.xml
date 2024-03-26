@@ -19,16 +19,18 @@
       <field name="arch" type="xml">
 	<form>
 	  <sheet>
-	    <field name="action_type"></field>
-	    <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
-	      <h1>CI</h1>
-	      <field name="title"></field>
-	      <field name="description"></field>
-	    </group>
-	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-	      <h1>CAR</h1>
-	      <field name="title"></field>
-	      <field name="description"></field>titl
+	    <group>
+	      <field name="action_type"/>
+	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+		<h1>CI</h1>
+		<field name="title"/>
+		<field name="description"/>
+	      </group>
+	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
+		<h1>CAR</h1>
+		<field name="title"/>
+		<field name="description"/>
+	      </group>
 	    </group>
 	  </sheet>
 	</form>
