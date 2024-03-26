@@ -20,11 +20,11 @@
 	<form>
 	  <sheet>
 	    <group>
-	      <field name="action_type" colspan="2" label="Type"/>
+	      <field name="action_type" colspan="2" label="Type" style="width:100px;"/>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
 		<div>
-		  <h1 colspan="3">CI</h1>
-		  <field colspan="3" name="status"/>
+		  <span colspan="3">CI</span>
+		  <field colspan="3" name="status" attrs="{'widget': 'statusbar'}"/>
 		</div>
 		<field name="title"/>
 		<field name="description"/>
