@@ -9,17 +9,12 @@ class ResPartner(models.Model):
 
     def action_view_order_lines(self):
         act = self.env.ref('adi_purchase_stock.purchase_order_line_new_tree_adi').read()[0]
+        act.domain = [('partner_id', '=', self.id),
+                      ('date_order', '>', datetime.now() - timedelta(365)),
+                      ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
+                      ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
+                      ('product_id.product_tmpl_id.detailed_type', '!=', 'service')]
         return act
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'View OTD PO Lines (TEST)',
-            'res_model': 'purchase.order.line',
-            'view_ids': [(self.env.ref('adi_purchase_stock.purchase_order_lines_view_adi'), 'tree')],
-            'domain': [('partner_id', '=', self.id),
-                       ('date_order', '>', datetime.now() - timedelta(365))],
-            'view_mode': 'tree,form',
-            'target': 'current',
-        }
 
     @api.depends('purchase_line_ids')
     def _compute_on_time_rate(self):
