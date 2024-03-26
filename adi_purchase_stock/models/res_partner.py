@@ -9,11 +9,14 @@ class ResPartner(models.Model):
 
     def action_view_order_lines(self):
         act = self.env.ref('adi_purchase_stock.purchase_order_line_new_tree_adi').read()[0]
-        act['domain'] = [('partner_id', '=', self.id),
-                      ('date_order', '>', datetime.now() - timedelta(365)),
-                      ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
-                      ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
-                      ('product_id.product_tmpl_id.detailed_type', '!=', 'service')]
+        act['domain'] =
+        [
+            ('partner_id', '=', self.id),
+            ('date_order', '>', datetime.now() - timedelta(365)),
+            ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
+            ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
+            ('product_id.product_tmpl_id.detailed_type', '!=', 'service')
+        ]
         return act
 
     @api.depends('purchase_line_ids')
