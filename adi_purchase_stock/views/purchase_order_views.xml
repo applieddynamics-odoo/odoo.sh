@@ -33,8 +33,4 @@
     <field name="type">ir.actions.act_window</field>
     <field name="view_id" ref="purchase_order_lines_view_adi"/>
   </record>
-  
-  <menuitem name="PO Lines Test" id="purchase_order_lines_menuitem_adi"
-	    action="purchase_order_line_new_tree_adi"
-	    />
 </odoo>
