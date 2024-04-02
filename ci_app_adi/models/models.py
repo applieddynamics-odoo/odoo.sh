@@ -65,6 +65,7 @@ class ci_app_adi(models.Model):
     @api.model
     def create(self, vals):
         if vals["action_type"] == "CI":
+            raise Exception(self.env["ir.sequence"].next_by_code("ci.sequence"))
             vals["action_reference"] = self.env["ir.sequence"].next_by_code("ci.sequence")
         elif vals["action_type"] == "CAR":
             vals["action_reference"] = self.env["ir.sequence"].next_by_code("car.sequence")
