@@ -1,13 +1,13 @@
 <odoo>
   <data>
-    <record id="ci_app_adi.ci_sequence", model="ir.sequence">
+    <record id="ci_app_adi.ci_sequence" model="ir.sequence">
       <field name="name">CI Sequence</field>
       <field name="code">ci.sequence</field>
       <field name="prefix">CI</field>
       <field name="padding">4</field>
     </record>
 
-    <record id="ci_app_adi.car_sequence", model="ir.sequence">
+    <record id="ci_app_adi.car_sequence" model="ir.sequence">
       <field name="name">CAR Sequence</field>
       <field name="code">car.sequence</field>
       <field name="prefix">CAR</field>
