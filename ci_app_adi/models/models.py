@@ -20,7 +20,7 @@ class ci_app_adi(models.Model):
                                ("In Progress",           "In Progress"),
                                ("Awaiting Verification", "Awaiting Verification"),
                                ("Done",                  "Done")],
-                              default=("Open", "Open"))
+                              default=lambda self: "Open")
 
     process_area = fields.Selection([
         ("Proposals and Contracts", "Proposals and Contracts"),
