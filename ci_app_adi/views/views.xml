@@ -5,6 +5,7 @@
       <field name="model">ci_app_adi.ci_app_adi</field>
       <field name="arch" type="xml">
         <tree>
+	  <field name="action_reference"/>
           <field name="title"/>
           <field name="status"/>
         </tree>
@@ -19,13 +20,15 @@
 	<form>
 	  <sheet>
 	    <group>
-	      <field name="action_type" colspan="2" label="Type" style="width:100px;"/>
+	      <group attrs="{'invisible': [('action_type', '!=', 'CI'), ('action_type', '!=', 'CAR')]}">
+		<field name="action_type" label="Type" style="width:100px;"/>
+	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
 		<div>
-		  <field colspan="3" name="status" widget="statusbar"/>
+		  <field name="status" widget="statusbar"/>
 		  <field name="title"/>		  
 		</div>
-		<field name="action_reference"/>
+		<!--<field name="action_reference"/>-->
 		<field name="date_opened"/>
 		<field name="opened_by"/>
 		<field name="process_area"/>

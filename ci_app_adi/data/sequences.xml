@@ -1,5 +1,5 @@
 <odoo>
-  <data>
+  <data noupdate="1">
     <record id="ci_app_adi.ci_sequence" model="ir.sequence">
       <field name="name">CI Sequence</field>
       <field name="code">ci.sequence</field>
@@ -10,7 +10,7 @@
     <record id="ci_app_adi.car_sequence" model="ir.sequence">
       <field name="name">CAR Sequence</field>
       <field name="code">car.sequence</field>
-      <field name="prefix">CAR</field>
+      <field name="prefix">CA</field>
       <field name="padding">4</field>
     </record>
   </data>

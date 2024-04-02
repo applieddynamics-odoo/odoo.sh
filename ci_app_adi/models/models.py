@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api
-
+from datetime import datetime
 
 class ci_app_adi(models.Model):
     _name = 'ci_app_adi.ci_app_adi'
@@ -10,10 +9,10 @@ class ci_app_adi(models.Model):
     action_type = fields.Selection([("CI", "CI"), ("CAR", "CAR")])
 
     # Shared
-    title = fields.Char()
+    title = fields.Char(required=True)
     action_reference = fields.Char()
-    opened_by = fields.Many2one("res.users")
-    date_opened = fields.Date()
+    opened_by = fields.Many2one("res.users", default=lambda self: self.env.user.id)
+    date_opened = fields.Date(default=lambda self: datetime.now())
     status = fields.Selection([("Open",                  "Open"),
                                ("In Progress",           "In Progress"),
                                ("On Hold",               "On Hold"),
@@ -36,7 +35,7 @@ class ci_app_adi(models.Model):
         ("Contract Review",         "Contract Review"),
         ("Human Resources",         "Human Resources"),
         ("Project Management",      "Project Management")
-    ])
+    ], required=True)
     owner = fields.Text()
     summary = fields.Text()
     notes = fields.Text()
