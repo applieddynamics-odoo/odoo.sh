@@ -20,7 +20,7 @@
 	<form>
 	  <sheet>
 	    <group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CI'), ('action_type', '!=', 'CAR')]}">
+	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
