@@ -7,7 +7,6 @@
         <tree>
           <field name="title"/>
           <field name="status"/>
-          <field name="assignee"/>
         </tree>
       </field>
     </record>
@@ -34,7 +33,6 @@
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 		<h1>CAR</h1>
 		<field name="title"/>
-		<field name="description"/>
 	      </group>
 	    </group>
 	  </sheet>
