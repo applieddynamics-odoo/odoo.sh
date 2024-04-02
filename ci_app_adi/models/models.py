@@ -13,7 +13,7 @@ class ci_app_adi(models.Model):
     title = fields.Char()
     action_reference = fields.Char()
     opened_by = fields.Many2one("res.users")
-    date_opened = fields.DateTime()
+    date_opened = fields.Date()
     status = fields.Selection([("Open",                  "Open"),
                                ("In Progress",           "In Progress"),
                                ("On Hold",               "On Hold"),
@@ -43,10 +43,10 @@ class ci_app_adi(models.Model):
 
     # CI
     # not permissions-based hence different from 'date_closed'
-    date_done = fields.DateTime()
+    date_done = fields.Date()
     
     # CAR
-    date_due = fields.DateTime()
+    date_due = fields.Date()
     risk = fields.Selection([("Low",    "Low"),
                              ("Medium", "Medium"),
                              ("High",   "High")])
@@ -57,7 +57,7 @@ class ci_app_adi(models.Model):
     future_improvements = fields.Text()
 
     # TODO: permissions locked fields
-    date_closed = fields.DateTime()
+    date_closed = fields.Date()
     verified_by = fields.Many2one("res.user")
     verification_notes = fields.Text()
     documents_affected = fields.Text()
