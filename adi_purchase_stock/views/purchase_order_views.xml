@@ -18,8 +18,8 @@
     <field name="arch" type="xml">
       <tree>
 	<header>
-	  <button name="action_mark_late" string="Mark Late"/>
-	  <button name="action_unmark_late" string="Mark On-Time"/>
+	  <button name="action_mark_late" string="Mark Late" type="object"/>
+	  <button name="action_unmark_late" string="Mark On-Time" type="object"/>
 	</header>
 	<field name="arrived_late"/>
 	<field name="product_id"/>
