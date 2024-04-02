@@ -17,6 +17,10 @@
     <field name="type">tree</field>
     <field name="arch" type="xml">
       <tree>
+	<header>
+	  <button name="action_mark_late" string="Mark Late"/>
+	  <button name="action_unmark_late" string="Mark On-Time"/>
+	</header>
 	<field name="arrived_late"/>
 	<field name="product_id"/>
 	<field name="name"/>

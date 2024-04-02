@@ -45,3 +45,11 @@ class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     arrived_late = fields.Boolean(required=True, default=lambda v: False)
+
+    def action_mark_late(self):
+        for r in self:
+            r['arrived_late'] = True
+
+    def action_unmark_late(self):
+        for r in self:
+            r['arrived_late'] = False
