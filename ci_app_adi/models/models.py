@@ -62,6 +62,6 @@ class ci_app_adi(models.Model):
     verification_notes = fields.Text()
     documents_affected = fields.Text()
 
-    @api.on_create
-    def on_create(self):
-        pass
+    @api.model
+    def create(self, vals):
+        return super(ci_app_adi, self).create(vals)
