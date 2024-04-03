@@ -19,7 +19,7 @@
       <field name="arch" type="xml">
 	<form>
 	  <header>
-	    <field name="title" style="font-weight: bold; font-size: 1.5rem;"/>
+	    <field name="title" readonly="1" style="font-weight: bold; font-size: 1.5rem;"/>
 	    <field attrs="{'invisible': [('status', '!=', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>
 	  </header>
@@ -29,16 +29,16 @@
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="12">
-		<div colspan="6">
+		<group colspan="6">
 		  <!--<field name="action_reference"/>-->
 		  <field name="date_opened"/>
 		  <field name="opened_by"/>
 		  <field name="process_area"/>
-	        </div>
-		<div colspan="6">
+	        </group>
+		<group colspan="6">
 		  <field name="owner"/>
 		  <field name="date_done"/>
-		</div>
+		</group>
 		<field name="summary" widget="Html"/>
 		<field name="notes" widget="Html"/>
 	      </group>

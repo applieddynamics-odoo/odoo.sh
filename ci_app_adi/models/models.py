@@ -36,7 +36,7 @@ class ci_app_adi(models.Model):
         ("Human Resources",         "Human Resources"),
         ("Project Management",      "Project Management")
     ], required=True)
-    owner = fields.Text()
+    owner = fields.Char()
     summary = fields.Text()
     notes = fields.Text()
 
