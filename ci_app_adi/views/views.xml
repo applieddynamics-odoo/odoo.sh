@@ -32,6 +32,8 @@
 		<field name="date_opened"/>
 		<field name="opened_by"/>
 		<field name="process_area"/>
+		<field name="summary" widget="Html"/>
+		<field name="notes" widget="Html"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 		<h1>CAR</h1>
@@ -43,10 +45,18 @@
       </field>
     </record>
 
-    <record model="ir.actions.act_window" id="ci_app_adi.action_window">
-      <field name="name">ci_app_adi window</field>
+    <record model="ir.actions.act_window" id="ci_app_adi.action_window.ci">
+      <field name="name">ci_app_adi window ci</field>
       <field name="res_model">ci_app_adi.ci_app_adi</field>
       <field name="view_mode">tree,form</field>
+      <field name="domain">[('action_type', '=', 'CI')]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ci_app_adi.action_window.car">
+      <field name="name">ci_app_adi window car</field>
+      <field name="res_model">ci_app_adi.ci_app_adi</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('action_type', '=', 'CAR')]</field>
     </record>
 
     <record model="ir.actions.server" id="ci_app_adi.action_server">
@@ -78,9 +88,9 @@
     <menuitem name="New CI" id="ci_app_adi.menu_new_ci"
 	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
 -->    
-    <menuitem name="List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_window"/>
-    <menuitem name="Server to list" id="ci_app_adi" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_server"/>
+    <menuitem name="CI List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
+              action="ci_app_adi.action_window.ci"/>
+    <menuitem name="CAR List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
+              action="ci_app_adi.action_window.car"/>
   </data>
 </odoo>
