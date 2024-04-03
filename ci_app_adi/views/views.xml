@@ -71,26 +71,18 @@
         }
       </field>
     </record>
-<!--
-    <record model="ir.actions.server" id="ci_app_adi.new_car_server">
-      <field name="name">ci_app_adi_new_car_server</field>
-      <field name="model_id" ref="model_ci_app_adi_ci_app_adi"/>
-      <field name="state">code</field>
-      <field name="code">
-	raise Exception("TODO")
-      </field>
-    </record>
--->
+
     <menuitem name="ci_app_adi" id="ci_app_adi.menu_root"/>
 <!--
     <menuitem name="New CAR" id="ci_app_adi.menu_new_car"
 	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
     <menuitem name="New CI" id="ci_app_adi.menu_new_ci"
 	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
--->    
-    <menuitem name="CI List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
+-->
+    <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root"
               action="ci_app_adi.action_window_ci"/>
-    <menuitem name="CAR List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
+    
+    <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root"
               action="ci_app_adi.action_window_car"/>
   </data>
 </odoo>
