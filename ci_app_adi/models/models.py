@@ -3,8 +3,9 @@ from odoo import models, fields, api
 from datetime import datetime
 
 class ci_app_adi(models.Model):
-    _name = 'ci_app_adi.ci_app_adi'
-    _description = 'ADI CI and CAR App'
+    _name = "ci_app_adi.ci_app_adi"
+    _description = "ADI CI and CAR App"
+    _rec_name = "action_reference"
 
     action_type = fields.Selection([("CI", "CI"), ("CAR", "CAR")])
 
@@ -16,7 +17,6 @@ class ci_app_adi(models.Model):
     status = fields.Selection([("Open",                  "Open"),
                                ("In Progress",           "In Progress"),
                                ("On Hold",               "On Hold"),
-                               ("In Progress",           "In Progress"),
                                ("Awaiting Verification", "Awaiting Verification"),
                                ("Done",                  "Done")],
                               default=lambda self: "Open")

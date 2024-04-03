@@ -18,16 +18,16 @@
       <field name="type">form</field>
       <field name="arch" type="xml">
 	<form>
+	  <header>
+	    <field name="title"/>
+	    <field name="status" widget="statusbar" statusbar_visible="Open,In Progress,On Hold,Awaiting Verification,Done"/>
+	  </header>
 	  <sheet>
 	    <group colspan="12">
 	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="12">
-		<div>
-		  <field name="status" widget="statusbar"/>
-		  <field name="title"/>		  
-		</div>
 		<!--<field name="action_reference"/>-->
 		<field name="date_opened"/>
 		<field name="opened_by"/>
