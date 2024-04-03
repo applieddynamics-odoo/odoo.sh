@@ -45,21 +45,22 @@
       </field>
     </record>
 
-    <record model="ir.actions.server" id="ci_app_adi.action_server.ci">
-      <field name="name">ci_app_adi server ci</field>
-      <field name="model_id" ref="model_ci_app_adi_ci_app_adi"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-	  "domain": [('action_type', '=', 'CI')]
-        }
-      </field>
+    <record model="ir.actions.act_window" id="ci_app_adi.action_window_ci">
+      <field name="name">ci_app_adi window ci</field>
+      <field name="res_model">ci_app_adi.ci_app_adi</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('action_type', '=', 'CI')]</field>
     </record>
-    <record model="ir.actions.server" id="ci_app_adi.action_server.car">
-      <field name="name">ci_app_adi server car</field>
+
+    <record model="ir.actions.act_window" id="ci_app_adi.action_window_car">
+      <field name="name">ci_app_adi window car</field>
+      <field name="res_model">ci_app_adi.ci_app_adi</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('action_type', '=', 'CAR')]</field>
+    </record>
+
+    <record model="ir.actions.server" id="ci_app_adi.action_server">
+      <field name="name">ci_app_adi server</field>
       <field name="model_id" ref="model_ci_app_adi_ci_app_adi"/>
       <field name="state">code</field>
       <field name="code">
@@ -67,7 +68,6 @@
           "type": "ir.actions.act_window",
           "view_mode": "tree,form",
           "res_model": model._name,
-	  "domain": [('action_type', '=', 'CAR')]
         }
       </field>
     </record>
@@ -89,8 +89,8 @@
 	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
 -->    
     <menuitem name="CI List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_server.ci"/>
+              action="ci_app_adi.action_window_ci"/>
     <menuitem name="CAR List" id="ci_app_adi.menu_list" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_server.car"/>
+              action="ci_app_adi.action_window_car"/>
   </data>
 </odoo>
