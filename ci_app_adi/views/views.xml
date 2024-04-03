@@ -29,20 +29,17 @@
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="12">
-		<span colspan="6">
-		  <group>
-		    <!--<field name="action_reference"/>-->
-		    <field name="date_opened"/>
-		    <field name="opened_by"/>
-		    <field name="process_area"/>
-	          </group>
-		</span>
-		<span colspan="6">
-		  <group>
-		    <field name="owner"/>
-		    <field name="date_done"/>
-		  </group>
-		</span>
+		
+		<group colspan="2">
+		  <!--<field name="action_reference"/>-->
+		  <field name="date_opened"/>
+		  <field name="opened_by"/>
+		  <field name="process_area"/>
+	        </group>
+		<group col="3" colspan="2">
+		  <field name="owner"/>
+		  <field name="date_done"/>
+		</group>
 		<field name="summary" widget="Html"/>
 		<field name="notes" widget="Html"/>
 	      </group>
