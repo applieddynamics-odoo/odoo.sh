@@ -11,4 +11,4 @@ class WarnEffectiveDate(models.TransientModel):
         for m in sms:
             pl = m.purchase_line_id
             pl['arrived_late'] = False
-        sp_id.button_validate()
+        sp_id.with_context(skip_validation=True).button_validate()

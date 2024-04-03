@@ -6,8 +6,10 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     def button_validate(self):
+        if self._context['skip_validation']:
+            return super().button_validate()
         for r in self:
-            if r.scheduled_date < r.date_done:
+            if r.scheduled_date.date() < r.date_done.date():
                 sms = self.env['stock.move'].search([('picking_id', '=', r.id)])
                 for m in sms:
                     pl = m.purchase_line_id
@@ -22,4 +24,4 @@ class StockPicking(models.Model):
                         'stock_picking_id': r.id,
                     },
                 }
-        super().button_validate()
+        return super().button_validate()
