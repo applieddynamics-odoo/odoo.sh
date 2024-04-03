@@ -19,11 +19,11 @@
       <field name="arch" type="xml">
 	<form>
 	  <sheet>
-	    <group>
+	    <group colspan="12">
 	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="12">
 		<div>
 		  <field name="status" widget="statusbar"/>
 		  <field name="title"/>		  
