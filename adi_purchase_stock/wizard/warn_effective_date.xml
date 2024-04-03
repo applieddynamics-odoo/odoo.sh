@@ -9,7 +9,7 @@
 		  Was this stock picking really late?
                 </div>
                 <footer>
-                    <button special="cancel" string="YES" class="oe_highlight"/>
+                    <button name="button_nochange" type="object" string="YES" class="oe_highlight"/>
                     <button name="button_change" type="object" string="NO"/>
                 </footer>
             </form>
