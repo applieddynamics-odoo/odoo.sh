@@ -6,7 +6,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     def button_validate(self):
-        if self._context['skip_validation']:
+        if self._context.get('skip_validation'):
             return super().button_validate()
         for r in self:
             if r.scheduled_date.date() < r.date_done.date():
