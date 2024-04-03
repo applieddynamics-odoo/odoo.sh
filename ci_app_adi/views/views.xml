@@ -24,14 +24,12 @@
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>
 	  </header>
 	  <sheet>
-	    <group colspan="12">
+	    <group colspan="4">
 	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="12">
-		
+	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" colspan="4">
 		<group colspan="2">
-		  <!--<field name="action_reference"/>-->
 		  <field name="date_opened"/>
 		  <field name="opened_by"/>
 		  <field name="process_area"/>
@@ -54,14 +52,14 @@
     </record>
 
     <record model="ir.actions.act_window" id="ci_app_adi.action_window_ci">
-      <field name="name">ci_app_adi window ci</field>
+      <field name="name">CI View</field>
       <field name="res_model">ci_app_adi.ci_app_adi</field>
       <field name="view_mode">tree,form</field>
       <field name="domain">[('action_type', '=', 'CI')]</field>
     </record>
 
     <record model="ir.actions.act_window" id="ci_app_adi.action_window_car">
-      <field name="name">ci_app_adi window car</field>
+      <field name="name">CAR View</field>
       <field name="res_model">ci_app_adi.ci_app_adi</field>
       <field name="view_mode">tree,form</field>
       <field name="domain">[('action_type', '=', 'CAR')]</field>
