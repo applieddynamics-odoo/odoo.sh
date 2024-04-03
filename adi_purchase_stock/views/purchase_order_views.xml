@@ -29,7 +29,7 @@
 	  <button name="action_unmark_late" string="Mark On-Time" type="object"/>
 	</header>
 	<field name="arrived_late"/>
-	<field name="purchase_order_id"/>
+	<field name="order_id"/>
 	<field name="product_id"/>
 	<field name="name"/>
 	<field name="product_qty"/>
