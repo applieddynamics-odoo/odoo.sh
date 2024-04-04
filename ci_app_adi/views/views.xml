@@ -33,7 +33,9 @@
 	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" col="2">
 		<group>
 		  <field name="action_reference" invisible="1"/>
-		  <field name="title" attrs="{'invisible': [('action_reference', '!=', '')]}"/>
+		  <field name="id" invisible="1"/>
+		  <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		  <field name="title" attrs="{'invisible': [('action_reference', '!=', False)]}"/>
 		  <field name="date_opened"/>
 		  <field name="opened_by"/>
 		  <field name="process_area"/>
