@@ -82,7 +82,7 @@
 		<label for="actions" string="Immediate Actions"/>
 		<field name="actions" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="future_improvements" string="Immediate Actions"/>
-		<field name="furure_improvements" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="future_improvements" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
