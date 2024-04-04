@@ -63,8 +63,30 @@
 		<field name="notes" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-		<h1>CAR</h1>
-		<field name="title"/>
+		<group>
+		  <field name="id" invisible="1"/>
+		  <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		  <field name="date_opened" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="opened_by" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="process_area" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="risk" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="related_so" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	        </group>
+		<group>
+		  <field name="owner" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="date_done" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="date_closed" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</group>
+		<label for="cause" string="Cause"/>
+		<field name="cause" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="actions" string="Immediate Actions"/>
+		<field name="actions" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="future_improvements" string="Immediate Actions"/>
+		<field name="furure_improvements" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="summary" string="Summary"/>
+		<field name="summary" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="notes" string="Notes"/>
+		<field name="notes" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
 	    </group>
 	  </sheet>
