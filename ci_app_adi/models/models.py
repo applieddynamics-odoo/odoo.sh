@@ -78,11 +78,14 @@ class ci_app_adi(models.Model):
     def button_set_awaiting_verification(self):
         for r in self:
             r["previous_status"] = r.status
+            r["date_done"] = datetime.now()
             r["status"] = "Awaiting Verification"
 
     def button_set_done(self):
         for r in self:
             r["previous_status"] = r.status
+            r["date_closed"] = datetime.now()
+            r["verified_by"] = self.env.user
             r["status"] = "Done"
 
     def button_set_on_hold(self):

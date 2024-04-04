@@ -46,18 +46,18 @@
 		<group>
 		  <field name="id" invisible="1"/>
 		  <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		  <field name="date_opened"/>
-		  <field name="opened_by"/>
-		  <field name="process_area"/>
+		  <field name="date_opened" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="opened_by" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="process_area" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	        </group>
 		<group>
-		  <field name="owner"/>
-		  <field name="date_done"/>
+		  <field name="owner" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  <field name="date_done" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		</group>
 		<label for="summary" string="Summary"/>
-		<field name="summary" widget="Html"/>
+		<field name="summary" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
-		<field name="notes" widget="Html"/>
+		<field name="notes" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 		<h1>CAR</h1>
