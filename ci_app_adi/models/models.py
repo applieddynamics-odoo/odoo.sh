@@ -68,3 +68,15 @@ class ci_app_adi(models.Model):
         elif vals["action_type"] == "CAR":
             vals["action_reference"] = self.env["ir.sequence"].next_by_code("car.sequence")
         return super(ci_app_adi, self).create(vals)
+
+    def button_set_in_progress(self):
+        for r in self:
+            r["status"] = "In Progress"
+
+    def button_set_awaiting_verification(self):
+        for r in self:
+            r["status"] = "Awaiting Verification"
+
+    def button_set_done(self):
+        for r in self:
+            r["status"] = "Done"

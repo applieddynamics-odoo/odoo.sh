@@ -19,6 +19,11 @@
       <field name="arch" type="xml">
 	<form>
 	  <header>
+	    <button attrs="{'invisible': [('status', '!=', 'Open')]}" name="button_set_in_progress" string="Advance"/>
+	    <button attrs="{'invisible': [('status', '!=', 'In Progress')]}" name="button_set_awaiting_verification" string="Complete"/>
+	    <button attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}" name="button_set_done" string="Verify"/>
+	    
+	    
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	    <field attrs="{'invisible': [('status', '!=', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>
 	  </header>
