@@ -58,7 +58,7 @@ class ci_app_adi(models.Model):
 
     # TODO: permissions locked fields
     date_closed = fields.Date()
-    verified_by = fields.Many2one("res.user")
+    verified_by = fields.Many2one("res.users")
     verification_notes = fields.Text()
     documents_affected = fields.Text()
 
