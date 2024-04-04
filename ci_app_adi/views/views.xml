@@ -73,7 +73,8 @@
 		    <field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		    <field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		    <field name="risk" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <!--
+		    <field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>-->
 	          </group>
 		  <group>
 		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
@@ -85,7 +86,7 @@
 		<field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="actions" string="Immediate Actions"/>
 		<field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<label for="future_improvements" string="Immediate Actions"/>
+		<label for="future_improvements" string="Future Improvements"/>
 		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
