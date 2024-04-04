@@ -20,6 +20,7 @@ class ci_app_adi(models.Model):
                                ("Awaiting Verification", "Awaiting Verification"),
                                ("Done",                  "Done")],
                               default=lambda self: "Open")
+    previous_status = fields.Char()
 
     process_area = fields.Selection([
         ("Proposals and Contracts", "Proposals and Contracts"),
@@ -71,12 +72,27 @@ class ci_app_adi(models.Model):
 
     def button_set_in_progress(self):
         for r in self:
+            r["previous_status"] = r.status
             r["status"] = "In Progress"
 
     def button_set_awaiting_verification(self):
         for r in self:
+            r["previous_status"] = r.status
             r["status"] = "Awaiting Verification"
 
     def button_set_done(self):
         for r in self:
+            r["previous_status"] = r.status
             r["status"] = "Done"
+
+    def button_set_on_hold(self):
+        for r in self:
+            r["previous_status"] = r.status
+            r["status"] = "On Hold"
+            
+    def button_undo(self):
+        for r in self:
+            tmp = r["previous_status"]
+            r["previous_status"] = r.status
+            r["status"] = tmp
+

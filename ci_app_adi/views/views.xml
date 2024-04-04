@@ -22,7 +22,8 @@
 	    <button attrs="{'invisible': [('status', '!=', 'Open')]}" type="object" name="button_set_in_progress" string="Advance"/>
 	    <button attrs="{'invisible': [('status', '!=', 'In Progress')]}" type="object" name="button_set_awaiting_verification" string="Complete"/>
 	    <button attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}" type="object" name="button_set_done" string="Verify"/>
-	    
+	    <button type="object" name="button_undo" string="Revert"/>
+	    <button type="object" attrs="{'invisible': [('status', '!=', 'On Hold')]}" name="button_set_on_hold" string="Put on hold"/>
 	    
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	    <!--<field attrs="{'invisible': [('status', '!=', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>-->
