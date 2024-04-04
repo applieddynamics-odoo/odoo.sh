@@ -19,12 +19,14 @@
       <field name="arch" type="xml">
 	<form>
 	  <header>
-	    <field name="title" readonly="1" style="font-weight: bold; font-size: 1.5rem;"/>
 	    <field attrs="{'invisible': [('status', '!=', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>
 	  </header>
 	  <sheet>
 	    <group>
+	      <h1>
+		<field name="title" readonly="1"/>
+	      </h1>
 	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
@@ -39,7 +41,9 @@
 		  <field name="date_done"/>
 		</group>
 		<field name="summary" widget="Html"/>
+		<label for="summary" string="Summary"/>
 		<field name="notes" widget="Html"/>
+		<label for="notes" string="Notes"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 		<h1>CAR</h1>
