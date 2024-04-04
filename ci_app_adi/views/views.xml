@@ -23,7 +23,7 @@
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="On Hold"/>
 	  </header>
 	  <sheet>
-	    <group>
+	    <group col="1">
 	      <h1>
 		<field name="title" readonly="1"/>
 	      </h1>
@@ -40,10 +40,10 @@
 		  <field name="owner"/>
 		  <field name="date_done"/>
 		</group>
-		<field name="summary" widget="Html"/>
 		<label for="summary" string="Summary"/>
-		<field name="notes" widget="Html"/>
+		<field name="summary" widget="Html"/>
 		<label for="notes" string="Notes"/>
+		<field name="notes" widget="Html"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 		<h1>CAR</h1>
