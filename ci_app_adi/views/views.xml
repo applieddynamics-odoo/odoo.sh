@@ -45,48 +45,52 @@
 	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 		<field name="action_type" label="Type" style="width:100px;"/>
 	      </group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}" col="2">
-		<group>
-		  <field name="id" invisible="1"/>
-		  <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		  <field name="date_opened" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="opened_by" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="process_area" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	        </group>
-		<group>
-		  <field name="owner" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="date_done" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+		<group col="2">
+		  <group>
+		    <field name="id" invisible="1"/>
+		    <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		    <field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	          </group>
+		  <group>
+		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </group>
 		</group>
 		<label for="summary" string="Summary"/>
-		<field name="summary" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
-		<field name="notes" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-		<group>
-		  <field name="id" invisible="1"/>
-		  <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		  <field name="date_opened" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="opened_by" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="process_area" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="risk" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="related_so" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	        </group>
-		<group>
-		  <field name="owner" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="date_done" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="date_closed" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<group col="2">
+		  <group>
+		    <field name="id" invisible="1"/>
+		    <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		    <field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="risk" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	          </group>
+		  <group>
+		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </group>
 		</group>
 		<label for="cause" string="Cause"/>
-		<field name="cause" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="actions" string="Immediate Actions"/>
-		<field name="actions" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="future_improvements" string="Immediate Actions"/>
-		<field name="future_improvements" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="summary" string="Summary"/>
-		<field name="summary" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
-		<field name="notes" widget="Html" attrs="{'readonly': [('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
 	    </group>
 	  </sheet>
@@ -114,20 +118,20 @@
       <field name="state">code</field>
       <field name="code">
         action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
+        "type": "ir.actions.act_window",
+        "view_mode": "tree,form",
+        "res_model": model._name,
         }
       </field>
     </record>
 
     <menuitem name="ci_app_adi" id="ci_app_adi.menu_root"/>
-<!--
-    <menuitem name="New CAR" id="ci_app_adi.menu_new_car"
-	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
-    <menuitem name="New CI" id="ci_app_adi.menu_new_ci"
-	      parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
--->
+    <!--
+	<menuitem name="New CAR" id="ci_app_adi.menu_new_car"
+	parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
+	<menuitem name="New CI" id="ci_app_adi.menu_new_ci"
+	parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
+    -->
     <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root"
               action="ci_app_adi.action_window_ci"/>
     
