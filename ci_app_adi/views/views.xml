@@ -27,7 +27,8 @@
 	    <button attrs="{'invisible': [('status', '!=', 'Open')]}" type="object" name="button_set_in_progress" string="Advance"/>
 	    <button attrs="{'invisible': [('status', '!=', 'In Progress')]}" type="object" name="button_set_awaiting_verification" string="Complete"/>
 	    <button attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}" type="object" name="button_set_done" string="Verify" groups="ci_app_adi.group_ci_admin"/>
-	    <button type="object" attrs="{'invisible': ['|', ('previous_status', '==', False), ('status', '==', 'On Hold')]}" name="button_undo" string="Revert"/>
+	    <button type="object" attrs="{'invisible': [('status', 'in', ['Open', 'On Hold', 'Done'])]}" name="button_revert" string="Revert"/>
+	    <button type="object" attrs="{'invisible': [('status', '!=', 'Done')]}" name="button_revert" string="Revert" groups="ci_app_adi.group_ci_admin"/>
 	    <h1 attrs="{'invisible': ['|', ('previous_status', '==', False), ('status', '!=', 'On Hold')]}">
 	      On Hold
 	    </h1>

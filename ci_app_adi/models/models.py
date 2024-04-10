@@ -99,3 +99,23 @@ class ci_app_adi(models.Model):
             r["previous_status"] = r.status
             r["status"] = tmp
 
+
+                status = fields.Selection([("Open",                  "Open"),
+                               ("In Progress",           "In Progress"),
+                               ("On Hold",               "On Hold"),
+                               ("Awaiting Verification", "Awaiting Verification"),
+                               ("Done",                  "Done")],
+                              default=lambda self: "Open")
+
+    def button_revert(self):
+        for r in self:
+            if r.status == "Open":
+                pass
+            elif r.status == "In Progress":
+                r["status"] = "Open"
+            elif r.status == "Awaiting Verification":
+                r["status"] = "In Progress"
+            elif r.status == "Done":
+                r["status"] = "Awaiting Verification"
+                
+
