@@ -14,7 +14,8 @@ class ResPartner(models.Model):
             ('date_order', '>', datetime.now() - timedelta(365)),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
-            ('product_id.product_tmpl_id.detailed_type', '!=', 'service')
+            ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
+            ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets')
         ]
         return act
 
@@ -31,7 +32,8 @@ class ResPartner(models.Model):
                 WHERE pol.partner_id = %d AND po.date_order::date >= '%s'::date
                     AND pt.detailed_type != 'service'
                     AND pc.name != 'Office Supplies'
-                    AND pc.name != 'Production Supplies';"""
+                    AND pc.name != 'Production Supplies'
+                    AND pt.default_code != 'Fixed Assets';"""
                 % (record.id, (datetime.now() - timedelta(365)).strftime("%Y-%m-%d")))
             avg = self._cr.fetchone()[0]
             record['on_time_rate'] = avg * 100
