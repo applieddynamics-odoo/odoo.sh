@@ -102,12 +102,10 @@ class ci_app_adi(models.Model):
     def button_revert(self):
         for r in self:
             if r.status == "Open":
-                pass
+                continue
             elif r.status == "In Progress":
                 r["status"] = "Open"
             elif r.status == "Awaiting Verification":
                 r["status"] = "In Progress"
             elif r.status == "Done":
-                r["status"] = "Awaiting Verification"
-                
-
+                r["status"] = "Awaiting Verification"                
