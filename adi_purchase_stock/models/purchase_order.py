@@ -33,7 +33,7 @@ class PurchaseOrder(models.Model):
         UPDATE purchase_order_line pol
             SET arrived_late = true
         WHERE                
-            (SELECT BOOL_OR(date(sp.date_done) > (SELECT date(date_planned) FROM purchase_order po WHERE po.id = pol.order_id LIMIT 1)))
+            (SELECT BOOL_OR(date(sp.date_done) > (SELECT date(date_planned) FROM purchase_order po WHERE po.id = pol.order_id LIMIT 1))
                    FROM stock_move m JOIN stock_picking sp
                    ON m.picking_id = sp.id
                    WHERE m.purchase_line_id = pol.id
