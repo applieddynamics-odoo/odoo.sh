@@ -9,8 +9,11 @@ class StockPicking(models.Model):
         if self._context.get('skip_validation'):
             return super().button_validate()
         for r in self:
-            if r.scheduled_date.date() < r.date_done.date():
-                sms = self.env['stock.move'].search([('picking_id', '=', r.id)])
+            sms = self.env['stock.move'].search([('picking_id', '=', r.id)])
+            if len(sms) > 1:
+                raise Exception("Please email myounger@adi.com with this error")
+            po = sms[0].purchase_line_id.order_id
+            if po.date_planned.date() < r.date_done.date():
                 for m in sms:
                     pl = m.purchase_line_id
                     pl['arrived_late'] = True
