@@ -12,7 +12,7 @@ class StockPicking(models.Model):
             sms = self.env['stock.move'].search([('picking_id', '=', r.id)])
             if len(sms) > 1:
                 raise Exception("Please email myounger@adi.com with this error")
-            po = sms[0].purchase_line_id.order_id
+            po = sms[0].purchase_line_id
             if po.date_planned.date() < r.date_done.date():
                 for m in sms:
                     pl = m.purchase_line_id
