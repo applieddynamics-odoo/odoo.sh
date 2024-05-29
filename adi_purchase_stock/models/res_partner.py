@@ -6,6 +6,19 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    
+    def action_view_order_lines(self):
+        act = self.env.ref('adi_purchase_stock.purchase_order_line_new_tree_adi').read()[0]
+        act['domain'] = [
+            ('partner_id', '=', self.id),
+            ('date_order', '>', datetime.now() - timedelta(365)),
+            ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
+            ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
+            ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
+            ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets')
+        ]
+        return act
+
     def should_warn(self):
         for partner in self:
             if 0 <= partner.on_time_rate <= self.env.company.on_time_threshold:
