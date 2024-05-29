@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="warn_vendor_below_threshold_form" model="ir.ui.view">
-        <field name="name">warn.vendor.below.threshold.form</field>
-        <field name="model">warn.vendor.below.threshold</field>
+    <record id="warn_is_po_line_late_form" model="ir.ui.view">
+        <field name="name">warn.is_po_line_late.form</field>
+        <field name="model">warn.is_po_line_late</field>
         <field name="arch" type="xml">
             <form>
                 <div>
-                    The selected vendor has an on-time delivery rate below the current threshold. Please ensure there are no better alternatives for this order. Do you want to continue?
+                    Did this item arrive late?
                 </div>
                 <footer>
                     <button name="button_confirm" type="object" string="YES" class="oe_highlight"/>
