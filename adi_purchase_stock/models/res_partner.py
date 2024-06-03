@@ -15,8 +15,8 @@ class ResPartner(models.Model):
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
             ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
             ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets'),
-            '|', ('date_planned', '<=', datetime.now()),
-            ('product_qty', '=', 'qty_received')
+            #'|', ('date_planned', '<=', datetime.now()),
+            #('product_qty', '=', 'qty_received')
         ]
         return act
 
