@@ -30,6 +30,8 @@
 	</header>
 	<field name="arrived_late"/>
 	<field name="order_id"/>
+	<field name="date_order"/>
+	<field name="date_planned"/>
 	<field name="product_id"/>
 	<field name="name"/>
 	<field name="product_qty"/>
