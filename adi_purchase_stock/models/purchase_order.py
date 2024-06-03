@@ -38,7 +38,8 @@ class PurchaseOrder(models.Model):
                    FROM stock_move m JOIN stock_picking sp
                    ON m.picking_id = sp.id
                    WHERE m.purchase_line_id = pol.id
-                   AND m.state = 'done') = true;
+                   AND m.state = 'done') = true
+             AND pol.product_qty > 0;
         """)
 
         
