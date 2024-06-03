@@ -14,7 +14,9 @@ class ResPartner(models.Model):
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
             ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
-            ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets')
+            ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets'),
+            '|', ('date_planned', '<=', datetime.now()),
+            ('product_qty', '=', 'qty_received')
         ]
         return act
 
@@ -35,7 +37,7 @@ class ResPartner(models.Model):
                 JOIN product_template pt ON p.product_tmpl_id = pt.id
                 JOIN product_category pc ON pt.categ_id = pc.id
                 WHERE pol.partner_id = %d AND po.date_order::date >= '%s'::date
-                    AND (pol.date_planned <= CURRENT_DATE()
+                    AND (pol.date_planned <= CURRENT_DATE
                          OR pol.qty_received = pol.product_qty)
                     AND pt.detailed_type != 'service'
                     AND pc.name != 'Office Supplies'
