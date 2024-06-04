@@ -10,7 +10,7 @@ class ResPartner(models.Model):
         act = self.env.ref('adi_purchase_stock.purchase_order_line_new_tree_adi').read()[0]
         act['domain'] = [
             ('partner_id', '=', self.id),
-            ('date_order', '>', datetime.now() - timedelta(365)),
+            ('date_planned', '>', datetime.now() - timedelta(365)),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
             ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
@@ -36,7 +36,7 @@ class ResPartner(models.Model):
                 JOIN product_product p ON pol.product_id = p.id
                 JOIN product_template pt ON p.product_tmpl_id = pt.id
                 JOIN product_category pc ON pt.categ_id = pc.id
-                WHERE pol.partner_id = %d AND po.date_order::date >= '%s'::date
+                WHERE pol.partner_id = %d AND pol.date_planned::date >= '%s'::date
                     AND (pol.date_planned <= CURRENT_DATE
                          OR pol.qty_received = pol.product_qty)
                     AND pol.product_qty > 0
