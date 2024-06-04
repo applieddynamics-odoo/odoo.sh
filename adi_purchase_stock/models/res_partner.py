@@ -15,7 +15,8 @@ class ResPartner(models.Model):
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
             ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
             ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets'),
-            ('product_qty', '>', 0)            #'|', ('date_planned', '<=', datetime.now()),
+            ('product_qty', '>', 0),            #'|', ('date_planned', '<=', datetime.now()),
+            ('order_id.state', '!=', 'cancel')
             #('product_qty', '=', 'qty_received')
         ]
         return act
@@ -40,6 +41,7 @@ class ResPartner(models.Model):
                     AND (pol.date_planned <= CURRENT_DATE
                          OR pol.qty_received = pol.product_qty)
                     AND pol.product_qty > 0
+                    AND po.state != 'cancel'
                     AND pt.detailed_type != 'service'
                     AND pc.name != 'Office Supplies'
                     AND pc.name != 'Production Supplies'
