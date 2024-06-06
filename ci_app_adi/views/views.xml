@@ -84,14 +84,17 @@
 		</group>
 		<label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<label for="cause" string="Cause"/>
-		<field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="actions" string="Immediate Actions"/>
 		<field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<label for="future_improvements" string="Future Improvements"/>
-		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
 		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="cause" string="Cause"/>
+		<field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="closing_actions" string="Closing Actions"/>
+		<field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<label for="future_improvements" string="Future Improvements"/>
+		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+
 	      </group>
 	    </group>
 	  </sheet>
@@ -126,7 +129,7 @@
       </field>
     </record>
 
-    <menuitem name="ci_app_adi" id="ci_app_adi.menu_root"/>
+    <menuitem name="Improvements App" id="ci_app_adi.menu_root"/>
     <!--
 	<menuitem name="New CAR" id="ci_app_adi.menu_new_car"
 	parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
