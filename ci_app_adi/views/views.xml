@@ -82,7 +82,7 @@
 		    <field name="related_so_customer" attrs="{'invisible': [('related_so', '==', None)]}"/>
 		    <field name="related_so_description" attrs="{'invisible': [('related_so', '==', None)]}"/>  
 		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="due_date" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		    <field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		    <field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		  </group>
