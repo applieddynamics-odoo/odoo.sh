@@ -116,3 +116,16 @@ class ci_app_adi(models.Model):
                 r["status"] = "In Progress"
             elif r.status == "Done":
                 r["status"] = "Awaiting Verification"                
+
+class ci_app_report(models.AbstractModel):
+    _name = "report.ci_app.ci_report"
+
+    @api.model
+    def _get_report_values(self, doc_ids, data=None):
+        docs = self.env["ci_app_adi.ci_app_adi"].browse(doc_ids)
+        return {
+            "doc_ids": doc_ids,
+            "doc_model": "ci_app_adi.ci_app_adi",
+            "docs": docs,
+            "data", data
+        }
