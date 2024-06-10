@@ -127,5 +127,5 @@ class ci_app_report(models.AbstractModel):
             "doc_ids": doc_ids,
             "doc_model": "ci_app_adi.ci_app_adi",
             "docs": docs,
-            "data", data
+            "data": data
         }
