@@ -119,17 +119,34 @@ class ci_app_adi(models.Model):
 
     def button_print_report(self):
         for r in self:
+            data = {
+                "record_id": r.id,
+            }
             if r.action_type == "CI":
-                data = {
-                    "record_id": r.id,
-                }
                 return self.env.ref("ci_app_adi.action_report_ci_app_form").report_action(r, data=data)
             else:
-                raise Exception("TODO: Not Implemented for CAR")
+                return self.env.ref("ci_app_adi.action_report_car_app_form").report_action(r, data=data)
 
 
 class ci_app_report(models.AbstractModel):
     _name = "report.ci_app_adi.ci_report"
+
+    @api.model
+    def _get_report_values(self, doc_ids, data=None):
+        docs = self.env["ci_app_adi.ci_app_adi"].browse(doc_ids)
+        if (data.get("record_id")):
+            docs = self.env["ci_app_adi.ci_app_adi"].browse(data["record_id"])
+
+        return {
+            "doc_ids": doc_ids,
+            "doc_model": "ci_app_adi.ci_app_adi",
+            "docs": docs,
+            "data": data
+        }
+
+
+class car_app_report(models.AbstractModel):
+    _name = "report.ci_app_adi.car_report"
 
     @api.model
     def _get_report_values(self, doc_ids, data=None):

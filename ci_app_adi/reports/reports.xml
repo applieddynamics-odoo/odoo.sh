@@ -5,7 +5,14 @@
       <field name="model">ci_app_adi.ci_app_adi</field>
       <field name="report_type">qweb-html</field>
       <field name="report_name">ci_app_adi.ci_report</field>
-<!--  <field name="report_file">ci_app_adi.ci_report</field>  -->
+      <field name="binding_model_id" ref="model_ci_app_adi_ci_app_adi"/>
+    </record>
+
+    <record id="action_report_car_app_form" model="ir.actions.report">
+      <field name="name">CAR Report</field>
+      <field name="model">ci_app_adi.ci_app_adi</field>
+      <field name="report_type">qweb-html</field>
+      <field name="report_name">ci_app_adi.car_report</field>
       <field name="binding_model_id" ref="model_ci_app_adi_ci_app_adi"/>
     </record>
   </data>
