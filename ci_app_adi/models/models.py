@@ -115,11 +115,21 @@ class ci_app_adi(models.Model):
             elif r.status == "Awaiting Verification":
                 r["status"] = "In Progress"
             elif r.status == "Done":
-                r["status"] = "Awaiting Verification"                
+                r["status"] = "Awaiting Verification"
+
+    def button_print_report(self):
+        for r in self:
+            if r.action_type == "CI":
+                data = {
+                    "model_id": self.id,
+                }
+                return self.env.ref("ci_app_adi.action_report_ci_app_form").report_action([self.id], data=data)
+            else:
+                raise Exception("TODO: Not Implemented for CAR")
 
 
 class ci_app_report(models.AbstractModel):
-    _name = "report.ci_app.ci_report"
+    _name = "report.ci_app_adi.ci_report"
 
     @api.model
     def _get_report_values(self, doc_ids, data=None):
@@ -127,7 +137,9 @@ class ci_app_report(models.AbstractModel):
         if(docs[0].action_type == "CI"):
             if not all([doc.action_type == "CI" for doc in docs]):
                 raise Exception("Cannot create reports for CI and CAR at the same time")
-        raise Exception("TEST")
+        if(docs[0].action_type == "CAR"):
+            if not all([doc.action_type == "CAR" for doc in docs]):
+                raise Exception("Cannot create reports for CI and CAR at the same time")
         return {
             "doc_ids": doc_ids,
             "doc_model": "ci_app_adi.ci_app_adi",
