@@ -121,9 +121,9 @@ class ci_app_adi(models.Model):
         for r in self:
             if r.action_type == "CI":
                 data = {
-                    "model_id": self.id,
+                    "record_id": r.id,
                 }
-                return self.env.ref("ci_app_adi.action_report_ci_app_form").report_action([self.id], data=data)
+                return self.env.ref("ci_app_adi.action_report_ci_app_form").report_action(r, data=data)
             else:
                 raise Exception("TODO: Not Implemented for CAR")
 
@@ -134,7 +134,8 @@ class ci_app_report(models.AbstractModel):
     @api.model
     def _get_report_values(self, doc_ids, data=None):
         docs = self.env["ci_app_adi.ci_app_adi"].browse(doc_ids)
-        raise Exception(str(len(docs)) + " " + str(len(doc_ids)))
+        if (data.get("record_id")):
+            docs = self.env["ci_app_adi.ci_app_adi"].browse(data["record_id"])
         if(docs[0].action_type == "CI"):
             if not all([doc.action_type == "CI" for doc in docs]):
                 raise Exception("Cannot create reports for CI and CAR at the same time")
