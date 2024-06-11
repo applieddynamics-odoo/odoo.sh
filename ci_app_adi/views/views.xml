@@ -67,8 +67,12 @@
 		<label for="notes" string="Notes"/>
 		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<notebook>
-		  <page string="Summary" name="summary"></page>
-		  <page string="Notes" name="notes"></page>
+		  <page string="Summary" name="summary">
+		    <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Notes" name="notes">
+		    <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
 		</notebook>
 	      </group>
 	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
