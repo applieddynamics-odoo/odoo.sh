@@ -136,12 +136,7 @@ class ci_app_report(models.AbstractModel):
         docs = self.env["ci_app_adi.ci_app_adi"].browse(doc_ids)
         if (data.get("record_id")):
             docs = self.env["ci_app_adi.ci_app_adi"].browse(data["record_id"])
-        if(docs[0].action_type == "CI"):
-            if not all([doc.action_type == "CI" for doc in docs]):
-                raise Exception("Cannot create reports for CI and CAR at the same time")
-        if(docs[0].action_type == "CAR"):
-            if not all([doc.action_type == "CAR" for doc in docs]):
-                raise Exception("Cannot create reports for CI and CAR at the same time")
+
         return {
             "doc_ids": doc_ids,
             "doc_model": "ci_app_adi.ci_app_adi",
