@@ -62,10 +62,12 @@
 		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		  </group>
 		</group>
+		<!--
 		<label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
 		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		-->
 		<notebook>
 		  <page string="Summary" name="summary">
 		    <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
@@ -95,7 +97,8 @@
 		    <field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		  </group>
 		</group>
-		<label for="summary" string="Summary"/>
+		<!--
+	        <label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="actions" string="Immediate Actions"/>
 		<field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
@@ -107,6 +110,27 @@
 		<field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="future_improvements" string="Future Improvements"/>
 		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		-->
+		<notebook>
+		  <page string="Summary" name="summary">
+		    <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Summary" name="summary">
+		    <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Summary" name="summary">
+		    <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Summary" name="summary">
+		    <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Summary" name="summary">
+		    <field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		  <page string="Summary" name="summary">
+		    <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		  </page>
+		</notebook>
 	      </group>
 	    </group>
 	  </sheet>
