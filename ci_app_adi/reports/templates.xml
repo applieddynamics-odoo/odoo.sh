@@ -50,10 +50,14 @@
 		</div>
 		<div class="row">
 		  <div class="col-6">
-		    <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		    <div>
+		      <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		    </div>
 		  </div>
 		  <div class="col-6">
-		    <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		    <div>
+		      <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		    </div>
 		  </div>
 		</div>
 		<div>
@@ -95,11 +99,13 @@
 		    <div>
 		      <b>Status:</b> <field t-field="doc.status"/>
 		    </div>
-		    <div class="col-3">
-		      <b>Risk:</b> <field t-field="doc.risk"/>
-		    </div>
-		    <div class="col-3">
-		      <b>Responsible:</b> <field t-field="doc.owner"/>
+		    <div class="row">
+ 		      <div class="col-3">
+			<b>Risk:</b> <field t-field="doc.risk"/>
+		      </div>
+		      <div class="col-3">
+			<b>Responsible:</b> <field t-field="doc.owner"/>
+		      </div>
 		    </div>
 		  </div>
 		</div>
@@ -139,12 +145,16 @@
 		    <field t-field="doc.future_improvements"/>
 		  </p>
 		</div>
-		<div>
+		<div class="row">
 		  <div class="col-6">
-		    <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		    <div>
+		      <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		    </div>
 		  </div>
 		  <div class="col-6">
-		    <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		    <div>
+		      <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		    </div>
 		  </div>
 		</div>
 		<div>
