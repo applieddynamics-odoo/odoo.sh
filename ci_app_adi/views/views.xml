@@ -35,69 +35,67 @@
 
 	    <button type="object" attrs="{'invisible': ['|', ('previous_status', '==', False), ('status', '!=', 'On Hold')]}" name="button_undo" string="Resume"/>
 	    <button type="object" attrs="{'invisible': [('status', '==', 'On Hold')]}" name="button_set_on_hold" string="Put on hold"/>
-	    
+	    <button type="object" name="button_print_report" string="Print"/>
 	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	  </header>
 	  <sheet>
-	    <group col="1">
-	      <h1>
-		<field name="title" readonly="1"/>
-	      </h1>
-	      <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
-		<field name="action_type" label="Type" style="width:100px;"/>
+	    <h1>
+	      <field name="title" readonly="1"/>
+	    </h1>
+	    <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
+	      <field name="action_type" label="Type" style="width:100px;"/>
+	    </group>
+	    <group class="row" attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+	      <group>
+		<field name="id" invisible="1"/>
+		<field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		<field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="priority" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="target_date" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
-		<group col="2">
-		  <group>
-		    <field name="id" invisible="1"/>
-		    <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		    <field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="priority" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="target_date" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	          </group>
-		  <group>
-		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </group>
-		</group>
-		<!--
+	      <group>
+		<field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	      </group>
+	    </group>
+	    <!--
 		<label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="notes" string="Notes"/>
 		<field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		-->
-		<notebook>
-		  <page string="Summary" name="summary">
-		    <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Notes" name="notes">
-		    <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		</notebook>
+	    -->
+	    <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+	      <notebook>
+		<page string="Summary" name="summary">
+		  <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Notes" name="notes">
+		  <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+	      </notebook>
+	    </group>
+	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
+	      <group>
+		<field name="id" invisible="1"/>
+		<field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
+		<field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="risk" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      </group>
-	      <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-		<group col="2">
-		  <group>
-		    <field name="id" invisible="1"/>
-		    <field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		    <field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="risk" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	          </group>
-		  <group>
-		    <field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="related_so_customer" attrs="{'invisible': [('related_so', '==', None)]}"/>
-		    <field name="related_so_description" attrs="{'invisible': [('related_so', '==', None)]}"/>  
-		    <field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		    <field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </group>
-		</group>
-		<!--
+	      <group>
+		<field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="related_so_customer" attrs="{'invisible': [('related_so', '==', None)]}"/>
+		<field name="related_so_description" attrs="{'invisible': [('related_so', '==', None)]}"/>  
+		<field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	      </group>
+	    </group>
+	    <!--
 	        <label for="summary" string="Summary"/>
 		<field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="actions" string="Immediate Actions"/>
@@ -110,28 +108,28 @@
 		<field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<label for="future_improvements" string="Future Improvements"/>
 		<field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		-->
-		<notebook>
-		  <page string="Summary" name="summary">
-		    <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Summary" name="summary">
-		    <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Summary" name="summary">
-		    <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Summary" name="summary">
-		    <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Summary" name="summary">
-		    <field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Summary" name="summary">
-		    <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		</notebook>
-	      </group>
+	    -->
+	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
+	      <notebook>
+		<page string="Summary" name="summary">
+		  <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Actions" name="actions">
+		  <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Notes" name="notes">
+		  <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Cause" name="cause">
+		  <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Closing Actions" name="closing_actions">
+		  <field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+		<page string="Future Improvements" name="future_improvements">
+		  <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		</page>
+	      </notebook>
 	    </group>
 	  </sheet>
 	</form>
@@ -172,10 +170,8 @@
 	<menuitem name="New CI" id="ci_app_adi.menu_new_ci"
 	parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
     -->
-    <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_window_ci"/>
+    <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_ci"/>
     
-    <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root"
-              action="ci_app_adi.action_window_car"/>
+    <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_car"/>
   </data>
 </odoo>
