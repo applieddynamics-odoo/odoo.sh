@@ -11,26 +11,38 @@
 		  </h1>
 		</div>
 		<div class="row">
-		  <div class="col-6 small">
-		    <div>
-		      Process Area: <field t-field="doc.process_area"/>
-		    </div>
-		    <div>
-		      Owner: <field t-field="doc.owner"/>
-		    </div>
-		  </div>
-		  <div class="col-6 small">
+		  <div class="col-6">
 		    <div>
 		      Date Opened: <field t-field="doc.date_opened"/>,
 		    </div>
 		    <div>
-		      Date Closed: <field t-field="doc.date_done"/>
+		      Opened by: <field t-field="doc.opened_by"/>
+		    </div>
+		    <div>
+		      Process area: <field t-field="doc.process_area"/>
+		    </div>
+		  </div>
+		  <div class="col-6">
+		    <div>
+		      Status: <field t-field="doc.status"/>
+		    </div>
+		    <div>
+		      Responsible: <field t-field="doc.owner"/>
 		    </div>
 		  </div>
 		</div>
-		<p>
-		  <field t-field="doc.summary"/>
-		</p>
+		<div>
+		  <h2>Summary</h2>
+		  <p>
+		    <field t-field="doc.summary"/>
+		  </p>
+		</div>
+		<div>
+		  <h2>Notes</h2>
+		  <p>
+		    <field t-field="doc.notes"/>
+		  </p>
+		</div>
 	      </div>
 	    </t>
 	  </t>
