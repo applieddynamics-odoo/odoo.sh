@@ -99,13 +99,11 @@
 		    <div>
 		      <b>Status:</b> <field t-field="doc.status"/>
 		    </div>
-		    <div class="row">
- 		      <div class="col-3">
-			<b>Risk:</b> <field t-field="doc.risk"/>
-		      </div>
-		      <div class="col-3">
-			<b>Responsible:</b> <field t-field="doc.owner"/>
-		      </div>
+		    <div>
+		      <b>Risk:</b> <field t-field="doc.risk"/>
+		    </div>
+		    <div>
+		      <b>Responsible:</b> <field t-field="doc.owner"/>
 		    </div>
 		  </div>
 		</div>
