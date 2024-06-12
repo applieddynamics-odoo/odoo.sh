@@ -13,35 +13,47 @@
 		<div class="row">
 		  <div class="col-6">
 		    <div>
-		      Date Opened: <field t-field="doc.date_opened"/>,
+		      <b>Date Opened:</b> <field t-field="doc.date_opened"/>
 		    </div>
 		    <div>
-		      Opened by: <field t-field="doc.opened_by"/>
+		      <b>Opened by:</b> <field t-field="doc.opened_by"/>
 		    </div>
 		    <div>
-		      Process area: <field t-field="doc.process_area"/>
+		      <b>Process area:</b> <field t-field="doc.process_area"/>
 		    </div>
 		  </div>
 		  <div class="col-6">
 		    <div>
-		      Status: <field t-field="doc.status"/>
+		      <b>Status:</b> <field t-field="doc.status"/>
 		    </div>
 		    <div>
-		      Responsible: <field t-field="doc.owner"/>
+		      <b>Responsible:</b> <field t-field="doc.owner"/>
 		    </div>
 		  </div>
 		</div>
 		<div>
-		  <h2>Summary</h2>
+		  <h3>Summary</h3>
 		  <p>
 		    <field t-field="doc.summary"/>
 		  </p>
 		</div>
 		<div>
-		  <h2>Notes</h2>
+		  <h3>Notes</h3>
 		  <p>
 		    <field t-field="doc.notes"/>
 		  </p>
+		</div>
+		<div>
+		  <div class="col-6">
+		    <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		  </div>
+		  <div class="col-6">
+		    <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		  </div>
+		</div>
+		<div>
+		  <h3>Verification Notes</h3>
+		  <field t-field="doc.verification_notes"/>
 		</div>
 	      </div>
 	    </t>
@@ -70,7 +82,7 @@
 		  </div>
 		  <div class="col-6 small">
 		    <div>
-		      Date Opened: <field t-field="doc.date_opened"/>,
+		      Date Opened: <field t-field="doc.date_opened"/>
 		    </div>
 		    <div>
 		      Date Closed: <field t-field="doc.date_done"/>
