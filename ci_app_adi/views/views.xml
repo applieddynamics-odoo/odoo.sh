@@ -138,6 +138,15 @@
 		<page string="Future Improvements" name="future_improvements">
 		  <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		</page>
+		<page string="Verification Notes"
+		      attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}"
+		      groups="ci_app_adi.group_ci_admin">
+		  <field name="verification_notes" widget="Html"/>
+		</page>
+		<page string="Verification Notes"
+		      attrs="{'invisible': [('status', '!=', 'Done')]}">
+		  <field name="verification_notes" widget="Html" readonly="1"/>
+		</page>
 	      </notebook>
 	    </group>
 	  </sheet>
