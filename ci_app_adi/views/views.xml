@@ -81,7 +81,7 @@
 		</page>
 		<page string="Verification Notes"
 		      attrs="{'invisible': [('status', '!=', 'Done')]}">
-		  <field name="verification_notes" widget="Html" readonly="1"/>
+		  <field name="verification_notes" widget="Html" attrs="{'readonly': [('status', '==', 'Done')]}"/>
 		</page>
 	      </notebook>
 	    </group>
@@ -145,7 +145,7 @@
 		</page>
 		<page string="Verification Notes"
 		      attrs="{'invisible': [('status', '!=', 'Done')]}">
-		  <field name="verification_notes" widget="Html" readonly="1"/>
+		  <field name="verification_notes" widget="Html" attrs="{'readonly': [('status', '==', 'Done')]}"/>
 		</page>
 	      </notebook>
 	    </group>
@@ -191,5 +191,5 @@
     <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_ci"/>
     
     <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_car"/>
-  </data>
+</data>
 </odoo>
