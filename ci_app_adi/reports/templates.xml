@@ -17,7 +17,7 @@
 		  </h1>
 		</div>
 		<div class="row">
-		  <table style="width: 100%;">
+		  <table style="width: 90%;">
 		    <tr>
 		      <td>Date Opened:</td>
 		      <td><field t-field="doc.date_opened"/></td>
