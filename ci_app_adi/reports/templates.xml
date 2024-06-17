@@ -7,7 +7,8 @@
 	      <div class="page">
 		<style>
 		  p {
-		  padding-left: 1rem;
+		  margin-left: 1rem;
+		  border: 1px solid gray;
 		  }
 		  .row {
 		  padding-top: 1rem;
@@ -66,7 +67,9 @@
 		</div>
 		<div>
 		  <h3>Verification Notes</h3>
-		  <field t-field="doc.verification_notes"/>
+		  <p>
+		    <field t-field="doc.verification_notes"/>
+		  </p>
 		</div>
 		<div>
 		  <b>Documents affected:</b> <field t-field="doc.documents_affected"/>
@@ -170,7 +173,9 @@
 		</div>
 		<div>
 		  <h3>Verification Notes</h3>
-		  <field t-field="doc.verification_notes"/>
+		  <p>
+		    <field t-field="doc.verification_notes"/>
+		  </p>
 		</div>
 		<div>
 		  <b>Documents affected:</b> <field t-field="doc.documents_affected"/>
