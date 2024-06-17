@@ -5,6 +5,33 @@
 	  <t t-foreach="docs" t-as="doc">
 	    <t t-call="web.external_layout">
 	      <div class="page">
+		<div class="text-center">
+		  <h1>
+		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
+		  </h1>
+		</div>
+		<div class="row">
+		  <table>
+		    <tr>
+		      <td>Date Opened:</td>
+		      <td><field t-field="doc.date_opened"/></td>
+		      <td>Status:</td>
+		      <td><field t-field="doc.status"/></td>
+		      
+		    </tr>
+		    <tr>
+		      <td>Opened by:</td>
+		      <td><field t-field="doc.opened_by"/></td>
+		      <td>Responsible:</td>
+		      <td><field t-field="doc.owner"/></td>
+		    </tr>
+		    <tr>
+		      <td>Process area:</td>
+		      <td><field t-field="doc.process_area"/></td>
+		    </tr>
+		  </table>
+		</div>
+		<!--
 		<style>
 		  p {
 		  margin-left: 1rem;
@@ -80,11 +107,12 @@
 		  <hr/>
 		  <p>
 		    <field t-field="doc.verification_notes"/>
-		  </p>
+		  <p/p>
 		</div>
 		<div>
 		  <b>Documents affected:</b> <field t-field="doc.documents_affected"/>
 		</div>
+		-->
 	      </div>
 	    </t>
 	  </t>
