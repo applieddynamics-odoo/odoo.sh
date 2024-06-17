@@ -5,19 +5,24 @@
 	  <t t-foreach="docs" t-as="doc">
 	    <t t-call="web.external_layout">
 	      <div class="page">
+		<style>
+		  table, thead, tbody, th, td {
+		  border: 0.1px solid black;
+		  border-collapse: collapse;
+		  }
+		</style>
 		<div class="text-center">
 		  <h1>
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
 		<div class="row">
-		  <table>
+		  <table style="width: 100%;">
 		    <tr>
 		      <td>Date Opened:</td>
 		      <td><field t-field="doc.date_opened"/></td>
 		      <td>Status:</td>
 		      <td><field t-field="doc.status"/></td>
-		      
 		    </tr>
 		    <tr>
 		      <td>Opened by:</td>
