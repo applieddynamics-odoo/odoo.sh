@@ -120,24 +120,24 @@
 	    -->
 	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 	      <notebook>
-		<page string="Summary" name="summary">
+		<page string="Summary/Notes">
 		  <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		</page>
-		<page string="Actions" name="actions">
-		  <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		</page>
-		<page string="Notes" name="notes">
 		  <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		</page>
-		<page string="Cause" name="cause">
+		<page string="Cause">
 		  <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		</page>
-		<page string="Closing Actions" name="closing_actions">
+		<page string="Actions/Closing Actions">
+		  <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		  <field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		</page>
-		<page string="Future Improvements" name="future_improvements">
+		<page string="Future Improvements">
 		  <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		</page>
+		</page>		
+	      </notebook>
+	    </group>
+	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
+	      <notebook>
 		<page string="Verification Notes"
 		      attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}"
 		      groups="ci_app_adi.group_ci_admin">
@@ -173,11 +173,11 @@
       <field name="model_id" ref="model_ci_app_adi_ci_app_adi"/>
       <field name="state">code</field>
       <field name="code">
-        action = {
-        "type": "ir.actions.act_window",
-        "view_mode": "tree,form",
-        "res_model": model._name,
-        }
+	action = {
+	"type": "ir.actions.act_window",
+	"view_mode": "tree,form",
+	"res_model": model._name,
+	}
       </field>
     </record>
 
@@ -189,7 +189,7 @@
 	parent="ci_app_adi.menu_root" action="ci_app_adi.new_car_server"/>
     -->
     <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_ci"/>
-    
+
     <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_car"/>
 </data>
 </odoo>
