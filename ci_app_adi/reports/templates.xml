@@ -42,12 +42,14 @@
 		</div>
 		<div>
 		  <h3>Summary</h3>
+		  <hr/>
 		  <p>
 		    <field t-field="doc.summary"/>
 		  </p>
 		</div>
 		<div>
 		  <h3>Notes</h3>
+		  <hr/>
 		  <p>
 		    <field t-field="doc.notes"/>
 		  </p>
@@ -66,6 +68,7 @@
 		</div>
 		<div>
 		  <h3>Verification Notes</h3>
+		  <hr/>
 		  <p>
 		    <field t-field="doc.verification_notes"/>
 		  </p>
