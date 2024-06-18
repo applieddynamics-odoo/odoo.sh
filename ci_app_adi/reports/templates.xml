@@ -14,8 +14,8 @@
 		  width: 25%;
 		  }
 		  td {
-		  padding-left: 0.2rem;
-		  padding-right: 0.2rem;
+		  padding-left: 0.5rem;
+		  padding-right: 0.5rem;
 		  }
 		  td.label {
 		  font-weight: bold;
@@ -30,7 +30,7 @@
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
-		<div class="row text-center">
+		<div class="row">
 		  <table style="width: 100%; margin-left:5%; margin-right:5%;">
 		    <tr>
 		      <td class="quarter label">Date Opened:</td>
@@ -46,8 +46,7 @@
 		    </tr>
 		    <tr>
 		      <td class="label">Process area:</td>
-		      <td><field t-field="doc.process_area"/></td>
-		      <td colspan="2"></td>
+		      <td colspan="3"><field t-field="doc.process_area"/></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
 		      <td class="large-input" colspan="4">
