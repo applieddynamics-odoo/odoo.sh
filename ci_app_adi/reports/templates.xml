@@ -21,14 +21,17 @@
 		  font-weight: bold;
 		  text-align: right;
 		  }
+		  td.large-input {
+		  text-align: left;
+		  }
 		</style>
 		<div class="text-center">
 		  <h1>
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
-		<div class="row text-center" style="display:flex;align-items:center;">
-		  <table style="width: 90%;">
+		<div class="row text-center">
+		  <table style="width: 90%; left:5%;">
 		    <tr>
 		      <td class="quarter label">Date Opened:</td>
 		      <td class="quarter"><field t-field="doc.date_opened"/></td>
@@ -47,14 +50,14 @@
 		      <td colspan="2"></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
-		      <td colspan="4">
-			Summary:
+		      <td style="large-input" colspan="4">
+			<b>Summary:</b><br/>
 			<field t-field="doc.summary"/>
 		      </td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
-		      <td colspan="4">
-			Notes:
+		      <td style="large-input" colspan="4">
+			<b>Notes:</b><br/>
 			<field t-field="doc.notes"/>
 		      </td>
 		    </tr>
@@ -65,8 +68,8 @@
 		      <td><field t-field="doc.verified_by"/></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
-		      <td colspan="4">
-			Verification Notes:
+		      <td style="large-input" colspan="4">
+			<b>Verification Notes:</b><br/>
 			<field t-field="doc.verification_notes"/>
 		      </td>
 		    </tr>
