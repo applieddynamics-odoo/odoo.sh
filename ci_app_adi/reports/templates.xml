@@ -10,29 +10,36 @@
 		  border: 0.1px solid black;
 		  border-collapse: collapse;
 		  }
+		  td.quarter {
+		  width: 25%;
+		  }
+		  td.label {
+		  font-weight: bold;
+		  text-align: right;
+		  }
 		</style>
 		<div class="text-center">
 		  <h1>
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
-		<div class="row text-center">
+		<div class="row" style="display:flex;align-items:center;">
 		  <table style="width: 90%;">
 		    <tr>
-		      <td style="width: 25%">Date Opened:</td>
-		      <td style="width: 25%"><field t-field="doc.date_opened"/></td>
-		      <td style="width: 25%">Status:</td>
-		      <td style="width: 25%"><field t-field="doc.status"/></td>
+		      <td class="quarter label">Date Opened:</td>
+		      <td class="quarter"><field t-field="doc.date_opened"/></td>
+		      <td class="quarter label">Status:</td>
+		      <td class="quarter"><field t-field="doc.status"/></td>
 		    </tr>
 		    <tr>
-		      <td>Opened by:</td>
+		      <td class="label">Opened by:</td>
 		      <td><field t-field="doc.opened_by"/></td>
-		      <td>Responsible:</td>
+		      <td class="label">Responsible:</td>
 		      <td><field t-field="doc.owner"/></td>
 		    </tr>
 		    <tr>
-		      <td colspan="2">Process area:</td>
-		      <td colspan="2"><field t-field="doc.process_area"/></td>
+		      <td class="label">Process area:</td>
+		      <td><field t-field="doc.process_area"/></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
 		      <td colspan="4">
@@ -45,6 +52,12 @@
 			Notes:
 			<field t-field="doc.notes"/>
 		      </td>
+		    </tr>
+		    <tr>
+		      <td>Date Closed:</td>
+		      <td><field t-field="doc.date_closed"/></td>
+		      <td>Verified by:</td>
+		      <td><field t-field="doc.verified_by"/></td>
 		    </tr>
 		  </table>
 		</div>
