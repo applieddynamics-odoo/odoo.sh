@@ -16,13 +16,13 @@
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
-		<div class="row">
+		<div class="row text-center">
 		  <table style="width: 90%;">
 		    <tr>
-		      <td>Date Opened:</td>
-		      <td><field t-field="doc.date_opened"/></td>
-		      <td>Status:</td>
-		      <td><field t-field="doc.status"/></td>
+		      <td style="width: 25%">Date Opened:</td>
+		      <td style="width: 25%"><field t-field="doc.date_opened"/></td>
+		      <td style="width: 25%">Status:</td>
+		      <td style="width: 25%"><field t-field="doc.status"/></td>
 		    </tr>
 		    <tr>
 		      <td>Opened by:</td>
@@ -31,19 +31,19 @@
 		      <td><field t-field="doc.owner"/></td>
 		    </tr>
 		    <tr>
-		      <td>Process area:</td>
-		      <td><field t-field="doc.process_area"/></td>
+		      <td colspan="2">Process area:</td>
+		      <td colspan="2"><field t-field="doc.process_area"/></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
-		      <td>
+		      <td colspan="4">
 			Summary:
 			<field t-field="doc.summary"/>
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>
-			Summary:
-			<field t-field="doc.summary"/>
+		      <td colspan="4">
+			Notes:
+			<field t-field="doc.notes"/>
 		      </td>
 		    </tr>
 		  </table>
