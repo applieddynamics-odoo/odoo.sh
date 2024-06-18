@@ -31,7 +31,7 @@
 		  </h1>
 		</div>
 		<div class="row">
-		  <table style="width: 100%; margin-left:5%; margin-right:5%;">
+		  <table style="width: 90%; margin-left:5%; margin-right:5%;">
 		    <tr>
 		      <td class="quarter label">Date Opened:</td>
 		      <td class="quarter"><field t-field="doc.date_opened"/></td>
