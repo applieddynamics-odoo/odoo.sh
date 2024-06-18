@@ -375,9 +375,10 @@
 		  </div>
 		  </div>
 	      -->
-	    </t>
+	    </div>
 	  </t>
 	</t>
-      </template>
-    </data>
-  </odoo>
+      </t>
+    </template>
+  </data>
+</odoo>
