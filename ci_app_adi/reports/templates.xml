@@ -13,6 +13,10 @@
 		  td.quarter {
 		  width: 25%;
 		  }
+		  td {
+		  padding-left: 0.2rem;
+		  padding-right: 0.2rem;
+		  }
 		  td.label {
 		  font-weight: bold;
 		  text-align: right;
@@ -23,7 +27,7 @@
 		    <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
 		  </h1>
 		</div>
-		<div class="row" style="display:flex;align-items:center;">
+		<div class="row text-center" style="display:flex;align-items:center;">
 		  <table style="width: 90%;">
 		    <tr>
 		      <td class="quarter label">Date Opened:</td>
@@ -40,6 +44,7 @@
 		    <tr>
 		      <td class="label">Process area:</td>
 		      <td><field t-field="doc.process_area"/></td>
+		      <td colspan="2"></td>
 		    </tr>
 		    <tr style="min-height: 5rem;">
 		      <td colspan="4">
@@ -47,17 +52,29 @@
 			<field t-field="doc.summary"/>
 		      </td>
 		    </tr>
-		    <tr>
+		    <tr style="min-height: 5rem;">
 		      <td colspan="4">
 			Notes:
 			<field t-field="doc.notes"/>
 		      </td>
 		    </tr>
 		    <tr>
-		      <td>Date Closed:</td>
+		      <td class="label">Date Closed:</td>
 		      <td><field t-field="doc.date_closed"/></td>
-		      <td>Verified by:</td>
+		      <td class="label">Verified by:</td>
 		      <td><field t-field="doc.verified_by"/></td>
+		    </tr>
+		    <tr style="min-height: 5rem;">
+		      <td colspan="4">
+			Verification Notes:
+			<field t-field="doc.verification_notes"/>
+		      </td>
+		    </tr>
+		    <tr>
+		      <td class="label">Documents affected:</td>
+		      <td colspan="3">
+			<field t-field="doc.documents_affected"/>
+		      </td>
 		    </tr>
 		  </table>
 		</div>
