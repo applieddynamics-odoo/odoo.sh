@@ -34,6 +34,18 @@
 		      <td>Process area:</td>
 		      <td><field t-field="doc.process_area"/></td>
 		    </tr>
+		    <tr style="min-height: 5rem;">
+		      <td>
+			Summary:
+			<field t-field="doc.summary"/>
+		      </td>
+		    </tr>
+		    <tr>
+		      <td>
+			Summary:
+			<field t-field="doc.summary"/>
+		      </td>
+		    </tr>
 		  </table>
 		</div>
 		<!--
