@@ -15,6 +15,10 @@
     <record model="res.groups" id="ci_app_adi.group_ci_admin">
       <field name="name">CI Admin</field>
     </record>
+    
+    <record model="res.groups" id="ci_app_adi.group_ci_user">
+      <field name="name">CI User</field>
+    </record>
 
     <record model="ir.ui.view" id="ci_app_adi.form">
       <field name="name">ci_app_adi form</field>
