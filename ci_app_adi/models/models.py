@@ -64,9 +64,15 @@ class ci_app_adi(models.Model):
 
     # TODO: permissions locked fields
     date_closed = fields.Date()
-    verified_by = fields.Many2one("res.users")
-    verification_notes = fields.Text()
+    verified_by = fields.Many2one("res.users", readonly=_is_not_ci_admin)
+    verification_notes = fields.Text(readonly=_is_not_ci_admin)
 
+    def _is_awaiting_verification_or_done(self):
+        return self.status in ["Awaiting Verification", "Done"]
+    
+    def _is_not_ci_admin(self):
+        return not (self.env.user.has_group("ci_app_adi.group_ci_admin"))
+    
     @api.model
     def create(self, vals):
         if vals["action_type"] == "CI":
