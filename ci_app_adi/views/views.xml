@@ -58,6 +58,7 @@
 	      <group>
 		<field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="verified_by" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('groups', '!=', 'ci_app_adi.group_ci_admin')]}"/>
 	      </group>
 	    </group>
 	    <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
@@ -102,6 +103,7 @@
 		<field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 		<field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="verified_by" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('groups', '!=', 'ci_app_adi.group_ci_admin')]}"/>
 	      </group>
 	    </group>
 
