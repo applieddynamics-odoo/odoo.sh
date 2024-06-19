@@ -40,6 +40,7 @@ class ci_app_adi(models.Model):
     owner = fields.Char()
     summary = fields.Text()
     notes = fields.Text()
+    actions = fields.Text()
 
     # CI
     # not permissions-based hence different from 'date_closed'
@@ -57,17 +58,14 @@ class ci_app_adi(models.Model):
     related_so = fields.Many2one("sale.order")
     related_so_customer = fields.Many2one("res.partner", related="related_so.partner_id", readonly=True)
     related_so_description = fields.Char(related="related_so.x_studio_sales_description", readonly=True)
-    immediate_action = fields.Text()
+    #immediate_action = fields.Text()
     cause = fields.Text()
-    actions = fields.Text()
-    closing_actions = fields.Text()
     future_improvements = fields.Text()
 
     # TODO: permissions locked fields
     date_closed = fields.Date()
     verified_by = fields.Many2one("res.users")
     verification_notes = fields.Text()
-    documents_affected = fields.Text()
 
     @api.model
     def create(self, vals):

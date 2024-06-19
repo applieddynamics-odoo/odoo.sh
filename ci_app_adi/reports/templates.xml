@@ -141,6 +141,13 @@
 		  <field t-field="doc.notes"/>
 		</p>
 	      </div>
+	      <div>
+		<h3>Actions</h3>
+		<hr/>
+		<p>
+		  <field t-field="doc.actions"/>
+		</p>
+	      </div>
 	      <div class="row">
 		<div class="col-6">
 		  <div>
@@ -226,12 +233,14 @@
 		      <field t-field="doc.summary"/>
 		    </td>
 		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
+		  <!--
+		      <tr style="min-height: 5rem;">
+		      <td class="large-input" colspan="4">
 		      <b>Immediate Actions:</b><br/>
 		      <field t-field="doc.immediate_action"/>
-		    </td>
-		  </tr>
+		      </td>
+		      </tr>
+		  -->
 		  <tr style="min-height: 5rem;">
 		    <td class="large-input" colspan="4">
 		      <b>Notes:</b><br/>
@@ -247,7 +256,7 @@
 		  <tr style="min-height: 5rem;">
 		    <td class="large-input" colspan="4">
 		      <b>Closing Actions:</b><br/>
-		      <field t-field="doc.closing_actions"/>
+		      <field t-field="doc.actions"/>
 		    </td>
 		  </tr>
 		  <tr style="min-height: 5rem;">
