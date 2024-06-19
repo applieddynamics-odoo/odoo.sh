@@ -167,9 +167,6 @@
 		  <field t-field="doc.verification_notes"/>
 		</p>
 	      </div>
-	      <div>
-		<b>Documents affected:</b> <field t-field="doc.documents_affected"/>
-	      </div>
 	    </div>
 	  </t>
 	</t>
@@ -275,12 +272,6 @@
 		    <td class="large-input" colspan="4">
 		      <b>Verification Notes:</b><br/>
 		      <field t-field="doc.verification_notes"/>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="label">Documents affected:</td>
-		    <td colspan="3">
-		      <field t-field="doc.documents_affected"/>
 		    </td>
 		  </tr>
 		</table>
