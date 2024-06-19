@@ -61,11 +61,8 @@
 	      </group>
 	    </group>
 	    <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
-	      <label for="summary" string="Summary"/>
 	      <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="notes" string="Notes"/>
 	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="verification_notes" string="Verification Notes"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
 	      <!--
@@ -110,17 +107,12 @@
 
 
 	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-	      <label for="summary" string="Summary"/>
 	      <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="cause" string="Cause"/>
+
 	      <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="notes" string="Notes"/>
 	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="actions" string="Immediate Actions"/>
 	      <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="future_improvements" string="Future Improvements"/>
 	      <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <label for="verification_notes" string="Verification Notes"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
 	      <!--
