@@ -67,7 +67,7 @@
 	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      <label for="verification_notes" string="Verification Notes"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', !=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
+	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
 	      <!--
 	      <notebook>
 		<page string="Summary" name="summary">
@@ -122,7 +122,7 @@
 	      <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      <label for="verification_notes" string="Verification Notes"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', !=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
+	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
 	      <!--
 		  <notebook>
 		  <page string="Summary/Notes">
