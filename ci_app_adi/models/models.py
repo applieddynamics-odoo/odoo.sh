@@ -120,6 +120,7 @@ class ci_app_adi(models.Model):
             elif r.status == "Awaiting Verification":
                 r["status"] = "In Progress"
             elif r.status == "Done":
+                r["verified_by"] = None
                 r["status"] = "Awaiting Verification"
 
     def button_print_report(self):
