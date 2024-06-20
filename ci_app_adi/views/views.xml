@@ -44,7 +44,7 @@
 	  </header>
 	  <sheet>
 	    <h1>
-	      <field name="title" readonly="1"/>
+	      <field name="title" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	    </h1>
 	    <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
 	      <field name="action_type" label="Type" style="width:100px;"/>
