@@ -5,84 +5,6 @@
 	<t t-foreach="docs" t-as="doc">
 	  <t t-call="web.external_layout">
 	    <div class="page" style="margin-left: 15mm; margin-right: 15mm; height: 100%; margin-top: 0mm;">
-	      <!--
-		  <style>
-		  table, thead, tbody, th, td {
-		  border: 0.1px solid black;
-		  border-collapse: collapse;
-		  box-sizing: border-box;
-		  }
-		  td.quarter {
-		  width: 25%;
-		  }
-		  td {
-		  padding-left: 0.5rem;
-		  padding-right: 0.5rem;
-		  }
-		  td.label {
-		  font-weight: bold;
-		  text-align: right;
-		  }
-		  .large-input {
-		  text-align: left;
-		  }
-		  </style>
-		  <div class="text-center">
-		  <h1>
-		  <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
-		  </h1>
-		  </div>
-		  <div class="row">
-		  <table style="width: 90%; margin-left:5%; margin-right:5%;">
-		  <tr>
-		  <td class="quarter label">Date Opened:</td>
-		  <td class="quarter"><field t-field="doc.date_opened"/></td>
-		  <td class="quarter label">Status:</td>
-		  <td class="quarter"><field t-field="doc.status"/></td>
-		  </tr>
-		  <tr>
-		  <td class="label">Opened by:</td>
-		  <td><field t-field="doc.opened_by"/></td>
-		  <td class="label">Responsible:</td>
-		  <td><field t-field="doc.owner"/></td>
-		  </tr>
-		  <tr>
-		  <td class="label">Process area:</td>
-		  <td colspan="3"><field t-field="doc.process_area"/></td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		  <td class="large-input" colspan="4">
-		  <b>Summary:</b><br/>
-		  <field t-field="doc.summary"/>
-		  </td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		  <td class="large-input" colspan="4">
-		  <b>Notes:</b><br/>
-		  <field t-field="doc.notes"/>
-		  </td>
-		  </tr>
-		  <tr>
-		  <td class="label">Date Closed:</td>
-		  <td><field t-field="doc.date_closed"/></td>
-		  <td class="label">Verified by:</td>
-		  <td><field t-field="doc.verified_by"/></td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		  <td class="large-input" colspan="4">
-		  <b>Verification Notes:</b><br/>
-		  <field t-field="doc.verification_notes"/>
-		  </td>
-		  </tr>
-		  <tr>
-		  <td class="label">Documents affected:</td>
-		  <td colspan="3">
-		  <field t-field="doc.documents_affected"/>
-		  </td>
-		  </tr>
-		  </table>
-		  </div>
-	      -->
 	      <style>
 		p {
 		margin-left: 1rem;
@@ -179,24 +101,12 @@
 	  <t t-call="web.external_layout">
 	    <div class="page" style="margin-left: 15mm; margin-right: 15mm; height: 100%; margin-top: 0mm;">
 	      <style>
-		table, thead, tbody, th, td {
-		border: 0.1px solid black;
-		border-collapse: collapse;
-		box-sizing: border-box;
+		p {
+		padding-left: 1rem;
 		}
-		td.quarter {
-		width: 25%;
-		}
-		td {
-		padding-left: 0.5rem;
-		padding-right: 0.5rem;
-		}
-		td.label {
-		font-weight: bold;
-		text-align: right;
-		}
-		.large-input {
-		text-align: left;
+		.row {
+		padding-top: 1rem;
+		padding-bottom: 1rem;
 		}
 	      </style>
 	      <div class="text-center">
@@ -205,176 +115,77 @@
 		</h1>
 	      </div>
 	      <div class="row">
-		<table style="width: 90%; margin-left:5%; margin-right:5%;">
-		  <tr>
-		    <td class="quarter label">Date Opened:</td>
-		    <td class="quarter"><field t-field="doc.date_opened"/></td>
-		    <td class="quarter label">Status:</td>
-		    <td class="quarter"><field t-field="doc.status"/></td>
-		  </tr>
-		  <tr>
-		    <td class="label">Opened by:</td>
-		    <td><field t-field="doc.opened_by"/></td>
-		    <td class="label">Risk:</td>
-		    <td><field t-field="doc.risk"/></td>
-		  </tr>
-		  <tr>
-		    <td class="label">Process area:</td>
-		    <td><field t-field="doc.process_area"/></td>
-		    <td class="label">Responsible:</td>
-		    <td><field t-field="doc.owner"/></td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Summary:</b><br/>
-		      <field t-field="doc.summary"/>
-		    </td>
-		  </tr>
-		  <!--
-		      <tr style="min-height: 5rem;">
-		      <td class="large-input" colspan="4">
-		      <b>Immediate Actions:</b><br/>
-		      <field t-field="doc.immediate_action"/>
-		      </td>
-		      </tr>
-		  -->
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Notes:</b><br/>
-		      <field t-field="doc.notes"/>
-		    </td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Cause:</b><br/>
-		      <field t-field="doc.cause"/>
-		    </td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Closing Actions:</b><br/>
-		      <field t-field="doc.actions"/>
-		    </td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Future Improvements:</b><br/>
-		      <field t-field="doc.future_improvements"/>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td class="label">Date Closed:</td>
-		    <td><field t-field="doc.date_closed"/></td>
-		    <td class="label">Verified by:</td>
-		    <td><field t-field="doc.verified_by"/></td>
-		  </tr>
-		  <tr style="min-height: 5rem;">
-		    <td class="large-input" colspan="4">
-		      <b>Verification Notes:</b><br/>
-		      <field t-field="doc.verification_notes"/>
-		    </td>
-		  </tr>
-		</table>
+		<div class="col-6">
+		  <div>
+		    <b>Date Opened:</b> <field t-field="doc.date_opened"/>
+		  </div>
+		  <div>
+		    <b>Opened by:</b> <field t-field="doc.opened_by"/>
+		  </div>
+		  <div>
+		    <b>Process area:</b> <field t-field="doc.process_area"/>
+		  </div>
+		</div>
+		<div class="col-6">
+		  <div>
+		    <b>Status:</b> <field t-field="doc.status"/>
+		  </div>
+		  <div>
+		    <b>Risk:</b> <field t-field="doc.risk"/>
+		  </div>
+		  <div>
+		    <b>Responsible:</b> <field t-field="doc.owner"/>
+		  </div>
+		</div>
 	      </div>
-	      <!--
-		  <div class="page">
-		  <style>
-		  p {
-		  padding-left: 1rem;
-		  }
-		  .row {
-		  padding-top: 1rem;
-		  padding-bottom: 1rem;
-		  }
-		  </style>
-		  <div class="text-center">
-		  <h1>
-		  <field t-field="doc.action_reference"/>/<field t-field="doc.title"/>
-		  </h1>
-		  </div>
-		  <div class="row">
-		  <div class="col-6">
-		  <div>
-		  <b>Date Opened:</b> <field t-field="doc.date_opened"/>
-		  </div>
-		  <div>
-		  <b>Opened by:</b> <field t-field="doc.opened_by"/>
-		  </div>
-		  <div>
-		  <b>Process area:</b> <field t-field="doc.process_area"/>
-		  </div>
-		  </div>
-		  <div class="col-6">
-		  <div>
-		  <b>Status:</b> <field t-field="doc.status"/>
-		  </div>
-		  <div>
-		  <b>Risk:</b> <field t-field="doc.risk"/>
-		  </div>
-		  <div>
-		  <b>Responsible:</b> <field t-field="doc.owner"/>
-		  </div>
-		  </div>
-		  </div>
-		  <div>
-		  <h3>Summary</h3>
-		  <p>
+	      <div>
+		<h3>Summary</h3>
+		<p>
 		  <field t-field="doc.summary"/>
-		  </p>
-		  </div>
-		  <div>
-		  <h3>Immediate actions</h3>
-		  <p>
-		  <field t-field="doc.immediate_action"/>
-		  </p>
-		  </div>
-		  <div>
-		  <h3>Notes</h3>
-		  <p>
+		</p>
+	      </div>
+	      <div>
+		<h3>Notes</h3>
+		<p>
 		  <field t-field="doc.notes"/>
-		  </p>
-		  </div>
-		  <div>
-		  <h3>Cause</h3>
-		  <p>
+		</p>
+	      </div>
+	      <div>
+		<h3>Cause</h3>
+		<p>
 		  <field t-field="doc.cause"/>
-		  </p>
-		  </div>
-		  <div>
-		  <h3>Closing actions</h3>
-		  <p>
-		  <field t-field="doc.closing_actions"/>
-		  </p>
-		  </div>
-		  <div>
-		  <h3>Future improvements</h3>
-		  <p>
+		</p>
+	      </div>
+	      <div>
+		<h3>Actions</h3>
+		<p>
+		  <field t-field="doc.actions"/>
+		</p>
+	      </div>
+	      <div>
+		<h3>Future improvements</h3>
+		<p>
 		  <field t-field="doc.future_improvements"/>
-		  </p>
-		  </div>
-		  <div class="row">
-		  <div class="col-6">
+		</p>
+	      </div>
+	      <div class="row">
+		<div class="col-6">
 		  <div>
-		  <b>Date Closed:</b> <field t-field="doc.date_closed"/>
+		    <b>Date Closed:</b> <field t-field="doc.date_closed"/>
 		  </div>
-		  </div>
-		  <div class="col-6">
+		</div>
+		<div class="col-6">
 		  <div>
-		  <b>Verified by:</b> <field t-field="doc.verified_by"/>
+		    <b>Verified by:</b> <field t-field="doc.verified_by"/>
 		  </div>
-		  </div>
-		  </div>
-		  <div>
-		  <h3>Verification Notes</h3>
-		  <p>
+		</div>
+	      </div>
+	      <div>
+		<h3>Verification Notes</h3>
+		<p>
 		  <field t-field="doc.verification_notes"/>
-		  </p>
-		  </div>
-		  <div>
-		  <b>Documents affected:</b> <field t-field="doc.documents_affected"/>
-		  </div>
-		  </div>
-	      -->
+		</p>
+	      </div>
 	    </div>
 	  </t>
 	</t>
