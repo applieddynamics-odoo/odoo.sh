@@ -9,7 +9,7 @@ class StockPicking(models.Model):
         if self._context.get('skip_validation'):
             return super().button_validate()
         for r in self:
-            if r.picking_type.code != "incoming":
+            if r.picking_type_id.code != "incoming":
                 continue
             
             sms = self.env['stock.move'].search([('picking_id', '=', r.id)])
