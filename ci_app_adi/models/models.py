@@ -59,6 +59,7 @@ class ci_app_adi(models.Model):
     related_so_customer = fields.Many2one("res.partner", related="related_so.partner_id", readonly=True)
     related_so_description = fields.Char(related="related_so.x_studio_sales_description", readonly=True)
     #immediate_action = fields.Text()
+    containment = fields.Text()
     cause = fields.Text()
     future_improvements = fields.Text()
 
