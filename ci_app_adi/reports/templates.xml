@@ -145,6 +145,12 @@
 		</p>
 	      </div>
 	      <div>
+		<h3>Containment</h3>
+		<p>
+		  <field t-field="doc.containment"/>
+		</p>
+	      </div>
+	      <div>
 		<h3>Notes</h3>
 		<p>
 		  <field t-field="doc.notes"/>
