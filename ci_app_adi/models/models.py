@@ -7,6 +7,8 @@ class ci_app_adi(models.Model):
     _description = "ADI CI and CAR App"
     _rec_name = "action_reference"
 
+    _inherit = "mail.thread"
+
     action_type = fields.Selection([("CI", "CI"), ("CAR", "CAR")])
 
     # Shared

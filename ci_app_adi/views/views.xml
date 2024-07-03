@@ -70,25 +70,6 @@
 	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
-	      <!--
-	      <notebook>
-		<page string="Summary" name="summary">
-		  <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		</page>
-		<page string="Notes" name="notes">
-		  <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		</page>
-		<page string="Verification Notes"
-		      attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}"
-		      groups="ci_app_adi.group_ci_admin">
-		  <field name="verification_notes" widget="Html"/>
-		</page>
-		<page string="Verification Notes"
-		      attrs="{'invisible': [('status', '!=', 'Done')]}">
-		  <field name="verification_notes" widget="Html" attrs="{'readonly': [('status', '==', 'Done')]}"/>
-		</page>
-		</notebook>
-		-->
 	    </group>
 	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 	      <group>
@@ -110,8 +91,6 @@
 		<field name="verified_by" attrs="{'invisible': [('status', '!=', 'Done')]}"/>
 	      </group>
 	    </group>
-
-
 	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
 	      <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      <field name="containment" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
@@ -121,38 +100,11 @@
 	      <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
-	      <!--
-		  <notebook>
-		  <page string="Summary/Notes">
-		  <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Cause">
-		  <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Actions/Closing Actions">
-		  <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  <field name="closing_actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>
-		  <page string="Future Improvements">
-		  <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		  </page>		
-		  </notebook>
-		  </group>
-		  <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-		  <notebook>
-		  <page string="Verification Notes"
-		  attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}"
-		  groups="ci_app_adi.group_ci_admin">
-		  <field name="verification_notes" widget="Html"/>
-		  </page>
-		  <page string="Verification Notes"
-		  attrs="{'invisible': [('status', '!=', 'Done')]}">
-		  <field name="verification_notes" widget="Html" attrs="{'readonly': [('status', '==', 'Done')]}"/>
-		  </page>
-		  </notebook>
-	      -->
 	    </group>
+	    <div class="oe_chatter">
+	      <field name="message_follower_ids"/>
+	      <field name="message_ids"/>
+	    </div>
 	  </sheet>
 	</form>
       </field>
