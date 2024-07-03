@@ -101,11 +101,11 @@
 	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
 	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
 	    </group>
-	    <div class="oe_chatter">
-	      <field name="message_follower_ids"/>
-	      <field name="message_ids"/>
-	    </div>
 	  </sheet>
+	  <div class="oe_chatter">
+	    <field name="message_follower_ids"/>
+	    <field name="message_ids"/>
+	  </div>
 	</form>
       </field>
     </record>
