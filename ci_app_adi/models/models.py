@@ -49,7 +49,6 @@ class ci_app_adi(models.Model):
     priority = fields.Selection([("Low",    "Low"),
                                  ("Medium", "Medium"),
                                  ("High",   "High")])
-    target_date = fields.Date()
     date_done = fields.Date()
     
     # CAR
