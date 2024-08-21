@@ -1,4 +1,3 @@
-g
 <odoo>
   <data>
     <record model="ir.ui.view" id="ci_app_adi.list">
