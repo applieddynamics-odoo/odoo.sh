@@ -33,11 +33,11 @@
 	    <button invisible="status != 'Awaiting Verification'" type="object" name="button_set_done" string="Verify" groups="ci_app_adi.group_ci_admin"/>
 	    <button type="object" invisible="status in ['Open', 'On Hold', 'Done']" name="button_revert" string="Revert"/>
 	    <button type="object" invisible="status != 'Done'" name="button_revert" string="Revert" groups="ci_app_adi.group_ci_admin"/>
-	    <h1 invisible="previous_state == False or status != 'On Hold'">
+	    <h1 invisible="previous_status == False or status != 'On Hold'">
 	      On Hold
 	    </h1>
 
-	    <button type="object" invisible="previous_state == False or status != 'On Hold'" name="button_undo" string="Resume"/>
+	    <button type="object" invisible="previous_status == False or status != 'On Hold'" name="button_undo" string="Resume"/>
 	    <button type="object" invisible="status == 'On Hold'" name="button_set_on_hold" string="Put on hold"/>
 	    <button type="object" name="button_print_report" string="Print"/>
 	    <field invisible="status == 'On Hold'" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
