@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="adi_aged_receivables.list">
+      <field name="name">adi_aged_receivables list</field>
+      <field name="model">adi_aged_receivables.adi_aged_receivables</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="adi_aged_receivables.action_window">
+      <field name="name">adi_aged_receivables window</field>
+      <field name="res_model">adi_aged_receivables.adi_aged_receivables</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="adi_aged_receivables.action_server">
+      <field name="name">adi_aged_receivables server</field>
+      <field name="model_id" ref="model_adi_aged_receivables_adi_aged_receivables"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="adi_aged_receivables" id="adi_aged_receivables.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="adi_aged_receivables.menu_1" parent="adi_aged_receivables.menu_root"/>
+    <menuitem name="Menu 2" id="adi_aged_receivables.menu_2" parent="adi_aged_receivables.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="adi_aged_receivables.menu_1_list" parent="adi_aged_receivables.menu_1"
+              action="adi_aged_receivables.action_window"/>
+    <menuitem name="Server to list" id="adi_aged_receivables" parent="adi_aged_receivables.menu_2"
+              action="adi_aged_receivables.action_server"/>
+-->
+  </data>
+</odoo>
