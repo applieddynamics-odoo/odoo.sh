@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="warn_is_po_line_late_form" model="ir.ui.view">
+        <field name="name">warn.is_po_line_late.form</field>
+        <field name="model">warn.is_po_line_late</field>
+        <field name="arch" type="xml">
+            <form>
+                <div>
+                    Did this item arrive late?
+                </div>
+                <footer>
+                    <button name="button_confirm" type="object" string="YES" class="oe_highlight"/>
+                    <button special="cancel" string="NO"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
