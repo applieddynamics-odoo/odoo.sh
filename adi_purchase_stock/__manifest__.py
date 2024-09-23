@@ -25,11 +25,6 @@
         'wizard/warn_is_po_line_late_view.xml',
         'wizard/warn_effective_date.xml',
     ],
-    'assets': {
-        
-        # 'web.assets_backend':
-        # ['adi_purchase_stock/static/src/js/form_controller.js']
-    },
     'installable':True,
     'application':False,
     'auto_install':False,
