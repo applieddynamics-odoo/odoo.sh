@@ -4,8 +4,7 @@
     'description':
     """
         Task ID: 2648487
-        - Add Warning when on time percent is less than threshold
-	
+        - Add Warning when on time percent is less than threshold	
     """,
     'sequence':100,
     'license':'OPL-1',
