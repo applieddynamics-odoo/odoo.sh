@@ -8,7 +8,7 @@
     """,
     'sequence':100,
     'license':'OPL-1',
-    'website':'https://www.odoo.com',
+    'website':'https://www.adi.com',
     'version':'1.1.1',
     'author':'Odoo, Inc AND Matt Younger of ADI',
     'category':'Custom Development',
