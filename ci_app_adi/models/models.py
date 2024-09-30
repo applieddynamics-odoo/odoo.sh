@@ -21,7 +21,7 @@ class ci_app_adi(models.Model):
                                ("On Hold",               "On Hold"),
                                ("Awaiting Verification", "Awaiting Verification"),
                                ("Done",                  "Done")],
-                             default=lambda self: "Open")
+                              default=lambda self: "Open")
     previous_status = fields.Char()
 
     process_area = fields.Selection([
@@ -38,7 +38,7 @@ class ci_app_adi(models.Model):
         ("Contract Review",         "Contract Review"),
         ("Human Resources",         "Human Resources"),
         ("Project Management",      "Project Management")
-    ])
+    ], required=True)
     owner = fields.Char()
     summary = fields.Text()
     notes = fields.Text()
@@ -49,11 +49,11 @@ class ci_app_adi(models.Model):
     priority = fields.Selection([("Low",    "Low"),
                                  ("Medium", "Medium"),
                                  ("High",   "High")])
+    target_date = fields.Date()
     date_done = fields.Date()
     
     # CAR
     date_due = fields.Date()
-    target_date = fields.Date()
     risk = fields.Selection([("Low",    "Low"),
                              ("Medium", "Medium"),
                              ("High",   "High")])
