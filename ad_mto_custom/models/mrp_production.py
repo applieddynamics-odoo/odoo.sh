@@ -7,7 +7,7 @@ class MrpProduction(models.Model):
     # Custom methods
     def action_run_moves(self):
         """
-        Method to call on the button Run Moves !
+        Method to call on the button Run Moves
         """
         new_procurement_requests = []
         for move in self.move_raw_ids:
