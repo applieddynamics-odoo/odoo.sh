@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ci_app_adi_ci_app_adi,ci_app_adi.ci_app_adi,model_ci_app_adi_ci_app_adi,base.group_user,1,0,0,0
-editor_ci_app_adi_ci_app_adi,ci_app_adi.ci_app_adi,model_ci_app_adi_ci_app_adi,ci_app_adi.group_ci_user,1,1,0,0
-create_ci_app_adi_ci_app_adi,ci_app_adi.ci_app_adi,model_ci_app_adi_ci_app_adi,ci_app_adi.group_ci_admin,1,1,1,1
