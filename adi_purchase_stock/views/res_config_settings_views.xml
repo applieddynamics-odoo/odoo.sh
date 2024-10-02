@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_adi" model="ir.ui.view">
+        <field name="name">res.config.settings.form.adi</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+          <xpath expr="//setting[@id='get_order_warnings']" position="after">
+	    <setting id="on_time_threshold" string="Set On-Time Threshold" help="Change the threshold on-time delivery rate for allowing customers to be purchased from">
+	      <span><field name="on_time_threshold"/>%</span>
+	    </setting>
+                <div class="col-12 col-lg-6 o_setting_box" id="on_time_threshold">
+                    <div class="o_setting_right_pane">
+                        <label for="on_time_threshold" />
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company"/>
+                        <div class="text-muted">
+                            Threshold for warning when approving a PO
+                        </div>
+                        <div class="content-group">
+                            <div class="mt16">
+                                <span><field name="on_time_threshold" class="oe_inline"/>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
