@@ -69,12 +69,13 @@ class ci_app_adi(models.Model):
         return self.status in ["Awaiting Verification", "Done"]
     
     def _is_not_ci_admin(self):
-        return not (self.user.has_group("ci_app_adi.group_ci_admin"))    
-    
+        return not (self.user.has_group("ci_app_adi.group_ci_admin"))
+
+    user_is_not_ci_admin = fields.Boolean(compute=_is_not_ci_admin)
     # TODO: permissions locked fields
     date_closed = fields.Date()
-    verified_by = fields.Many2one("res.users", readonly=_is_not_ci_admin)
-    verification_notes = fields.Text(readonly=_is_not_ci_admin)
+    verified_by = fields.Many2one("res.users")
+    verification_notes = fields.Text()
 
 
     @api.model
