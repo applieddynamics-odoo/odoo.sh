@@ -17,7 +17,7 @@ class StockMove(models.Model):
         for move in self:
             product_id = move.product_id
             domain = [('location_src_id', '=', move.location_id.id),
-                      ('location_id', '=', move.location_dest_id.id),
+                      ('location_dest_id', '=', move.location_dest_id.id),
                       ('action', '!=', 'push')]
             packaging_id = move.product_packaging_id
             rules = self.env['procurement.group']._search_rule(
