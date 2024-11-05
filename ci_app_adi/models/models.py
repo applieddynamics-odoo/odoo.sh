@@ -64,13 +64,14 @@ class ci_app_adi(models.Model):
     containment = fields.Text()
     cause = fields.Text()
     future_improvements = fields.Text()
-    user_is_not_ci_admin = fields.Boolean(compute=_is_not_ci_admin)
 
     def _is_awaiting_verification_or_done(self):
         return self.status in ["Awaiting Verification", "Done"]
     
     def _is_not_ci_admin(self):
         return not (self.user.has_group("ci_app_adi.group_ci_admin"))
+
+    user_is_not_ci_admin = fields.Boolean(compute=_is_not_ci_admin)
 
     # TODO: permissions locked fields
     date_closed = fields.Date()
