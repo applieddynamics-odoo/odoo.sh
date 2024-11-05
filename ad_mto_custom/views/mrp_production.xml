@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <button name="action_confirm" position="after">
                 <button name="action_run_moves" type="object" string="Run Moves"
-                        class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                        class="oe_highlight" invisible="state != 'confirmed'"/>
             </button>
         </field>
     </record>

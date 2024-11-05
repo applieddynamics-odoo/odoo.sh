@@ -28,78 +28,78 @@
 	<form>
 	  <header>
 	    <field name="previous_status" invisible="1"/>
-	    <button attrs="{'invisible': [('status', '!=', 'Open')]}" type="object" name="button_set_in_progress" string="Advance"/>
-	    <button attrs="{'invisible': [('status', '!=', 'In Progress')]}" type="object" name="button_set_awaiting_verification" string="Complete"/>
-	    <button attrs="{'invisible': [('status', '!=', 'Awaiting Verification')]}" type="object" name="button_set_done" string="Verify" groups="ci_app_adi.group_ci_admin"/>
-	    <button type="object" attrs="{'invisible': [('status', 'in', ['Open', 'On Hold', 'Done'])]}" name="button_revert" string="Revert"/>
-	    <button type="object" attrs="{'invisible': [('status', '!=', 'Done')]}" name="button_revert" string="Revert" groups="ci_app_adi.group_ci_admin"/>
-	    <h1 attrs="{'invisible': ['|', ('previous_status', '==', False), ('status', '!=', 'On Hold')]}">
+	    <button invisible="status != 'Open'" type="object" name="button_set_in_progress" string="Advance"/>
+	    <button invisible="status != 'In Progress'" type="object" name="button_set_awaiting_verification" string="Complete"/>
+	    <button invisible="status != 'Awaiting Verification'" type="object" name="button_set_done" string="Verify" groups="ci_app_adi.group_ci_admin"/>
+	    <button type="object" invisible="status in ['Open', 'On Hold', 'Done']" name="button_revert" string="Revert"/>
+	    <button type="object" invisible="status != 'Done'" name="button_revert" string="Revert" groups="ci_app_adi.group_ci_admin"/>
+	    <h1 invisible="previous_status == False or status != 'On Hold'">
 	      On Hold
 	    </h1>
 
-	    <button type="object" attrs="{'invisible': ['|', ('previous_status', '==', False), ('status', '!=', 'On Hold')]}" name="button_undo" string="Resume"/>
-	    <button type="object" attrs="{'invisible': [('status', '==', 'On Hold')]}" name="button_set_on_hold" string="Put on hold"/>
+	    <button type="object" invisible="previous_status == False or status != 'On Hold'" name="button_undo" string="Resume"/>
+	    <button type="object" invisible="status == 'On Hold'" name="button_set_on_hold" string="Put on hold"/>
 	    <button type="object" name="button_print_report" string="Print"/>
-	    <field attrs="{'invisible': [('status', '==', 'On Hold')]}" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
+	    <field invisible="status == 'On Hold'" name="status" widget="statusbar" statusbar_visible="Open,In Progress,Awaiting Verification,Done"/>
 	  </header>
 	  <sheet>
 	    <h1>
-	      <field name="title" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+	      <field name="title" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	    </h1>
-	    <group attrs="{'invisible': ['|', ('action_type', '==', 'CI'), ('action_type', '==', 'CAR')]}">
+	    <group invisible="action_type == 'CI' or action_type == 'CAR'">
 	      <field name="action_type" label="Type" style="width:100px;"/>
 	    </group>
-	    <group class="row" attrs="{'invisible': [('action_type', '!=', 'CI')]}">
+	    <group class="row" invisible="action_type != 'CI'">
 	      <group>
 		<field name="id" invisible="1"/>
-		<field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		<field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="priority" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="title" invisible="id != False"/>
+		<field name="date_opened" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="opened_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="process_area" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="priority" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="target_date" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	      </group>
 	      <group>
-		<field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="verified_by" attrs="{'invisible': [('status', '!=', 'Done')]}"/>
+		<field name="owner" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="date_done" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="verified_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	      </group>
 	    </group>
-	    <group attrs="{'invisible': [('action_type', '!=', 'CI')]}">
-	      <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
+	    <group invisible="action_type != 'CI'">
+	      <field name="summary" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="notes" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="verification_notes" widget="Html" invisible="status != 'Awaiting Verification'" groups="ci_app_adi.group_ci_admin"/>
+	      <field name="verification_notes" widget="Html" invisible="status != 'Done'" readonly="status == 'Done'"/>
 	    </group>
-	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
+	    <group invisible="action_type != 'CAR'">
 	      <group>
 		<field name="id" invisible="1"/>
-		<field name="title" attrs="{'invisible': [('id', '!=', False)]}"/>
-		<field name="date_opened" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="opened_by" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="process_area" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="risk" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
+		<field name="title" invisible="id != False"/>
+		<field name="date_opened" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="opened_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="process_area" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="risk" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	      </group>
 	      <group>
-		<field name="related_so" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="related_so_customer" attrs="{'invisible': [('related_so', '==', None)]}"/>
-		<field name="related_so_description" attrs="{'invisible': [('related_so', '==', None)]}"/>  
-		<field name="owner" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="date_due" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="date_done" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="date_closed" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-		<field name="verified_by" attrs="{'invisible': [('status', '!=', 'Done')]}"/>
+		<field name="related_so" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="related_so_customer" invisible="related_so != None"/>
+		<field name="related_so_description" invisible="related_so != None"/>
+		<field name="owner" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="date_due" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="date_done" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="date_closed" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="verified_by" invisible="status != 'Done'"/>
 	      </group>
 	    </group>
-	    <group attrs="{'invisible': [('action_type', '!=', 'CAR')]}">
-	      <field name="summary" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="containment" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="cause" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="notes" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="actions" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="future_improvements" widget="Html" attrs="{'readonly': ['|', ('status', '==', 'Awaiting Verification'), ('status', '==', 'Done')]}"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible':[('status', '!=', 'Awaiting Verification')]}" groups="ci_app_adi.group_ci_admin"/>
-	      <field name="verification_notes" widget="Html" attrs="{'invisible': [('status', '!=', 'Done')], 'readonly': [('status', '==', 'Done')]}"/>
+	    <group invisible="action_type != 'CAR'">
+	      <field name="summary" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="containment" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="cause" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="notes" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="actions" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="future_improvements" widget="Html" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="verification_notes" widget="Html" invisible="status != 'Awaiting Verification'" groups="ci_app_adi.group_ci_admin"/>
+	      <field name="verification_notes" widget="Html" invisible="status != 'Done'" readonly="status == 'Done'"/>
 	    </group>
 	  </sheet>
 	  <div class="oe_chatter">
