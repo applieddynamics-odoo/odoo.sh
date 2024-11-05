@@ -28,7 +28,7 @@
 	<form>
 	  <header>
 	    <field name="previous_status" invisible="1"/>
-	    <field name="user_is_ci_not_admin" invisible="1"/>
+	    <field name="user_is_not_ci_admin" invisible="1"/>
 	    <button invisible="status != 'Open'" type="object" name="button_set_in_progress" string="Advance"/>
 	    <button invisible="status != 'In Progress'" type="object" name="button_set_awaiting_verification" string="Complete"/>
 	    <button invisible="status != 'Awaiting Verification'" type="object" name="button_set_done" string="Verify" groups="ci_app_adi.group_ci_admin"/>
