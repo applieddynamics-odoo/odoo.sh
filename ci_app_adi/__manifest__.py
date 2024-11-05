@@ -24,7 +24,7 @@
 
     # always loaded
     'data': [
-        'views/views.xml',
+#        'views/views.xml',
         'data/sequences.xml',
         'reports/templates.xml',
         'reports/reports.xml',
