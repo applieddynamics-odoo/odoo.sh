@@ -78,7 +78,6 @@ class ci_app_adi(models.Model):
     verified_by = fields.Many2one("res.users")
     verification_notes = fields.Text()
 
-
     @api.model
     def create(self, vals):
         if vals["action_type"] == "CI":
