@@ -10,7 +10,7 @@
     'license':'OPL-1',
     'website':'https://www.adi.com',
     'version':'1.1.1',
-    'author':'Odoo, Inc AND Matt Younger of ADI',
+    'author':'Odoo, Inc AND Matthew Younger of ADI',
     'category':'Custom Development',
 
     # any module necessary for this one to work correctly
