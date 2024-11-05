@@ -23,7 +23,7 @@
         'views/res_partner_views.xml',
         'wizard/warn_is_po_line_late_view.xml',
         'wizard/warn_effective_date.xml',
-#        'security/ir.model.access.csv',
+#         'security/ir.model.access.csv',
     ],
     'installable':True,
     'application':False,
