@@ -10,7 +10,7 @@
     """,
     'author': 'Odoo, Inc',
     'license': 'OPL-1',
-    'version': '1.1.1',
+    'version': '1.1.2',
     'depends': ['sale_management', 'stock', 'purchase', 'mrp'],
     'data': [
         'views/mrp_production.xml',
