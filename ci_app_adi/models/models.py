@@ -69,7 +69,7 @@ class ci_app_adi(models.Model):
         return self.status in ["Awaiting Verification", "Done"]
     
     def _is_not_ci_admin(self):
-        return not (self.user.has_group("ci_app_adi.group_ci_admin"))
+        return not (self.env.user.has_group("ci_app_adi.group_ci_admin"))
 
     user_is_not_ci_admin = fields.Boolean(compute=_is_not_ci_admin)
 
