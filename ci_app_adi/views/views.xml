@@ -18,10 +18,10 @@
       <field name="arch" type="xml">
 	<search string="ADI CI and CAR App">
 	  <field name="action_reference"/>
+	  <field name="summary"/>
 	  <group string="Group By">
-	    <!--<filter name="group_by_process_area" string="Process Area" context="{'group_by': 'process_area'}"/>-->
 	    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
-	    <filter name="group_by_date_due" string="Status" context="{'group_by': 'date_due'}"/>
+	    <filter name="group_by_date_due" string="Date Due" context="{'group_by': 'date_due'}"/>
 	    </group>
 	</search>
       </field>
