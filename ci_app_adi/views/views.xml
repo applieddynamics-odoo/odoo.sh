@@ -53,7 +53,7 @@
 	    <group class="row" invisible="action_type != 'CI'">
 	      <group>
 		<field name="id" invisible="1"/>
-		<field name="title" invisible="id != False"/>
+		<field name="title"/>
 		<field name="date_opened" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="opened_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="process_area" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
@@ -75,7 +75,7 @@
 	    <group invisible="action_type != 'CAR'">
 	      <group>
 		<field name="id" invisible="1"/>
-		<field name="title" invisible="id != False"/>
+		<field name="title"/>
 		<field name="date_opened" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="opened_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="process_area" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
