@@ -44,16 +44,17 @@ class ci_app_adi(models.Model):
     notes = fields.Text()
     actions = fields.Text()
 
+    date_due = fields.Date()
+    date_done = fields.Date()
+    
     # CI
     # not permissions-based hence different from 'date_closed'
     priority = fields.Selection([("Low",    "Low"),
                                  ("Medium", "Medium"),
                                  ("High",   "High")])
-    target_date = fields.Date()
-    date_done = fields.Date()
     
     # CAR
-    date_due = fields.Date()
+
     risk = fields.Selection([("Low",    "Low"),
                              ("Medium", "Medium"),
                              ("High",   "High")])
