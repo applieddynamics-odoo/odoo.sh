@@ -45,10 +45,13 @@
 	  </header>
 	  <sheet>
 	    <h1>
-	      <field name="title" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+	      <field name="action_reference" readonly="1"/>
 	    </h1>
 	    <group invisible="action_type == 'CI' or action_type == 'CAR'">
 	      <field name="action_type" label="Type" style="width:100px;"/>
+	    </group>
+	    <group>
+	      <field name="title" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	    </group>
 	    <group class="row" invisible="action_type != 'CI'">
 	      <group>
