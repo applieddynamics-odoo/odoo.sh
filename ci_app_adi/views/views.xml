@@ -11,7 +11,7 @@
         </tree>
       </field>
     </record>
-    
+<!--    
     <record mode="ir.ui.view" id="ci_app_adi.search">
       <field name="name">ci_app_adi search</field>
       <field name="model">ci_app_adi.ci_app_adi</field>
@@ -24,7 +24,7 @@
 	</group>
       </search>
     </record>
-
+-->
     <record model="res.groups" id="ci_app_adi.group_ci_admin">
       <field name="name">CI Admin</field>
     </record>
@@ -161,5 +161,5 @@
     <menuitem name="CI List" id="ci_app_adi.menu_ci_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_ci"/>
 
     <menuitem name="CAR List" id="ci_app_adi.menu_car_list" parent="ci_app_adi.menu_root" action="ci_app_adi.action_window_car"/>
-</data>
+  </data>
 </odoo>
