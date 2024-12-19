@@ -58,7 +58,7 @@
 		<field name="opened_by" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="process_area" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 		<field name="priority" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
-		<field name="date" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
+		<field name="date_due" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
 	      </group>
 	      <group>
 		<field name="owner" readonly="status == 'Awaiting Verification' or status == 'Done'"/>
