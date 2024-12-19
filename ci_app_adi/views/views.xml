@@ -17,14 +17,12 @@
       <field name="model">ci_app_adi.ci_app_adi</field>
       <field name="arch" type="xml">
 	<search string="ADI CI and CAR App">
-	  <field name="action_reference" modifiers="{}"/>
-	  <!--
+	  <!--<filter name="action_reference" modifiers="{}"/>-->
 	  <group string="Group By">
-	    <filter name="group_by_process_area" string="Process Area" context="{'group_by': 'process_area'}"/>
+	    <!--<filter name="group_by_process_area" string="Process Area" context="{'group_by': 'process_area'}"/>-->
 	    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
 	    <filter name="group_by_date_due" string="Status" context="{'group_by': 'date_due'}"/>
 	    </group>
-	  -->
 	</search>
       </field>
     </record>
