@@ -11,8 +11,8 @@
         </tree>
       </field>
     </record>
-<!--    
-    <record mode="ir.ui.view" id="ci_app_adi.search">
+
+    <record model="ir.ui.view" id="ci_app_adi.search">
       <field name="name">ci_app_adi search</field>
       <field name="model">ci_app_adi.ci_app_adi</field>
       <search string="ADI CI and CAR App">
@@ -24,7 +24,7 @@
 	</group>
       </search>
     </record>
--->
+
     <record model="res.groups" id="ci_app_adi.group_ci_admin">
       <field name="name">CI Admin</field>
     </record>
