@@ -15,14 +15,16 @@
     <record model="ir.ui.view" id="ci_app_adi.search">
       <field name="name">ci_app_adi search</field>
       <field name="model">ci_app_adi.ci_app_adi</field>
-      <search string="ADI CI and CAR App">
-	<field name="action_reference" modifiers="{}"/>
-	<group name="group_by">
-	  <filter name="group_by_process_area" string="Process Area" context="{'group_by': 'process_area'}"/>
-	  <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
-	  <filter name="group_by_date_due" string="Status" context="{'group_by': 'date_due'}"/>
-	</group>
-      </search>
+      <field name="arch" type="xml">
+	<search string="ADI CI and CAR App">
+	  <field name="action_reference" modifiers="{}"/>
+	  <group name="group_by">
+	    <filter name="group_by_process_area" string="Process Area" context="{'group_by': 'process_area'}"/>
+	    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
+	    <filter name="group_by_date_due" string="Status" context="{'group_by': 'date_due'}"/>
+	  </group>
+	</search>
+      </field>
     </record>
 
     <record model="res.groups" id="ci_app_adi.group_ci_admin">
