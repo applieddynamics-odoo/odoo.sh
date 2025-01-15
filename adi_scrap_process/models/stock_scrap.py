@@ -5,8 +5,7 @@ from datetime import datetime
 class StockScrap(models.Model):
     _inherit = "stock.scrap"
 
-    approval_manager = fields.Many2one("res.user")
-    
+    approval_manager = fields.Many2one("res.user", "Approval Manager")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('awaiting_approval', "Awaiting Approval"),
