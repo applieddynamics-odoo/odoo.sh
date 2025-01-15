@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
-    <record id="adi_stock_scrap_form_view" model="ir.ui.view">
-      <field name="name">adi.stock.scrap.form</field>
-      <field name="model">stock.scrap</field>
-      <field name="inherit_id" ref="stock_scrap_form_view"></field>
-      <field name="arch" type="xml">
-	<!--
-	<xpath expr="//header" position="replace">
-	      <button name="action_validate" invisible="state != 'draft'" string="Validate" type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
+  <record id="adi_stock_scrap_form_view" model="ir.ui.view">
+    <field name="name">adi.stock.scrap.form</field>
+    <field name="model">stock.scrap</field>
+    <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+    <field name="arch" type="xml">
+      <!--
+	  <xpath expr="//header" position="replace">
+	  <button name="action_validate" invisible="state != 'draft'" string="Validate" type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
 
-	</xpath>
-	-->
-      </field>
-    </record>
-  </data>
+</xpath>
+      -->
+    </field>
+  </record>
 </odoo>
