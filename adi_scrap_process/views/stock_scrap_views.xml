@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <record id="adi_stock_scrap_form_view" model="ir.ui.view">
-    <field name="name">adi.stock.scrap.form</field>
+  <record id="stock_scrap_form_view_inherit_adi" model="ir.ui.view">
+    <field name="name">stock.scrap.view.form.inherit.adi</field>
     <field name="model">stock.scrap</field>
     <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
     <field name="arch" type="xml">
+      <field name="owner_id" position="after">
+	<field name="approval_manager"/>
+      </field>
       <!--
 	  <xpath expr="//header" position="replace">
 	  <button name="action_validate" invisible="state != 'draft'" string="Validate" type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
