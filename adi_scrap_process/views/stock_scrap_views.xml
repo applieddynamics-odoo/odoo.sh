@@ -6,7 +6,7 @@
     <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
     <field name="arch" type="xml">
       <xpath expr="//header/button" position="replace">
-	<button name="action_validate" invisible="state != 'draft'" string="Validate" type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
+	<button name="action_validate" invisible="state != 'draft'" string="Validate Test " type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
 
       </xpath>
     </field>
