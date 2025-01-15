@@ -1,0 +1,22 @@
+{
+    'name':'ADI: Scrap Process Changes',
+    'summary':'Add new state between draft and done',
+    'description':
+    """
+    Add new state "Approved" between draft and done.
+    This separates approval and actually performing the stock moves.
+    """,
+    'website':'',
+    'version':'0.0.1',
+    'author':'ADI/Matthew Younger',
+    'category':'Internal Development',
+
+    'depends': ['stock'],
+    'data': [
+    ],
+    'assets': {
+    },
+    'installable':True,
+    'application':False,
+    'auto_install':False,
+}
