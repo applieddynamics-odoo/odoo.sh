@@ -5,11 +5,11 @@
     <field name="model">stock.scrap</field>
     <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
     <field name="arch" type="xml">
-      <xpath expr="//header/button" position="replace">
+      <xpath expr="//header" position="replace">
 	<button name="action_request_approval" invisible="state != 'draft'" string="Request Approval" type="object" class="oe_highlight" data-hotkey="v"/>
 	<button name="action_approve" invisible="state != 'awaiting_approval'" string="Approve" type="object" class="oe_highlight" data-hotkey="v"/>
 	<button name="action_validate" invisible="state != 'approved'" string="Validate" type="object" class="oe_highlight" context="{'not_unlink_on_discard': True}" data-hotkey="v"/>
-
+	<field name="state" widget="statusbar" statusbar_visible="draft,awaiting_approval,approved,done" />
       </xpath>
     </field>
   </record>
