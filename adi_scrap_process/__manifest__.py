@@ -13,6 +13,7 @@
 
     'depends': ['stock'],
     'data': [
+        'views/stock_scrap_views.xml'
     ],
     'assets': {
     },
