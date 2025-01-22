@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import _, models, fields, api
 from datetime import datetime
+from odoo.tools import float_compare, float_is_zero
 
 class StockScrap(models.Model):
     _inherit = "stock.scrap"
