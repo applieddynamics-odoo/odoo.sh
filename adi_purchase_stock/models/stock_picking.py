@@ -18,7 +18,7 @@ class StockPicking(models.Model):
             # hopefully this works
             for sm in sms:
                 po = sm.purchase_line_id
-                if not r.date_done:
+                if not r.date_done or not po.date_planned:
                     continue
                 if po.date_planned.date() < r.date_done.date():
                     for m in sms:
