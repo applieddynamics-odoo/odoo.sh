@@ -9,7 +9,7 @@
     'author': 'M.Younger/ADI',
     'license': '',
     'version': '1.0.0',
-    'depends': ['repair.order'],
+    'depends': ['repair'],
     'data': [
     ],
     'installable': True,
