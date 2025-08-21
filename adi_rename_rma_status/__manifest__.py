@@ -7,7 +7,7 @@
     This module renames the RMA status 'Confirmed' to 'Received'
     """,
     'author': 'M.Younger/ADI',
-    'license': 'N/A',
+    'license': '',
     'version': '1.0.0',
     'depends': ['repair.order'],
     'data': [
