@@ -1,3 +1,2 @@
-from . import generic_confirm_wizard
-from . import facility_checks
+from . import confirmation_dialog
 
