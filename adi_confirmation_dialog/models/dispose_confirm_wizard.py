@@ -1,5 +1,4 @@
 from odoo import fields, models
-from markupsafe import Markup
 
 class DisposeConfirmWizard(models.TransientModel):
     _name = "adi.dispose.confirm.wizard"
@@ -18,7 +17,7 @@ class DisposeConfirmWizard(models.TransientModel):
         rec.write({'x_studio_selection_field_387_1jaj511eb': 'status4'})
 
     rec.message_post(
-        body=Markup(
+        body=(
             "Shelf life item has been suitably disposed:<br/>"
             f"Confirmed by: {self.env.user.name}"
         ),
