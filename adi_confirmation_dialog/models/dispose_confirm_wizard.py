@@ -18,9 +18,8 @@ class DisposeConfirmWizard(models.TransientModel):
 
         rec.message_post(
             body=(
-                "Please confirm that the shelf life item has been suitably disposed: "
-                "<b>YES</b><br/>"
-                f"Confirmed by: {self.env.user.name}"
+                "I confirm that the shelf life item has been suitably disposed: "
+                "Confirmed by: {self.env.user.name}"
             ),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
