@@ -16,14 +16,14 @@ class DisposeConfirmWizard(models.TransientModel):
 
         rec.write({'x_studio_selection_field_387_1jaj511eb': 'status4'})
 
-    rec.message_post(
-        body=(
-            "Shelf life item has been suitably disposed:<br/>"
-            f"Confirmed by: {self.env.user.name}"
-        ),
+        rec.message_post(
+            body=(
+                "Shelf life item has been suitably disposed:<br/>"
+                f"Confirmed by: {self.env.user.name}"
+            ),
         message_type="comment",
         subtype_xmlid="mail.mt_note",
-    )
+        )
         return {"type": "ir.actions.act_window_close"}
 
     def action_no(self):
