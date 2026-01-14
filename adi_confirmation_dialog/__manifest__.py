@@ -5,6 +5,7 @@
     'category': 'Tools',
     'depends': ['base', 'mail'],
     'data': [
+        'security/ir.model.access.csv',
         'views/confirmation_dialog_views.xml',
         'views/dispose_confirm_wizard_views.xml',
     ],
