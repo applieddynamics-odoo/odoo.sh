@@ -1,19 +1,59 @@
-from odoo import models, fields
+from odoo import fields, models
+from markupsafe import Markup
+
 
 class AdiConfirmationDialog(models.TransientModel):
-    _name = 'adi.confirmation.dialog'
-    _description = 'Custom Confirmation Dialog'
+    _name = "adi.confirmation.dialog"
+    _description = "ADI Confirmation Dialog"
 
-    title = fields.Char(readonly=True)
-    message = fields.Html(readonly=True)
+    # Single-record targeting
+    res_model = fields.Char(required=True, readonly=True)
+    res_id = fields.Integer(required=True, readonly=True)
 
-    res_model = fields.Char(required=True)
-    res_id = fields.Integer(required=True)
-    callback_method = fields.Char(required=True)
+    # UI text (HTML allowed)
+    message_html = fields.Html(string="Message", sanitize=False, required=True, readonly=True)
 
-    def action_confirm(self):
+    # Server action to run when user clicks Yes
+    yes_server_action_id = fields.Many2one(
+        "ir.actions.server",
+        string="Yes Server Action",
+        required=True,
+        readonly=True,
+    )
+
+    # Optional chatter logging
+    log_to_chatter = fields.Boolean(default=False, readonly=True)
+    chatter_note_html = fields.Html(string="Chatter Note", sanitize=False, readonly=True)
+
+    def _get_record(self):
         self.ensure_one()
-        record = self.env[self.res_model].browse(self.res_id)
-        if record and hasattr(record, self.callback_method):
-            getattr(record, self.callback_method)()
-        return {'type': 'ir.actions.act_window_close'}
+        return self.env[self.res_model].browse(self.res_id).exists()
+
+    def action_yes(self):
+        self.ensure_one()
+        rec = self._get_record()
+        if not rec:
+            return {"type": "ir.actions.act_window_close"}
+
+        # Run the server action as if triggered from this record
+        ctx = dict(self.env.context or {})
+        ctx.update({
+            "active_model": self.res_model,
+            "active_id": rec.id,
+            "active_ids": [rec.id],
+        })
+        self.yes_server_action_id.with_context(ctx).run()
+
+        # Optional chatter note
+        if self.log_to_chatter and hasattr(rec, "message_post"):
+            note = self.chatter_note_html or self.message_html
+            rec.message_post(
+                body=Markup(f"{note}<br/>Confirmed by: {self.env.user.name}"),
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        return {"type": "ir.actions.act_window_close"}
+
+    def action_no(self):
+        return {"type": "ir.actions.act_window_close"}
