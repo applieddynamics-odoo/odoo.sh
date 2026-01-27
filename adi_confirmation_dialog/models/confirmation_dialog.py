@@ -23,6 +23,7 @@ class AdiConfirmationDialog(models.TransientModel):
 
     # Optional chatter logging
     log_to_chatter = fields.Boolean(default=False, readonly=True)
+    append_confirmed_line = fields.Boolean(default=True, readonly=True)
     chatter_note_html = fields.Html(string="Chatter Note", sanitize=False, readonly=True)
 
     def _get_record(self):
