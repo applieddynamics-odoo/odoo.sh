@@ -7,7 +7,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/confirmation_dialog_views.xml',
-        'views/dispose_confirm_wizard_views.xml',
     ],
     'installable': True,
     'application': False,
