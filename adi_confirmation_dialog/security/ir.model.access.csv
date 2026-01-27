@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_adi_dispose_confirm_wizard,adi.dispose.confirm.wizard,model_adi_dispose_confirm_wizard,base.group_user,1,1,1,1
 access_adi_confirmation_dialog,adi.confirmation.dialog,model_adi_confirmation_dialog,base.group_user,1,1,1,1
