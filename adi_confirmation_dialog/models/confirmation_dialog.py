@@ -47,9 +47,21 @@ class AdiConfirmationDialog(models.TransientModel):
 
         # Optional chatter note
         if self.log_to_chatter and hasattr(rec, "message_post"):
-            note = self.chatter_note_html or self.message_html
+            disposed_date = fields.Date.context_today(self)
+            disposed_date_str = disposed_date.strftime("%d %b %Y")
+
+            base_note = (self.chatter_note_html or "").strip() or (self.message_html or "").strip()
+
+            if self.append_confirmed_line:
+                body = Markup(
+                    f"{base_note}<br/>"
+                    f"Confirmed on {disposed_date_str} by: {self.env.user.name}"
+                )
+            else:
+                body = Markup(base_note)
+
             rec.message_post(
-                body=Markup(f"{note}<br/>Confirmed by: {self.env.user.name}"),
+                body=body,
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
             )
