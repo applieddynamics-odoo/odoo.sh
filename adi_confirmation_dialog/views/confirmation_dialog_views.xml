@@ -3,25 +3,28 @@
         <field name="name">adi.confirmation.dialog.form</field>
         <field name="model">adi.confirmation.dialog</field>
         <field name="arch" type="xml">
-            <form string="Confirmation Required">
+            <form string="Confirmation">
                 <sheet>
                     <div class="oe_title">
-                        <h2>
-                            <field name="title" readonly="1"/>
-                        </h2>
+                        <h2>Confirmation Required</h2>
                     </div>
-                    <field name="message" readonly="1" nolabel="1"/>
+
+                    <field name="message_html" nolabel="1" readonly="1"/>
+
+                    <!-- hidden technical fields -->
+                    <field name="res_model" invisible="1"/>
+                    <field name="res_id" invisible="1"/>
+                    <field name="yes_server_action_id" invisible="1"/>
+                    <field name="log_to_chatter" invisible="1"/>
+                    <field name="chatter_note_html" invisible="1"/>
                 </sheet>
+
                 <footer>
-                    <button name="action_confirm"
-                            type="object"
-                            string="Confirm"
-                            class="btn-primary"/>
-                    <button string="Cancel"
-                            special="cancel"
-                            class="btn-secondary"/>
+                    <button string="Yes" type="object" name="action_yes" class="btn-primary"/>
+                    <button string="No" type="object" name="action_no" class="btn-secondary"/>
                 </footer>
             </form>
         </field>
     </record>
 </odoo>
+
