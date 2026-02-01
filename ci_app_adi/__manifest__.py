@@ -7,7 +7,7 @@
     """,
 
     'description': """
-         ADI's CI/CAR App
+         ADI's CI/CAR App 
     """,
 
     'author': "Matt Y/ADI",
