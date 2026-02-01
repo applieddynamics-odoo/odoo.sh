@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_adi_aged_receivables_adi_aged_receivables,adi_aged_receivables.adi_aged_receivables,model_adi_aged_receivables_adi_aged_receivables,base.group_user,1,1,1,1
+access_adi_aged_receivables,adi.aged.receivables,model_adi_aged_receivables,base.group_user,1,1,1,1
