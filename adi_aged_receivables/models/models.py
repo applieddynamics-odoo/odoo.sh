@@ -3,9 +3,7 @@
 from odoo import models, fields, api
 
 '''
-class adi_aged_receivables(models.Model):
-    _name = "adi.aged.receivables"
-    _table = "adi_aged_receivables_adi_aged_receivables"
+class adi_aged_receivables(models.AbstractModel):
     _inherit = "account.aged.receivable"
     _description = "Aged Receivable ADI"
     _auto = False
