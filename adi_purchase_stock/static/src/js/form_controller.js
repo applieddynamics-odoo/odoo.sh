@@ -58,4 +58,4 @@ odoo.define('adi_purchase_stock.FormController', function (require) {
             }
         },
     });
-});
+}); 
