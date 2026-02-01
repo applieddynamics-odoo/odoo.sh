@@ -8,13 +8,20 @@
       <xpath expr="//field[@name='date_planned']" position="attributes">
         <attribute name="widget">date</attribute>
       </xpath>
-      <xpath expr="//button[@name='728']" position="replace">
-	<span invisible="on_time_rate &lt; 80"><field name="on_time_rate" widget="integer" class="oe_inline"/>% On-Time Delivery</span>
-	<span invisible="on_time_rate &lt; 0 or on_time_rate &gt;= 80">
-	  <field name="on_time_rate" widget="integer" class="oe_inline" style="color: red;"/>% On-Time Delivery
-	</span>
-        <span invisible="on_time_rate &gt; 0">No On-time Delivery Data</span>
-      </xpath>
+<xpath expr="//field[@name='date_planned']" position="after">
+  <span class="oe_inline" invisible="on_time_rate &lt; 80">
+    <field name="on_time_rate" widget="integer" class="oe_inline"/>% On-Time Delivery
+  </span>
+
+  <span class="oe_inline" invisible="on_time_rate &lt; 0 or on_time_rate &gt;= 80">
+    <field name="on_time_rate" widget="integer" class="oe_inline" style="color: red;"/>% On-Time Delivery
+  </span>
+
+  <span class="oe_inline" invisible="on_time_rate &gt; 0">
+    No On-time Delivery Data
+  </span>
+</xpath>
+		
     </field>
   </record>
 
