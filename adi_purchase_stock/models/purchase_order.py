@@ -23,7 +23,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    arrived_late = fields.Boolean(required=True, default=lambda v: False)
+    arrived_late = fields.Boolean(default=False)
 
     def action_mark_late(self):
         for r in self:
