@@ -79,13 +79,15 @@ class ci_app_adi(models.Model):
     verified_by = fields.Many2one("res.users")
     verification_notes = fields.Text()
 
-    @api.model
-    def create(self, vals):
-        if vals["action_type"] == "CI":
-            vals["action_reference"] = self.env["ir.sequence"].next_by_code("ci.sequence")
-        elif vals["action_type"] == "CAR":
-            vals["action_reference"] = self.env["ir.sequence"].next_by_code("car.sequence")
-        return super(ci_app_adi, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("action_type") == "CI":
+                vals["action_reference"] = self.env["ir.sequence"].next_by_code("ci.sequence")
+            elif vals.get("action_type") == "CAR":
+                vals["action_reference"] = self.env["ir.sequence"].next_by_code("car.sequence")
+
+        return super().create(vals_list)
 
     def button_set_in_progress(self):
         for r in self:
