@@ -144,6 +144,7 @@ class ci_app_adi(models.Model):
 
 class ci_app_report(models.AbstractModel):
     _name = "report.ci_app_adi.ci_report"
+    _description = "CI Report"
 
     @api.model
     def _get_report_values(self, doc_ids, data=None):
@@ -161,6 +162,7 @@ class ci_app_report(models.AbstractModel):
 
 class car_app_report(models.AbstractModel):
     _name = "report.ci_app_adi.car_report"
+    _description = "CAR Report"
 
     @api.model
     def _get_report_values(self, doc_ids, data=None):
