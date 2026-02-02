@@ -17,8 +17,8 @@
     'depends': ['purchase_stock'],
     'data': [
         'views/purchase_order_views.xml',
-        'views/stock_move_views.xml',
-        'views/stock_picking_views.xml',
+    #    'views/stock_move_views.xml',
+    #    'views/stock_picking_views.xml',
         'views/res_config_settings_views.xml',
         'views/res_partner_views.xml',
         'wizard/warn_is_po_line_late_view.xml',
