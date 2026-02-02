@@ -6,7 +6,7 @@ from odoo.tools import float_compare, float_is_zero
 class StockScrap(models.Model):
     _inherit = "stock.scrap"
 
-    approval_manager = fields.Many2one("res.user", "Approval Manager")
+    approval_manager = fields.Many2one("res.users", string="Approval Manager")
     state = fields.Selection(
         selection_add=[
             ('awaiting_approval', "Awaiting Approval"),
