@@ -8,6 +8,7 @@
     """,
     'website':'',
     'version':'0.0.1',
+    'license': 'LGPL-3',
     'author':'ADI/Matthew Younger',
     'category':'Internal Development',
 

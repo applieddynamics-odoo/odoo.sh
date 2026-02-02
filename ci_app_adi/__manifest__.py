@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "ci_app_adi",
+    'license': 'LGPL-3',
 
     'summary': """
          ADI's CI/CAR App
