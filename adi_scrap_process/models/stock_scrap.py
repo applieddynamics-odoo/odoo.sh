@@ -7,12 +7,17 @@ class StockScrap(models.Model):
     _inherit = "stock.scrap"
 
     approval_manager = fields.Many2one("res.user", "Approval Manager")
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('awaiting_approval', "Awaiting Approval"),
-        ('approved', 'Approved'),
-        ('done', 'Done')],
-        string='Status', default="draft", readonly=True, tracking=True)
+    state = fields.Selection(
+        selection_add=[
+            ('awaiting_approval', "Awaiting Approval"),
+            ('approved', 'Approved'),
+        ],
+        ondelete={
+            'awaiting_approval': 'set default',
+            'approved': 'set default',
+        },
+        tracking=True,
+    )
 
     def action_request_approval(self):
         self.ensure_one()
