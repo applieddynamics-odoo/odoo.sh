@@ -8,7 +8,7 @@ class AgedReceivableTaxColumn(models.AbstractModel):
     def _get_lines(self, options, line_id=None):
         lines = super()._get_lines(options, line_id=line_id)
 
-        # Only act if the report includes our column (added in the report editor UI)
+        # Find our Tax column by expression_label
         tax_col_idx = None
         for i, col in enumerate(options.get("columns", [])):
             if col.get("expression_label") == "tax_total":
@@ -17,42 +17,44 @@ class AgedReceivableTaxColumn(models.AbstractModel):
         if tax_col_idx is None:
             return lines
 
-        MoveLine = self.env["account.move.line"]
+        Move = self.env["account.move"]
 
         for line in lines:
             line_ref = line.get("id")
-
-            # Only journal item lines look like "account.move.line,123"
-            if not (isinstance(line_ref, str) and line_ref.startswith("account.move.line,")):
+            if not isinstance(line_ref, str):
                 continue
 
+            # Partner-grouped lines look like:
+            # ~account.report~8|~account.report.line~56|groupby:partner_id~res.partner~993
+            # We only want the actual partner group line (not the grand total),
+            # and we will also fill the partner "total" line if present.
+            if "groupby:partner_id~res.partner~" not in line_ref:
+                continue
+
+            # Extract partner_id from the line id
             try:
-                aml_id = int(line_ref.split(",")[1])
+                partner_id = int(line_ref.split("groupby:partner_id~res.partner~")[1].split("|")[0])
             except Exception:
                 continue
 
-            aml = MoveLine.browse(aml_id)
-            if not aml.exists():
-                continue
+            # Sum tax on posted customer invoices with an outstanding balance
+            # Use amount_tax_signed (company currency) so it aligns with aged receivable currency.
+            moves = Move.search([
+                ("partner_id", "=", partner_id),
+                ("move_type", "=", "out_invoice"),
+                ("state", "=", "posted"),
+                ("amount_residual", ">", 0),
+            ])
 
-            move = aml.move_id
+            tax_total = abs(sum(moves.mapped("amount_tax_signed"))) if moves else 0.0
 
-            # Aged receivable is shown in company currency, so use company-currency tax.
-            # amount_tax_signed is the safest/cleanest source.
-            tax_total = abs(move.amount_tax_signed or 0.0)
-
-            # Fallback for edge cases (e.g., moves without computed totals)
-            if not tax_total:
-                tax_lines = move.line_ids.filtered(lambda l: l.tax_line_id)
-                tax_total = abs(sum(tax_lines.mapped("balance")))
-
-            # Blank cell if 0
             if not tax_total:
                 line["columns"][tax_col_idx].update({"name": "", "no_format": None})
             else:
                 line["columns"][tax_col_idx].update({"no_format": tax_total})
 
         return lines
+
 
 
 
