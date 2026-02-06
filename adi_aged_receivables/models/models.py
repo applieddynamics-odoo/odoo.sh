@@ -6,7 +6,7 @@ class AgedReceivableTaxColumn(models.AbstractModel):
     _inherit = "account.aged.receivable.report.handler"
 
     def _custom_line_postprocessor(self, report, options, lines, warnings=None, **kwargs):
-        # Always call super first (pass through warnings/kwargs to stay compatible with Odoo.sh)
+        # Always call super first (pass through warnings/kwargs)
         lines = super()._custom_line_postprocessor(report, options, lines, warnings=warnings, **kwargs)
 
         # Find Tax column position by expression_label (must be 'tax_total' in the report column)
@@ -41,8 +41,9 @@ class AgedReceivableTaxColumn(models.AbstractModel):
 
             val = float(value)
 
-            # Format the display string the same way Odoo formats report values
+            # IMPORTANT: In your build, format_value signature is (options, value, ...)
             formatted = report.format_value(
+                options,
                 val,
                 figure_type=col.get("figure_type") or "monetary",
                 currency=col.get("currency"),
@@ -87,7 +88,6 @@ class AgedReceivableTaxColumn(models.AbstractModel):
                 continue
 
             # Optional: invoice/unfold lines sometimes contain an account.move id
-            # If your unfolded lines don't include this pattern, this section will simply do nothing.
             if "~account.move~" in line_id:
                 try:
                     move_id = int(line_id.split("~account.move~")[1].split("|")[0].split("~")[0])
@@ -99,6 +99,7 @@ class AgedReceivableTaxColumn(models.AbstractModel):
                     _set_tax(line, abs(move.amount_tax_signed or 0.0))
 
         return lines
+
 
 
 
