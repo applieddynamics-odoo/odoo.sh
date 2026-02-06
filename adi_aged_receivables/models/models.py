@@ -5,9 +5,9 @@ from odoo import models
 class AgedReceivableTaxColumn(models.AbstractModel):
     _inherit = "account.aged.receivable.report.handler"
 
-    def _custom_line_postprocessor(self, report, options, lines):
-        # Always call super first
-        lines = super()._custom_line_postprocessor(report, options, lines)
+    def _custom_line_postprocessor(self, report, options, lines, warnings=None, **kwargs):
+        # Always call super first (pass through warnings/kwargs)
+        lines = super()._custom_line_postprocessor(report, options, lines, warnings=warnings, **kwargs)
 
         # Find Tax column position by expression_label
         tax_col_idx = None
@@ -21,11 +21,9 @@ class AgedReceivableTaxColumn(models.AbstractModel):
         Partner = self.env["res.partner"]
         Move = self.env["account.move"]
 
-        # Cache tax totals per commercial partner for speed
         tax_by_commercial_partner = {}
 
         def _set_tax(line_dict, value):
-            """Write numeric value (company currency) into the tax column; blank if 0."""
             if tax_col_idx >= len(line_dict.get("columns", [])):
                 return
             if not value:
@@ -38,8 +36,7 @@ class AgedReceivableTaxColumn(models.AbstractModel):
             if not isinstance(line_id, str):
                 continue
 
-            # Case A: Partner-grouped line ids like:
-            # ~account.report~8|~account.report.line~56|groupby:partner_id~res.partner~993
+            # Partner-grouped line ids:
             if "groupby:partner_id~res.partner~" in line_id:
                 try:
                     partner_id = int(line_id.split("groupby:partner_id~res.partner~")[1].split("|")[0])
@@ -64,22 +61,18 @@ class AgedReceivableTaxColumn(models.AbstractModel):
                 _set_tax(line, tax_by_commercial_partner[commercial.id])
                 continue
 
-            # Case B (optional): Unfolded invoice lines sometimes contain an account.move id.
-            # Common patterns include "...~account.move~123" inside the line id.
+            # Optional: invoice/unfold lines containing an account.move id
             if "~account.move~" in line_id:
                 try:
                     move_id = int(line_id.split("~account.move~")[1].split("|")[0].split("~")[0])
                 except Exception:
                     continue
-
                 move = Move.browse(move_id)
-                if not move.exists():
-                    continue
-
-                _set_tax(line, abs(move.amount_tax_signed or 0.0))
-                continue
+                if move.exists():
+                    _set_tax(line, abs(move.amount_tax_signed or 0.0))
 
         return lines
+
 
 
 
