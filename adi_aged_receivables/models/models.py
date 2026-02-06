@@ -6,10 +6,10 @@ class AgedReceivableTaxColumn(models.AbstractModel):
     _inherit = "account.aged.receivable.report.handler"
 
     def _custom_line_postprocessor(self, report, options, lines, warnings=None, **kwargs):
-        # Always call super first (pass through warnings/kwargs)
+        # Always call super first (pass through warnings/kwargs to stay compatible with Odoo.sh)
         lines = super()._custom_line_postprocessor(report, options, lines, warnings=warnings, **kwargs)
 
-        # Find Tax column position by expression_label
+        # Find Tax column position by expression_label (must be 'tax_total' in the report column)
         tax_col_idx = None
         for i, col in enumerate(options.get("columns", [])):
             if col.get("expression_label") == "tax_total":
@@ -21,22 +21,47 @@ class AgedReceivableTaxColumn(models.AbstractModel):
         Partner = self.env["res.partner"]
         Move = self.env["account.move"]
 
+        # Cache totals per commercial partner to avoid repeated searches
         tax_by_commercial_partner = {}
 
         def _set_tax(line_dict, value):
+            """Write tax value into the Tax column; show blank when zero."""
             if tax_col_idx >= len(line_dict.get("columns", [])):
                 return
+
+            col = line_dict["columns"][tax_col_idx]
+
             if not value:
-                line_dict["columns"][tax_col_idx].update({"name": "", "no_format": None})
-            else:
-                line_dict["columns"][tax_col_idx].update({"no_format": float(value)})
+                col.update({
+                    "name": "",
+                    "no_format": 0.0,
+                    "is_zero": True,
+                })
+                return
+
+            val = float(value)
+
+            # Format the display string the same way Odoo formats report values
+            formatted = report.format_value(
+                val,
+                figure_type=col.get("figure_type") or "monetary",
+                currency=col.get("currency"),
+                digits=col.get("digits"),
+            )
+
+            col.update({
+                "no_format": val,
+                "name": formatted,
+                "is_zero": False,
+            })
 
         for line in lines:
             line_id = line.get("id")
             if not isinstance(line_id, str):
                 continue
 
-            # Partner-grouped line ids:
+            # Partner-grouped line ids like:
+            # ~account.report~8|~account.report.line~56|groupby:partner_id~res.partner~993
             if "groupby:partner_id~res.partner~" in line_id:
                 try:
                     partner_id = int(line_id.split("groupby:partner_id~res.partner~")[1].split("|")[0])
@@ -61,17 +86,20 @@ class AgedReceivableTaxColumn(models.AbstractModel):
                 _set_tax(line, tax_by_commercial_partner[commercial.id])
                 continue
 
-            # Optional: invoice/unfold lines containing an account.move id
+            # Optional: invoice/unfold lines sometimes contain an account.move id
+            # If your unfolded lines don't include this pattern, this section will simply do nothing.
             if "~account.move~" in line_id:
                 try:
                     move_id = int(line_id.split("~account.move~")[1].split("|")[0].split("~")[0])
                 except Exception:
                     continue
+
                 move = Move.browse(move_id)
                 if move.exists():
                     _set_tax(line, abs(move.amount_tax_signed or 0.0))
 
         return lines
+
 
 
 
