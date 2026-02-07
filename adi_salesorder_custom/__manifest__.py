@@ -1,6 +1,9 @@
 {
     'name': 'ADI Sales Order Customisations',
+    "license": "LGPL-3",
+    "summary": "Sales App custom module ",    
     'version': '17.0.1.0.0',
+    "author": "Paul Davies",
     'depends': ['sale'],
     'data': [
         'security/ir.model.access.csv',
@@ -9,3 +12,4 @@
     'installable': True,
     'application': False,
 }
+
