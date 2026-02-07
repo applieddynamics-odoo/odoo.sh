@@ -15,13 +15,6 @@
                         attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('x_adi_completed', '=', True)]}"/>
             </xpath>
 
-                <!-- Optional: show a disabled 'Completed' indicator button -->
-                <button type="button"
-                        string="Completed"
-                        class="btn-secondary"
-                        attrs="{'invisible': [('x_adi_completed', '=', False)]}"/>
-            </xpath>
-
         </field>
     </record>
 
