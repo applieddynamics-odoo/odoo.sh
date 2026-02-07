@@ -4,7 +4,7 @@
     "summary": "Sales App custom module ",    
     'version': '17.0.1.0.0',
     "author": "Paul Davies",
-    'depends': ['sale'],
+    'depends': ['sale', 'sale_stock', 'account'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
