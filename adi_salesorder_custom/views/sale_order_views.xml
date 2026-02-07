@@ -13,6 +13,7 @@
                         string="Complete"
                         class="btn-primary"
                         attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('x_adi_completed', '=', True)]}"/>
+            </xpath>
 
                 <!-- Optional: show a disabled 'Completed' indicator button -->
                 <button type="button"
