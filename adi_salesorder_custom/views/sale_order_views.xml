@@ -8,11 +8,11 @@
 
             <!-- Add Complete button to header (compact) -->
             <xpath expr="//header" position="inside">
-                <button name="action_open_complete_wizard"
-                        type="object"
-                        string="Complete"
-                        class="btn-primary"
-                        attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('x_adi_completed', '=', True)]}"/>
+            <button name="action_open_complete_wizard"
+                    type="object"
+                    string="Complete"
+                    class="btn-primary"
+                    invisible="state != 'sale' or x_adi_completed"/>
             </xpath>
 
         </field>
