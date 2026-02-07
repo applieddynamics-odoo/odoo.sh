@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
-        <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <!-- placeholder: no UI change yet -->
-            </xpath>
-        </field>
-    </record>
+  <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <!-- ✅ SAFE MARKER: proves module + inherit view is active -->
+      <xpath expr="//header" position="inside">
+        <label string="ADI Sales Custom Module Active" class="text-muted"/>
+      </xpath>
+
+    </field>
+  </record>
 </odoo>
+
 
 
