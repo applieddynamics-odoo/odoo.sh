@@ -7,9 +7,10 @@
     <field name="arch" type="xml">
 
       <!-- ✅ SAFE MARKER: proves module + inherit view is active -->
-      <xpath expr="//header" position="inside">
-        <label string="ADI Sales Custom Module Active" class="text-muted"/>
-      </xpath>
+    <xpath expr="//header" position="inside">
+    <div class="text-muted o_form_label">ADI Sales Custom Module Active</div>
+    </xpath>
+
 
     </field>
   </record>
