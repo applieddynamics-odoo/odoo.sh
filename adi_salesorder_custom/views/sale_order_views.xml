@@ -46,9 +46,6 @@
                     <button string="Confirm Complete" type="object" name="action_confirm_complete" class="btn-primary"/>
                 </footer>
 
-                <xpath expr="//form" position="inside">
-                    <field name="x_adi_completed" invisible="1"/>
-                </xpath>
             </form>
         </field>
     </record>
