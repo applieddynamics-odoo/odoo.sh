@@ -15,6 +15,10 @@
                     invisible="state != 'sale' or x_adi_completed"/>
             </xpath>
 
+            <xpath expr="//form/header" position="inside">
+                <field name="x_adi_completed" invisible="1"/>
+            </xpath>
+
         </field>
     </record>
 
