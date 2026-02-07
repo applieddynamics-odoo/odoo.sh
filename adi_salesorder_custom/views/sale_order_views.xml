@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
   <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
     <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
     <field name="model">sale.order</field>
@@ -8,4 +9,5 @@
       <!-- Intentionally empty for now -->
     </field>
   </record>
+
 </odoo>
