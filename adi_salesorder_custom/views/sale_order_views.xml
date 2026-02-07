@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
-
-    <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
-      <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_form"/>
-      <field name="arch" type="xml">
-        <!-- Intentionally empty for now -->
-      </field>
-    </record>
-
-  </data>
+  <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <!-- Intentionally empty for now -->
+    </field>
+  </record>
 </odoo>
