@@ -22,22 +22,21 @@ class SaleOrder(models.Model):
             },
         }
 
-        def action_mark_complete(self):
-            self.ensure_one()
+    def action_mark_complete(self):
+        self.ensure_one()
 
-            if self.x_adi_completed:
-                return True
+        if self.x_adi_completed:
+            return True
 
-            return {
-                "type": "ir.actions.act_window",
-                "name": "Complete Sales Order",
-                "res_model": "sale.order.complete.wizard",
-                "view_mode": "form",
-                "target": "new",
-                "context": {
-                    "default_order_id": self.id,
-                },
-            }
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Complete Sales Order",
+            "res_model": "sale.order.complete.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_order_id": self.id,
+            },
+        }
 
 
-            order.message_post(body=_("Sales Order marked <b>Completed</b>."))
+        order.message_post(body=_("Sales Order marked <b>Completed</b>."))
