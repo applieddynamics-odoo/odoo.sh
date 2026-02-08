@@ -4,7 +4,6 @@ class SaleOrderCompleteWizard(models.TransientModel):
     _name = "sale.order.complete.wizard"
     _description = "Sale Order Completion Wizard"
 
-    
     sale_order_id = fields.Many2one("sale.order", string="Order", required=True, readonly=True)
 
     x_adi_invoice_status_text = fields.Char(string="Invoice Status", readonly=True)
@@ -36,4 +35,5 @@ class SaleOrderCompleteWizard(models.TransientModel):
             res["x_adi_delivery_status_text"] = dict(so._fields["delivery_status"].selection).get(so.delivery_status, so.delivery_status)
 
         return res
+
 
