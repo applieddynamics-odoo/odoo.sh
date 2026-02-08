@@ -24,19 +24,17 @@ class SaleOrder(models.Model):
 
     def action_mark_complete(self):
         self.ensure_one()
-
-        if self.x_adi_completed:
-            return True
-
         return {
             "type": "ir.actions.act_window",
-            "name": "Complete Sales Order",
+            "name": "Mark Complete",
             "res_model": "sale.order.complete.wizard",
             "view_mode": "form",
             "target": "new",
-            "context": {"default_order_id": self.id,
+            "context": {
+                "active_model": "sale.order",
+                "active_id": self.id,
+                "active_ids": self.ids,
+                "default_sale_order_id": self.id,
             },
-        }
-
-
-        order.message_post(body=_("Sales Order marked <b>Completed</b>."))
+    }
+    

@@ -16,8 +16,8 @@
         </group>
 
         <group string="Completion Checks">
-          <field name="x_adi_check_invoicing"/>
-          <field name="x_adi_check_deliveries"/>
+          <field name="x_adi_check_invoicing_ok"/>
+          <field name="x_adi_check_deliveries_ok"/>
           <field name="x_adi_completion_notes"/>
         </group>
 
