@@ -13,14 +13,14 @@ class SaleOrderCompleteWizard(models.TransientModel):
     delivery_status = fields.Selection(related="order_id.delivery_status", readonly=True)
 
     # checks (editable)
-    check_invoicing = fields.Boolean(string="Invoicing checked / correct")
-    check_deliveries = fields.Boolean(string="Deliveries checked / correct")
-    completion_notes = fields.Text(string="Completion notes")
+    x_adi_check_invoicing = fields.Boolean(string="Invoicing checked / correct")
+    x_adi_check_deliveries = fields.Boolean(string="Deliveries checked / correct")
+    x_adi_completion_notes = fields.Text(string="Completion notes")
 
     def action_confirm_complete(self):
         self.ensure_one()
 
-        if not self.check_invoicing or not self.check_deliveries_ok:
+        if not self.x_adi_check_invoicing or not self.x_adi_check_deliveries:
             raise UserError(_("Please confirm both Invoicing and Deliveries checks before completing."))
 
         self.order_id.write({
