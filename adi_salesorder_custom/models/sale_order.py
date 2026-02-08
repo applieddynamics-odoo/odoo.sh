@@ -22,14 +22,22 @@ class SaleOrder(models.Model):
             },
         }
 
-    def action_mark_completed(self, notes=False):
-        for order in self:
-            if order.x_adi_completed:
-                continue
-            order.write({
-                "x_adi_completed": True,
-                "x_adi_completed_on": fields.Datetime.now(),
-                "x_adi_completed_by": self.env.user.id,
-                "x_adi_completion_notes": notes or False,
-            })
+        def action_mark_complete(self):
+            self.ensure_one()
+
+            if self.x_adi_completed:
+                return True
+
+            return {
+                "type": "ir.actions.act_window",
+                "name": "Complete Sales Order",
+                "res_model": "sale.order.complete.wizard",
+                "view_mode": "form",
+                "target": "new",
+                "context": {
+                    "default_order_id": self.id,
+                },
+            }
+
+
             order.message_post(body=_("Sales Order marked <b>Completed</b>."))

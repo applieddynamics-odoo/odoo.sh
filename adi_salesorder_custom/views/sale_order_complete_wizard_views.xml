@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_sale_order_complete_wizard_form" model="ir.ui.view">
+    <field name="name">sale.order.complete.wizard.form</field>
+    <field name="model">sale.order.complete.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Complete Sales Order">
+        <group>
+          <field name="order_id"/>
+        </group>
+
+        <group string="Current Status" col="2">
+          <field name="invoice_status" readonly="1"/>
+          <field name="delivery_status" readonly="1"/>
+        </group>
+
+        <group string="Completion Checks">
+          <field name="check_invoicing_ok"/>
+          <field name="check_deliveries_ok"/>
+          <field name="completion_notes"/>
+        </group>
+
+        <footer>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+          <button name="action_confirm_complete" type="object" string="Confirm Complete" class="btn-primary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_order_complete_wizard" model="ir.actions.act_window">
+    <field name="name">Complete Sales Order</field>
+    <field name="res_model">sale.order.complete.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+</odoo>
+

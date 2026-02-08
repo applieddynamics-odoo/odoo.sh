@@ -8,7 +8,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
+        'views/sale_order_complete_wizard_views.xml',
     ],
+
     'installable': True,
     'application': False,
 }
