@@ -30,10 +30,10 @@ class SaleOrderCompleteWizard(models.TransientModel):
 
         # Human-friendly selection labels
         if "x_adi_invoice_status_text" in fields_list:
-            res["x_adi_invoice_status_text"] = dict(so._fields["invoice_status"].selection).get(so.invoice_status, so.invoice_status)
+            res["x_adi_invoice_status_text"] = dict(so._fields["x_adi_invoice_status"].selection).get(so.x_adi_invoice_status, so.x_adi_invoice_status)
 
         if "x_adi_delivery_status_text" in fields_list:
-            res["x_adi_delivery_status_text"] = dict(so._fields["delivery_status"].selection).get(so.delivery_status, so.delivery_status)
+            res["x_adi_delivery_status_text"] = dict(so._fields["x_adi_delivery_status"].selection).get(so.x_adi_delivery_status, so.x_adi_delivery_status)
 
         return res
 
