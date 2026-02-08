@@ -6,9 +6,13 @@ class SaleOrderCompleteWizard(models.TransientModel):
 
     
     sale_order_id = fields.Many2one("sale.order", string="Order", required=True, readonly=True)
+    # Snapshot info (readonly)
+    invoice_status = fields.Selection(related="order_id.invoice_status", readonly=True)
+    delivery_status = fields.Selection(related="order_id.delivery_status", readonly=True)
 
-    invoice_status_text = fields.Char(string="Invoice Status", readonly=True)
-    delivery_status_text = fields.Char(string="Delivery Status", readonly=True)
+
+    x_adi_invoice_status_text = fields.Char(string="Invoice Status", readonly=True)
+    x_adi_delivery_status_text = fields.Char(string="Delivery Status", readonly=True)
 
     x_adi_check_invoicing_ok = fields.Boolean(string="Invoicing checked / correct")
     x_adi_check_deliveries_ok = fields.Boolean(string="Deliveries checked / correct")
