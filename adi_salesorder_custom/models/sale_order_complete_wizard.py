@@ -7,6 +7,13 @@ class SaleOrderCompleteWizard(models.TransientModel):
 
     order_id = fields.Many2one("sale.order", required=True, readonly=True)
 
+    sale_order_id = fields.Many2one(
+        comodel_name="sale.order",
+        string="Sales Order",
+        required=True,
+        readonly=True,
+    )
+
     # Snapshot info (readonly)
     invoice_status = fields.Selection(related="order_id.invoice_status", readonly=True)
     delivery_status = fields.Selection(related="order_id.delivery_status", readonly=True)
