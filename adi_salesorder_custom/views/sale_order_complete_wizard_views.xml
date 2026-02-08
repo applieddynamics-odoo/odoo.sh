@@ -7,7 +7,7 @@
     <field name="arch" type="xml">
       <form string="Complete Sales Order">
         <group>
-          <field name="sales_order_id"/>
+          <field name="order_id"/>
         </group>
 
         <group string="Current Status" col="2">
