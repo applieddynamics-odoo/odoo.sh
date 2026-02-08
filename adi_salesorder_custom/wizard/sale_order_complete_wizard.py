@@ -35,5 +35,6 @@ class SaleOrderCompleteWizard(models.TransientModel):
             res["x_adi_delivery_status_text"] = dict(so._fields["delivery_status"].selection).get(so.delivery_status, so.delivery_status)
 
         return res
+    
 
 
