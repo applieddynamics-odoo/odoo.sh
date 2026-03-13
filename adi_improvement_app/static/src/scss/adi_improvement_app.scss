@@ -1,0 +1,241 @@
+/* ==========================================
+   ADI Pills for Odoo 17 (Occurrence + Risk)
+   - Applies ONLY to:
+       * occurrence
+       * risk
+   - Always show all options
+   - Selected text always white
+   - Keeps Odoo layout/alignment (no global wrap_input overrides)
+========================================== */
+
+/* -----------------------------
+   Scope: only our two fields
+------------------------------ */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"],
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Radiogroup layout: left aligned, single line */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"] .o_horizontal,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] .o_horizontal {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Each radio item compact */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"] .o_radio_item,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] .o_radio_item {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide native radio circle */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"] .o_radio_input,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] .o_radio_input {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Base pill: subtle, close to Odoo */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"] .o_form_label,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] .o_form_label {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 4px 14px !important;
+  border-radius: 999px !important;
+
+  border: 1px solid #cfd4da !important;
+  background: #f8f9fa !important;
+
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+
+  color: #2f3337 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  white-space: nowrap !important;
+}
+
+/* Selected pill: always white text */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"] .o_radio_input:checked + .o_form_label,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"] .o_radio_input:checked + .o_form_label {
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+/* -----------------------------
+   Occurrence colours
+------------------------------ */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"]
+  .o_radio_input[data-value="repeat"]:checked + .o_form_label {
+  background: #dc3545 !important; /* red */
+}
+
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"]
+  .o_radio_input[data-value="first"]:checked + .o_form_label {
+  background: #198754 !important; /* green */
+}
+
+/* -----------------------------
+   Risk colours
+------------------------------ */
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"]
+  .o_radio_input[data-value="low"]:checked + .o_form_label {
+  background: #198754 !important;
+}
+
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"]
+  .o_radio_input[data-value="medium"]:checked + .o_form_label {
+  background: #ffc107 !important;
+  color: #fff !important; /* force white for medium */
+}
+
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"]
+  .o_radio_input[data-value="high"]:checked + .o_form_label {
+  background: #dc3545 !important;
+}
+
+/* -----------------------------
+   Readonly feel
+------------------------------ */
+.o_wrap_field .o_field_widget.o_field_radio[name="occurrence"].o_readonly_modifier .o_form_label,
+.o_wrap_field .o_field_widget.o_field_radio[name="risk"].o_readonly_modifier .o_form_label {
+  cursor: default !important;
+  opacity: 0.8 !important;
+}
+
+/* ==========================================
+   Alignment fix (targeted)
+   Root issue: wrap_input is flex + center in Odoo 17,
+   which can visually misalign custom widgets.
+   We fix by aligning OUR widgets to flex-start
+   without touching other fields.
+========================================== */
+
+/* Desktop browsers with :has() */
+.o_wrap_field:has(.o_field_widget[name="occurrence"]) .o_cell.o_wrap_input,
+.o_wrap_field:has(.o_field_widget[name="risk"]) .o_cell.o_wrap_input {
+  align-items: flex-start !important;
+}
+
+/* Mobile/webview fallback (no :has): make OUR widgets align themselves */
+.o_wrap_field .o_cell.o_wrap_input > .o_field_widget[name="occurrence"],
+.o_wrap_field .o_cell.o_wrap_input > .o_field_widget[name="risk"] {
+  align-self: flex-start !important;
+}
+
+
+/* ============================
+   ADI CAR Date Flow (visual pipeline)
+   ============================ */
+
+.adi_flow_wrap {
+  margin: 8px 0 14px 0;
+}
+
+.adi_flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.adi_step {
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  min-height: 72px;
+}
+
+.adi_step_hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.adi_step_title {
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.adi_dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.adi_dot_idle {
+  background: #e9ecef;
+}
+
+.adi_dot_active {
+  background: #0d6efd; /* bootstrap primary */
+  border-color: rgba(0,0,0,0.05);
+}
+
+.adi_step_body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.adi_kv {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.adi_k {
+  font-size: 12px;
+  color: rgba(0,0,0,0.60);
+  white-space: nowrap;
+}
+
+.adi_v {
+  font-size: 12px;
+  color: rgba(0,0,0,0.85);
+  white-space: nowrap;
+}
+
+/* Mobile: stack nicely */
+@media (max-width: 768px) {
+  .adi_flow {
+    grid-template-columns: 1fr;
+  }
+}
+/* CAR Form styling  */
+.adi_section_header {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 6px 0 10px 0;
+  white-space: pre-line; /* keeps your line breaks */
+}
+
+.adi_wizard_help {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+  white-space: normal;
+}
+

@@ -1,0 +1,114 @@
+<odoo>
+  <data>
+
+    <record id="view_containment_wizard_form" model="ir.ui.view">
+      <field name="name">adi_improvement_app.containment.wizard.form</field>
+      <field name="model">adi_improvement_app.containment_wizard</field>
+      <field name="arch" type="xml">
+        <form string="Plan Verification">
+          <sheet>
+            <field name="car_id" invisible="1"/>
+
+            <div class="adi_wizard_help">
+              If containment is complete, draft the verification plan, set the target completion date and then confirm update by pressing <strong>Proceed to Verification</strong>.
+            </div>
+
+            <group col="1">
+              <field name="verification_notes" widget="text"/>
+              <field name="est_verify_end_date"/>
+            </group>
+          </sheet>
+
+          <footer>
+            <button name="action_proceed_to_verification"
+                    string="Proceed to Verification"
+                    type="object"
+                    class="btn-primary"/>
+            <button string="Cancel" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_close_wizard_form" model="ir.ui.view">
+      <field name="name">adi_improvement_app.close.wizard.form</field>
+      <field name="model">adi_improvement_app.close_wizard</field>
+      <field name="arch" type="xml">
+        <form string="Update Verification status">
+          <sheet>
+            <field name="car_id" invisible="1"/>
+
+            <div class="adi_wizard_help">
+              If verification has passed, confirm by pressing <strong>Proceed to Closure</strong>.
+            </div>
+
+            <div class="adi_wizard_help">
+              If verification has failed, record details, new target date and next steps below, then press
+              <strong>Verification Failed</strong> to return to Containment.
+            </div>
+
+            <group col="1">
+              <field name="verification_notes" widget="text"/>
+              <field name="est_verify_end_date"/>
+            </group>
+          </sheet>
+
+          <footer>
+            <button name="action_verification_failed"
+                    string="Verification Failed"
+                    type="object"
+                    class="btn-secondary"/>
+            <button name="action_proceed_to_closure"
+                    string="Proceed to Closure"
+                    type="object"
+                    class="btn-primary"/>
+            <button string="Cancel" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_reopen_wizard_form" model="ir.ui.view">
+      <field name="name">adi_improvement_app.reopen_wizard.form</field>
+      <field name="model">adi_improvement_app.reopen_wizard</field>
+      <field name="arch" type="xml">
+        <form string="Reopen CAR">
+          <sheet>
+
+            <div class="oe_title">
+              <h3>Reopen CAR</h3>
+            </div>
+
+            <p>
+              Opening a closed CAR will reset the state to
+              <strong>Awaiting Verification</strong>
+              so that additional information can be entered.
+            </p>
+
+            <p>
+              If verification has failed and containment actions are needed,
+              proceed using the
+              <strong>Verification Status</strong> button.
+            </p>
+
+            <field name="car_id" invisible="1"/>
+
+          </sheet>
+
+          <footer>
+            <button name="action_confirm_reopen"
+                    type="object"
+                    string="Yes"
+                    class="btn-primary"/>
+
+            <button string="Cancel"
+                    class="btn-secondary"
+                    special="cancel"/>
+          </footer>
+
+        </form>
+      </field>
+    </record>
+
+  </data>
+</odoo>

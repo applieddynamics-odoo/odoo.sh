@@ -1,0 +1,9 @@
+<odoo>
+  <record id="adi_improvement_app_assets_web_css" model="ir.asset">
+    <field name="name">adi_improvement_app web css</field>
+    <field name="bundle">web.assets_web</field>
+    <field name="directive">append</field>
+    <field name="path">/adi_improvement_app/static/src/scss/adi_improvement_app.scss</field>
+    <field name="active" eval="True"/>
+  </record>
+</odoo>

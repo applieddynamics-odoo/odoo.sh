@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- App category shown on user access rights -->
+        <record id="module_category_adi_improvement_app" model="ir.module.category">
+            <field name="name">ADI Improvements</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- CI groups -->
+        <record id="group_ci_user" model="res.groups">
+            <field name="name">CI User</field>
+            <field name="category_id" ref="adi_improvement_app.module_category_adi_improvement_app"/>
+        </record>
+
+        <record id="group_ci_admin" model="res.groups">
+            <field name="name">CI Admin</field>
+            <field name="category_id" ref="adi_improvement_app.module_category_adi_improvement_app"/>
+            <field name="implied_ids" eval="[(4, ref('adi_improvement_app.group_ci_user'))]"/>
+        </record>
+
+        <!-- CAR groups -->
+        <record id="group_car_user" model="res.groups">
+            <field name="name">CAR User</field>
+            <field name="category_id" ref="adi_improvement_app.module_category_adi_improvement_app"/>
+        </record>
+
+        <record id="group_car_admin" model="res.groups">
+            <field name="name">CAR Admin</field>
+            <field name="category_id" ref="adi_improvement_app.module_category_adi_improvement_app"/>
+            <field name="implied_ids" eval="[(4, ref('adi_improvement_app.group_car_user'))]"/>
+        </record>
+
+    </data>
+</odoo>
