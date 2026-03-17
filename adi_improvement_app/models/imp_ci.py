@@ -53,7 +53,7 @@ class CiImprovement(models.Model):
 
     ci_date_done = fields.Date(string="CI Done Date", readonly=False)
     verified_by = fields.Many2one("res.users", string="Verified By", readonly=False)
-    verification_result = fields.Selection(CI_VERIFICATION_RESULT, readonly=True)
+    verification_result = fields.Selection(CI_VERIFICATION_RESULT, readonly=False)
     closure_statement = fields.Text()
     verification_counter = fields.Integer(string="Verification fails", default=0, readonly=True)
 
