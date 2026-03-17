@@ -158,7 +158,7 @@
                         string="Submitted for Verification"
                         readonly="1"
                         invisible="date_submitted_for_verification == False"/>
-                  <field name="verification_result" readonly="1"/>
+                  <field name="verification_result"/>
                   <field name="verified_by" readonly="1"/>
                   <field name="verification_counter"/>
                   <label for="ci_date_done" string="Closed" invisible="ci_date_done == False"/>
