@@ -302,16 +302,17 @@
                     string="Containment Done"
                     class="btn-primary"
                     invisible="status != 'containment'"/>
-
             <button name="action_open_close_wizard"
                     type="object"
-                    string="Verification Status"
+                    string="Verification Review"
                     class="btn-primary"
-                    invisible="status != 'awaiting_verification'"/>
+                    invisible="status != 'awaiting_verification'"
+                    groups="adi_improvement_app.group_car_admin"/>
             <button name="action_reopen"
                     type="object"
                     string="Reopen"
-                    invisible="status != 'closed'"/>
+                    invisible="status != 'closed'"
+                    groups="adi_improvement_app.group_car_admin"/>
             <field name="status"
                    widget="statusbar"
                    options="{'clickable': true}"
