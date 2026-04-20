@@ -16,9 +16,8 @@
           <field name="process_area"/>
           <field name="title"/>
           <field name="summary"/>
-          <field name="owner_employee_id"/>
+          <field name="owner_id"/>
           <field name="date_due"/>
-          <field name="verification_counter"/>
         </tree>
       </field>
     </record>
@@ -28,7 +27,7 @@
       <field name="model">adi_improvement_app.improvement</field>
       <field name="arch" type="xml">
         <search string="Continuous Improvements">
-          <field name="action_reference"/><field name="title"/><field name="summary"/><field name="owner_employee_id"/><field name="process_area"/><field name="source"/>
+          <field name="action_reference"/><field name="title"/><field name="summary"/><field name="owner_id"/><field name="process_area"/><field name="source"/>
           <separator/>
           <filter string="Active" name="active" domain="[('status','!=','closed')]"/>
           <filter string="Closed" name="closed" domain="[('status','=','closed')]"/>
@@ -39,14 +38,13 @@
           <filter string="Awaiting Verification" name="awaiting_verification" domain="[('status','=','awaiting_verification')]"/>
           <separator/>
           <filter string="Overdue" name="overdue" domain="[('status','!=','closed'),('date_due','&lt;',context_today())]"/>
-          <filter string="Verification Failed" name="verification_failed" domain="[('verification_counter','&gt;',0)]"/>
-          <filter string="High Priority" name="high_priority" domain="[('priority','=','high')]"/>
-          <filter string="Submitted for Verification" name="submitted_for_verification" domain="[('date_submitted_for_verification','!=',False)]"/>
+          <filter string="Type" name="type" domain="[('type','!=',False)]"/>
+          <filter string="Submitted" name="submitted_for_verification" domain="[('date_submitted_for_verification','!=',False)]"/>
           <group string="Group By">
             <filter string="Status" name="gb_status" context="{'group_by':'status'}"/>
-            <filter string="Priority" name="gb_priority" context="{'group_by':'priority'}"/>
+            <filter string="Type" name="gb_type" context="{'group_by':'type'}"/>
             <filter string="Due Date" name="gb_due" context="{'group_by':'date_due'}"/>
-            <filter string="Owner" name="gb_owner" context="{'group_by':'owner_employee_id'}"/>
+            <filter string="Owner" name="gb_owner" context="{'group_by':'owner_id'}"/>
             <filter string="Process Area" name="gb_process" context="{'group_by':'process_area'}"/>
             <filter string="Source" name="gb_source" context="{'group_by':'source'}"/>
           </group>
@@ -77,15 +75,22 @@
                     string="On Hold"
                     invisible="status not in ('open','in_progress')"/>
 
+            <button name="action_open_closure_wizard"
+                    type="object"
+                    string="Cancel"
+                    class="btn-secondary"
+                    invisible="status not in ('open','in_progress','on_hold')"
+                    groups="adi_improvement_app.group_ci_admin"/>
+
             <button name="action_submit_for_verification"
                     type="object"
-                    string="Submit for Verification"
+                    string="Submit"
                     class="btn-primary"
                     invisible="status != 'in_progress'"/>
 
             <button name="action_open_verification_wizard"
                     type="object"
-                    string="Verification Status"
+                    string="Closure Status"
                     class="btn-primary"
                     invisible="status != 'awaiting_verification'"
                     groups="adi_improvement_app.group_ci_admin"/>
@@ -118,8 +123,8 @@
 
               <!--CI Improvement Main Right section-->
               <group>
-                <field name="owner_employee_id"/>
-                <field name="priority"/>
+                <field name="owner_id"/>
+                <field name="type"/>
                 <field name="date_in_progress" readonly="1" invisible="date_in_progress == False"/>
                 <field name="date_due"/>
                 <field name="ci_date_done" readonly="1" string="Close Date" invisible="status != 'closed'"/>
@@ -134,14 +139,45 @@
                     IMPROVEMENT DETAILS
                 </div>
 
-                <group col="2">
-                    <field name="summary" string="Description" widget="text"
-                          placeholder="Short description of the improvement and its objectives..."/>
-                    <field name="notes" string="Notes" widget="text"
-                          placeholder="Progress notes and details of changes made..."/>
-                    <field name="actions" string="Actions" widget="text"
-                          placeholder="Change summary and any residual actions..."/>
-                </group>
+                <div class="mb-3">
+                    <div class="o_form_label">
+                        <strong>Description / Opportunity</strong>
+                        <span style="color:#6c757d; font-weight:400;">
+                            — What is the improvement? What is the current situation and what could be better?
+                        </span>
+                    </div>
+                    <field name="summary" nolabel="1"/>
+                </div>
+
+                <div class="mb-3">
+                    <div class="o_form_label">
+                        <strong>Justification / Benefit</strong>
+                        <span style="color:#6c757d; font-weight:400;">
+                            — Why are we doing this? (e.g. efficiency, cost saving, risk reduction, customer satisfaction)
+                        </span>
+                    </div>
+                    <field name="notes" nolabel="1"/>
+                </div>
+
+                <div class="mb-3">
+                    <div class="o_form_label">
+                        <strong>Actions / Implementation Plan</strong>
+                        <span style="color:#6c757d; font-weight:400;">
+                            — Key steps required to implement the improvement.
+                        </span>
+                    </div>
+                    <field name="actions" nolabel="1"/>
+                </div>
+
+                <div class="mb-0">
+                    <div class="o_form_label">
+                        <strong>Progress Updates / Notes</strong>
+                        <span style="color:#6c757d; font-weight:400;">
+                            — Ongoing updates, decisions, blockers
+                        </span>
+                    </div>
+                    <field name="progress_updates" nolabel="1"/>
+                </div>
 
             </div>
 
@@ -155,12 +191,11 @@
               </div>
               <group col="2">
                   <field name="date_submitted_for_verification"
-                        string="Submitted for Verification"
+                        string="Submitted"
                         readonly="1"
                         invisible="date_submitted_for_verification == False"/>
-                  <field name="verification_result"/>
+                  <field name="verification_result" readonly="1"/>
                   <field name="verified_by" readonly="1"/>
-                  <field name="verification_counter"/>
                   <label for="ci_date_done" string="Closed" invisible="ci_date_done == False"/>
                   <field name="ci_date_done" nolabel="1" readonly="1" invisible="ci_date_done == False"/>
 
@@ -191,10 +226,10 @@
       <field name="name">adi_improvement_app.ci.verification.wizard.form</field>
       <field name="model">adi_improvement_app.ci_verification_wizard</field>
       <field name="arch" type="xml">
-        <form string="CI Verification Status">
+        <form string="CI Closure Status">
           <sheet>
             <div style="margin-bottom:12px; color:#495057;">
-              Record the verification outcome for this Continuous Improvement.
+              Record the closure result providing guidance if additional work is required or a succinct statement recording the effectiveness of the improvement 
             </div>
 
             <group col="1">
@@ -232,7 +267,7 @@
           <field name="status"/>
           <field name="process_area"/>
           <field name="title"/>
-          <field name="owner_employee_id"/>
+          <field name="owner_id"/>
           <field name="risk"/>
           <field name="target_contained_date"/>
           <field name="related_so"/>
@@ -249,7 +284,7 @@
           <field name="action_reference"/>
           <field name="title"/>
           <field name="summary"/>
-          <field name="owner_employee_id"/>
+          <field name="owner_id"/>
           <field name="process_area"/>
           <field name="source"/>
 
@@ -276,7 +311,7 @@
             <filter string="Status" name="gb_status" context="{'group_by':'status'}"/>
             <filter string="Risk" name="gb_risk" context="{'group_by':'risk'}"/>
             <filter string="Due Date" name="gb_due" context="{'group_by':'target_contained_date'}"/>
-            <filter string="Owner" name="gb_owner" context="{'group_by':'owner_employee_id'}"/>
+            <filter string="Owner" name="gb_owner" context="{'group_by':'owner_id'}"/>
             <filter string="Process Area" name="gb_process" context="{'group_by':'process_area'}"/>
             <filter string="Source" name="gb_source" context="{'group_by':'source'}"/>
             <filter string="Customer" name="gb_customer" context="{'group_by':'customer_company_id'}"/>
@@ -320,7 +355,6 @@
           </header>
 
           <sheet>
-            
             <!--CAR Number Header  -->
             <div class="oe_title">
               <h1>
@@ -349,7 +383,7 @@
                 <!--CAR Main form Right hand group  -->
               <group>
                 <field name="process_area"/>
-                <field name="owner_employee_id"/>
+                <field name="owner_id"/>
                 <field name="occurrence" widget="radio" options="{'horizontal': true}"/>
                 <field name="risk"
                        widget="radio"

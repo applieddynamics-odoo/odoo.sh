@@ -7,14 +7,17 @@
     "author": "Paul Davies",
     "category": "ADI Custom Modules",
     "version": "17.0.1.0.0",
-    "depends": ["base", "sale", "mail", "web"],
+    "depends": ["base", "sale", "mail", "web", "hr"],
     "data": [
         "security/adi_improvement_app_groups.xml",
         "security/ir.model.access.csv",
+        "data/mail_activity_type.xml",
         "data/sequences.xml",
         "data/assets.xml",
         "views/views.xml",
         "views/car_wizard_views.xml",
+        "views/roles_responsibility_views.xml",
+        'views/mail_activity_schedule_views.xml',
     ],
     "assets": {
         "web.assets_web": [
