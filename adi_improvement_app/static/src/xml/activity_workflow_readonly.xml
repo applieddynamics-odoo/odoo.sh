@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="mail.Activity" t-inherit-mode="extension">
+
+        <xpath expr="//span[contains(@class, 'o-mail-Activity-markDone')]" position="attributes">
+            <attribute name="t-if">!activity.summary || !activity.summary.includes('[WORKFLOW]')</attribute>
+        </xpath>
+
+        <xpath expr="//span[contains(@class, 'o-mail-Activity-edit')]" position="attributes">
+            <attribute name="t-if">!activity.summary || !activity.summary.includes('[WORKFLOW]')</attribute>
+        </xpath>
+
+        <xpath expr="//span[contains(@class, 'btn-danger') and .//i[contains(@class, 'fa-times')]]" position="attributes">
+            <attribute name="t-if">!activity.summary || !activity.summary.includes('[WORKFLOW]')</attribute>
+        </xpath>
+
+    </t>
+</templates>

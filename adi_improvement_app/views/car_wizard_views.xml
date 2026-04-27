@@ -1,6 +1,10 @@
 <odoo>
   <data>
 
+    <!-- =========================================================
+         PLAN VERIFICATION WIZARD
+         ========================================================= -->
+
     <record id="view_containment_wizard_form" model="ir.ui.view">
       <field name="name">adi_improvement_app.containment.wizard.form</field>
       <field name="model">adi_improvement_app.containment_wizard</field>
@@ -14,8 +18,19 @@
             </div>
 
             <group col="1">
-              <field name="verification_notes" widget="text"/>
-              <field name="est_verify_end_date"/>
+
+              <field name="verification_plan"
+                     string="Verification Plan"                  
+                     widget="text"
+                     placeholder="Define how effectiveness will be verified (method, checks, responsibilities)..."/>
+
+              <field name="verification_notes"
+                     string="Verification Evidence"
+                     widget="text"
+                     placeholder="Verification objective evidence and review notes..."/>
+
+              <field name="est_verify_end_date" string="Estimated Date"/>
+
             </group>
           </sheet>
 
@@ -29,6 +44,10 @@
         </form>
       </field>
     </record>
+
+    <!-- =========================================================
+         VERIFICATION / CLOSE WIZARD
+         ========================================================= -->
 
     <record id="view_close_wizard_form" model="ir.ui.view">
       <field name="name">adi_improvement_app.close.wizard.form</field>
@@ -48,8 +67,19 @@
             </div>
 
             <group col="1">
-              <field name="verification_notes" widget="text"/>
+
+              <field name="verification_plan"
+                     string="Verification Plan"
+                     widget="text"
+                     placeholder="Original verification plan (review and update if needed)..."/>
+
+              <field name="verification_notes"
+                     string="Verification Evidence"
+                     widget="text"
+                     placeholder="Verification outcome, evidence and findings..."/>
+
               <field name="est_verify_end_date"/>
+
             </group>
           </sheet>
 
@@ -67,6 +97,10 @@
         </form>
       </field>
     </record>
+
+    <!-- =========================================================
+         REOPEN WIZARD
+         ========================================================= -->
 
     <record id="view_reopen_wizard_form" model="ir.ui.view">
       <field name="name">adi_improvement_app.reopen_wizard.form</field>

@@ -58,7 +58,43 @@ class CiImprovement(models.Model):
     verified_by = fields.Many2one("res.users", string="Reviewed By", readonly=False)
     verification_result = fields.Selection(CI_VERIFICATION_RESULT, readonly=True)
     closure_statement = fields.Text()
-    #verification_counter = fields.Integer(string="Verification fails", default=0, readonly=True)
+
+    def _create_controlled_activity(self, activity_type, user, due_date, summary, note=False):
+        self.ensure_one()
+
+        controlled_summary = _("[WORKFLOW] %s") % summary
+
+        guidance = ""
+        if note:
+            guidance = _(
+                "<div style='margin-top:4px;'>"
+                "💬 <strong>Guidance / notes:</strong><br/>%s"
+                "</div>"
+            ) % note
+
+        warning = _(
+            "<div style='margin-top:12px; color:#6c757d; font-size:13px;'>"
+            "🔒 <strong>Workflow controlled activity:</strong> "
+            "Use the form buttons to manage this activity."
+            "</div>"
+        )
+
+        full_note = guidance
+        if full_note:
+            full_note = "%s<br/>%s" % (full_note, warning)
+        else:
+            full_note = warning
+
+        return self.env["mail.activity"].create({
+            "activity_type_id": activity_type.id,
+            "summary": controlled_summary,
+            "note": full_note,
+            "date_deadline": due_date,
+            "user_id": user.id,
+            "res_id": self.id,
+            "res_model_id": self.env["ir.model"]._get_id(self._name),
+            "is_controlled_workflow_activity": True,
+        })
 
     def _get_owner_user(self):
         self.ensure_one()
@@ -115,7 +151,8 @@ class CiImprovement(models.Model):
         self.ensure_one()
         activity = self._get_open_rework_activity()
         if activity:
-            activity.action_feedback(feedback=False)
+            activity.with_context(bypass_locked_workflow_activity=True).write({"note": False})
+            activity.with_context(bypass_locked_workflow_activity=True).action_feedback(feedback="")
         return activity
 
     def _create_rework_activity(self, note):
@@ -126,12 +163,12 @@ class CiImprovement(models.Model):
         due_date = fields.Date.context_today(self) + timedelta(days=7)
         reference = self.action_reference or self.display_name
 
-        return self.activity_schedule(
-            activity_type_id=activity_type.id,
-            user_id=owner_user.id,
-            date_deadline=due_date,
+        return self._create_controlled_activity(
+            activity_type=activity_type,
+            user=owner_user,
+            due_date=due_date,
             summary=_("%s Rework Improvement") % reference,
-            note=note or False,
+            note=note,
         )
 
     def action_set_in_progress(self):
@@ -196,40 +233,23 @@ class CiImprovement(models.Model):
         if self._get_open_verification_activity():
             raise ValidationError(_("Closure activity already exists."))
 
-        self._close_open_rework_activity()
-
         assignee = self._get_verification_assignee()
-        activity_type = self._get_review_activity_type()
         today = fields.Date.context_today(self)
         due_date = today + timedelta(days=14)
-
         reference = self.action_reference or self.display_name
         summary = _("%s Review for Effectiveness") % reference
-        note = _(
-            "%s has been submitted for closure by %s: %s"
-        ) % (
-            reference,
-            self.env.user.name,
-            today.strftime("%d %b %Y"),
-        )
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Schedule Activity"),
-            "res_model": "mail.activity.schedule",
+            "name": _("Submit for Closure Review"),
+            "res_model": "adi_improvement_app.ci_submit_review_wizard",
             "view_mode": "form",
             "target": "new",
             "context": {
-                "default_res_model": self._name,
-                "default_res_model_id": self.env["ir.model"]._get_id(self._name),
-                "default_res_ids": [self.id],
-                "default_res_id": self.id,
-                "default_activity_type_id": activity_type.id,
-                "default_activity_user_id": assignee.id,
-                "default_date_deadline": due_date,
+                "default_ci_id": self.id,
+                "default_reviewer_id": assignee.id,
+                "default_due_date": due_date,
                 "default_summary": summary,
-                "default_note": note,
-                "adi_verification_flow": True,
             },
         }
 
@@ -264,7 +284,8 @@ class CiImprovement(models.Model):
             )
 
             if open_activities:
-                open_activities.action_feedback(feedback=False)
+                open_activities.with_context(bypass_locked_workflow_activity=True).write({"note": False})
+                open_activities.with_context(bypass_locked_workflow_activity=True).action_feedback(feedback="")
 
             rec.write({
                 "status": "in_progress",
@@ -356,7 +377,8 @@ class CiVerificationWizard(models.TransientModel):
                     ci.ci_date_done = fields.Date.context_today(ci)
 
                 if activity:
-                    activity.action_feedback(feedback=False)
+                    activity.with_context(bypass_locked_workflow_activity=True).write({"note": False})
+                    activity.with_context(bypass_locked_workflow_activity=True).action_feedback(feedback="")
 
                 if self.verification_result == "abort":
                     ci.message_post(
@@ -372,7 +394,8 @@ class CiVerificationWizard(models.TransientModel):
                 #ci.verification_counter += 1
 
                 if activity:
-                    activity.action_feedback(feedback=False)
+                    activity.with_context(bypass_locked_workflow_activity=True).write({"note": False})
+                    activity.with_context(bypass_locked_workflow_activity=True).action_feedback(feedback="")
 
                 ci._create_rework_activity(self.closure_statement)
 
@@ -381,4 +404,81 @@ class CiVerificationWizard(models.TransientModel):
                     % (ci.action_reference or ci.display_name)
                 )
 
+        return {"type": "ir.actions.act_window_close"}
+    
+class CiSubmitReviewWizard(models.TransientModel):
+    _name = "adi_improvement_app.ci_submit_review_wizard"
+    _description = "Submit CI for Closure Review"
+
+    ci_id = fields.Many2one(
+        "adi_improvement_app.improvement",
+        required=True,
+        ondelete="cascade",
+    )
+    reviewer_id = fields.Many2one(
+        "res.users",
+        string="Reviewer",
+        readonly=True,
+        required=True,
+    )
+    due_date = fields.Date(
+        string="Due Date",
+        readonly=True,
+        required=True,
+    )
+    summary = fields.Char(
+        string="Summary",
+        readonly=True,
+        required=True,
+    )
+
+    def action_confirm(self):
+        self.ensure_one()
+        ci = self.ci_id
+
+        if ci.status != "in_progress":
+            raise ValidationError(_("Only In Progress CIs can be submitted."))
+
+        if not ci.date_due:
+            raise ValidationError(_("Please set a Due Date first."))
+
+        if ci._get_open_verification_activity():
+            raise ValidationError(_("Closure activity already exists."))
+
+        ci._close_open_rework_activity()
+
+        activity_type = ci._get_review_activity_type()
+        today = fields.Date.context_today(ci)
+        note = _(
+            "%s has been submitted for closure by %s: %s"
+        ) % (
+            ci.action_reference or ci.display_name,
+            self.env.user.name,
+            today.strftime("%d %b %Y"),
+        )
+
+        ci._create_controlled_activity(
+            activity_type=activity_type,
+            user=self.reviewer_id,
+            due_date=self.due_date,
+            summary=self.summary,
+            note=note,
+        )
+
+        ci.write({
+            "status": "awaiting_verification",
+            "date_submitted_for_verification": today,
+        })
+
+        ci.message_post(
+            body=_(
+                "CI submitted for Effectiveness Review by %s on %s. "
+                "Review activity assigned to %s with due date %s."
+            ) % (
+                self.env.user.name,
+                today.strftime("%d %b %Y"),
+                self.reviewer_id.name,
+                self.due_date.strftime("%d %b %Y") if self.due_date else "",
+            )
+        )
         return {"type": "ir.actions.act_window_close"}

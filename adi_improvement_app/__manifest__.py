@@ -17,12 +17,14 @@
         "views/views.xml",
         "views/car_wizard_views.xml",
         "views/roles_responsibility_views.xml",
-        'views/mail_activity_schedule_views.xml',
+#        "views/mail_activity_schedule_views.xml",
     ],
     "assets": {
-        "web.assets_web": [
+        "web.assets_backend": [
             "adi_improvement_app/static/src/scss/adi_improvement_app.scss",
-            "adi_improvement_app/static/src/js/asset_test.js",
+            "adi_improvement_app/static/src/xml/mail_activity_override.xml",
+            "adi_improvement_app/static/src/xml/activity_workflow_readonly.xml",
+
         ],
     },
     "installable": True,

@@ -55,7 +55,16 @@ class CiCar(models.Model):
     date_closed = fields.Date(string="Closed Date")
 
     verified_by = fields.Many2one("res.users", string="Verified By", readonly=False)
-    verification_notes = fields.Text()
+    
+    verification_plan = fields.Text(
+        string="Verification Plan",
+        help="Planned approach to verify effectiveness (method, checks, responsibilities)."
+    )
+    
+    verification_notes = fields.Text(
+        string="Verification Evidence",
+        placeholder="Objective evidence gathered during verification, findings and review notes..."
+    )
 
     car_date_done = fields.Date(
         string="Containment Done Date",

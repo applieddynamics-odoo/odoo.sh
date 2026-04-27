@@ -13,6 +13,7 @@ class ContainmentWizard(models.TransientModel):
     cause = fields.Text()
     car_actions = fields.Text()
 
+    verification_plan = fields.Text(string="Verification Plan")
     verification_notes = fields.Text(string="Verification Notes")
     est_verify_end_date = fields.Date(string="Estimated Verification Completion Date")
 
@@ -31,6 +32,7 @@ class ContainmentWizard(models.TransientModel):
             "containment": car.containment or False,
             "cause": car.cause or False,
             "car_actions": car.car_actions or False,
+            "verification_plan": car.verification_plan or False,
             "verification_notes": car.verification_notes or False,
             "est_verify_end_date": car.est_verify_end_date or False,
         })
@@ -49,6 +51,8 @@ class ContainmentWizard(models.TransientModel):
             car.cause = self.cause
         if self.car_actions is not False:
             car.car_actions = self.car_actions
+        if self.verification_plan is not False:
+            car.verification_plan = self.verification_plan
         if self.verification_notes is not False:
             car.verification_notes = self.verification_notes
         if self.est_verify_end_date is not False:
@@ -73,6 +77,7 @@ class VerificationWizard(models.TransientModel):
 
     car_id = fields.Many2one("adi_improvement_app.car", required=True, ondelete="cascade")
 
+    verification_plan = fields.Text(string="Verification Plan")
     est_verify_end_date = fields.Date(string="Estimated Verification Completion Date")
     verification_notes = fields.Text()
 
@@ -83,9 +88,10 @@ class VerificationWizard(models.TransientModel):
         if car.status != "containment":
             raise ValidationError("Verification can only be started from 'Containment'.")
 
+        if self.verification_plan is not False:
+            car.verification_plan = self.verification_plan
         if self.est_verify_end_date:
             car.est_verify_end_date = self.est_verify_end_date
-
         if self.verification_notes is not False:
             car.verification_notes = self.verification_notes
 
@@ -107,7 +113,8 @@ class CloseWizard(models.TransientModel):
     _description = "CAR Close Wizard"
 
     car_id = fields.Many2one("adi_improvement_app.car", required=True, ondelete="cascade")
-    verification_notes = fields.Text()
+    verification_plan = fields.Text(string="Verification Plan")
+    verification_notes = fields.Text(string="Verification Evidence")
     est_verify_end_date = fields.Date(string="Estimated Verification Completion Date")
 
     @api.model
@@ -122,6 +129,7 @@ class CloseWizard(models.TransientModel):
             return res
 
         res.update({
+            "verification_plan": car.verification_plan or False,
             "verification_notes": car.verification_notes or False,
             "est_verify_end_date": car.est_verify_end_date or False,
         })
@@ -134,6 +142,8 @@ class CloseWizard(models.TransientModel):
         if car.status != "awaiting_verification":
             raise ValidationError("Verification failure can only be recorded from 'Awaiting Verification'.")
 
+        if self.verification_plan is not False:
+            car.verification_plan = self.verification_plan
         if self.verification_notes is not False:
             car.verification_notes = self.verification_notes
         if self.est_verify_end_date is not False:
@@ -157,6 +167,8 @@ class CloseWizard(models.TransientModel):
         if car.status != "awaiting_verification":
             raise ValidationError("CAR can only be closed from 'Awaiting Verification'.")
 
+        if self.verification_plan is not False:
+            car.verification_plan = self.verification_plan
         if self.verification_notes is not False:
             car.verification_notes = self.verification_notes
         if self.est_verify_end_date is not False:

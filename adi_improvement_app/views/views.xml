@@ -35,7 +35,7 @@
           <filter string="Open" name="open" domain="[('status','=','open')]"/>
           <filter string="In Progress" name="in_progress" domain="[('status','=','in_progress')]"/>
           <filter string="On Hold" name="on_hold" domain="[('status','=','on_hold')]"/>
-          <filter string="Awaiting Verification" name="awaiting_verification" domain="[('status','=','awaiting_verification')]"/>
+          <filter string="Awaiting Closure" name="awaiting_verification" domain="[('status','=','awaiting_verification')]"/>
           <separator/>
           <filter string="Overdue" name="overdue" domain="[('status','!=','closed'),('date_due','&lt;',context_today())]"/>
           <filter string="Type" name="type" domain="[('type','!=',False)]"/>
@@ -102,7 +102,7 @@
 
             <field name="status"
                    widget="statusbar"
-                   options="{'clickable': true}"
+                   options="{'clickable': false}"
                    statusbar_visible="open,in_progress,on_hold,awaiting_verification,closed"/>
           </header>
 
@@ -113,7 +113,7 @@
 
             <group>
 
-              <!--CI Improvement Main Left section-->
+              <!-- CI Improvement Main Left section -->
               <group>
                 <field name="title" placeholder="Short title (e.g. CAR Report improvement )"/>
                 <field name="date_opened_display" string="Date Opened" readonly="1" invisible="not action_reference"/>
@@ -121,7 +121,7 @@
                 <field name="source"/>
               </group>
 
-              <!--CI Improvement Main Right section-->
+              <!-- CI Improvement Main Right section -->
               <group>
                 <field name="owner_id"/>
                 <field name="type"/>
@@ -131,78 +131,76 @@
               </group>
             </group>
 
-              <!--CI Improvement Details section--> 
-
+            <!-- CI Improvement Details section -->
             <div style="border: 1px solid #adb5bd; border-radius: 4px; padding: 10px 14px 14px 14px; margin-bottom: 14px;">
 
-                <div style="font-weight:700; padding-bottom:8px; margin-bottom:10px; border-bottom:1px solid #adb5bd; color:#343a40;">
-                    IMPROVEMENT DETAILS
-                </div>
+              <div style="font-weight:700; padding-bottom:8px; margin-bottom:10px; border-bottom:1px solid #adb5bd; color:#343a40;">
+                IMPROVEMENT DETAILS
+              </div>
 
-                <div class="mb-3">
-                    <div class="o_form_label">
-                        <strong>Description / Opportunity</strong>
-                        <span style="color:#6c757d; font-weight:400;">
-                            — What is the improvement? What is the current situation and what could be better?
-                        </span>
-                    </div>
-                    <field name="summary" nolabel="1"/>
+              <div class="mb-3">
+                <div class="o_form_label">
+                  <strong>Description / Opportunity</strong>
+                  <span style="color:#6c757d; font-weight:400;">
+                    — What is the improvement? What is the current situation and what could be better?
+                  </span>
                 </div>
+                <field name="summary" nolabel="1"/>
+              </div>
 
-                <div class="mb-3">
-                    <div class="o_form_label">
-                        <strong>Justification / Benefit</strong>
-                        <span style="color:#6c757d; font-weight:400;">
-                            — Why are we doing this? (e.g. efficiency, cost saving, risk reduction, customer satisfaction)
-                        </span>
-                    </div>
-                    <field name="notes" nolabel="1"/>
+              <div class="mb-3">
+                <div class="o_form_label">
+                  <strong>Justification / Benefit</strong>
+                  <span style="color:#6c757d; font-weight:400;">
+                    — Why are we doing this? (e.g. efficiency, cost saving, risk reduction, customer satisfaction)
+                  </span>
                 </div>
+                <field name="notes" nolabel="1"/>
+              </div>
 
-                <div class="mb-3">
-                    <div class="o_form_label">
-                        <strong>Actions / Implementation Plan</strong>
-                        <span style="color:#6c757d; font-weight:400;">
-                            — Key steps required to implement the improvement.
-                        </span>
-                    </div>
-                    <field name="actions" nolabel="1"/>
+              <div class="mb-3">
+                <div class="o_form_label">
+                  <strong>Actions / Implementation Plan</strong>
+                  <span style="color:#6c757d; font-weight:400;">
+                    — Key steps required to implement the improvement.
+                  </span>
                 </div>
+                <field name="actions" nolabel="1"/>
+              </div>
 
-                <div class="mb-0">
-                    <div class="o_form_label">
-                        <strong>Progress Updates / Notes</strong>
-                        <span style="color:#6c757d; font-weight:400;">
-                            — Ongoing updates, decisions, blockers
-                        </span>
-                    </div>
-                    <field name="progress_updates" nolabel="1"/>
+              <div class="mb-0">
+                <div class="o_form_label">
+                  <strong>Progress Updates / Notes</strong>
+                  <span style="color:#6c757d; font-weight:400;">
+                    — Ongoing updates, decisions, blockers
+                  </span>
                 </div>
+                <field name="progress_updates" nolabel="1"/>
+              </div>
 
             </div>
 
-
-            <!--CI Verification and Closure section--> 
+            <!-- CI Verification and Closure section -->
             <div style="border: 1px solid #adb5bd; border-radius: 4px; padding: 10px 14px 14px 14px; margin-bottom: 14px;"
-                invisible="status not in ('awaiting_verification', 'closed')">
+                 invisible="status not in ('awaiting_verification', 'closed')">
 
               <div style="font-weight:700; padding-bottom:8px; margin-bottom:10px; border-bottom:1px solid #adb5bd; color:#343a40;">
-                  VERIFICATION / CLOSURE
+                REVIEW / CLOSURE
               </div>
               <group col="2">
-                  <field name="date_submitted_for_verification"
-                        string="Submitted"
-                        readonly="1"
-                        invisible="date_submitted_for_verification == False"/>
-                  <field name="verification_result" readonly="1"/>
-                  <field name="verified_by" readonly="1"/>
-                  <label for="ci_date_done" string="Closed" invisible="ci_date_done == False"/>
-                  <field name="ci_date_done" nolabel="1" readonly="1" invisible="ci_date_done == False"/>
+                <field name="date_submitted_for_verification"
+                       string="Submitted"
+                       readonly="1"
+                       invisible="date_submitted_for_verification == False"/>
+                <field name="verification_result" readonly="1"/>
+                <field name="verified_by" readonly="1"/>
+                <label for="ci_date_done" string="Closed" invisible="ci_date_done == False"/>
+                <field name="ci_date_done" nolabel="1" readonly="1" invisible="ci_date_done == False"/>
 
-                  <field name="closure_statement"
-                        widget="text"
-                        readonly="1"
-                        placeholder="Closure statement and verification outcome..."/>
+                <field name="closure_statement"
+                       widget="text"
+                       readonly="1"
+                       placeholder="Closure statement and review outcome..."/>
               </group>
             </div>
 
@@ -219,8 +217,41 @@
 
 
     <!-- =========================================================
-         CI WIZARD
+         CI WIZARDS
          ========================================================= -->
+
+    <record id="view_ci_submit_review_wizard_form" model="ir.ui.view">
+      <field name="name">adi_improvement_app.ci.submit.review.wizard.form</field>
+      <field name="model">adi_improvement_app.ci_submit_review_wizard</field>
+      <field name="arch" type="xml">
+        <form string="Submit for Closure Review">
+          <sheet>
+            <div style="margin-bottom:12px; color:#495057;">
+              This will submit the Improvement for Closure Review and create the review activity.
+            </div>
+
+            <group col="2">
+              <field name="reviewer_id" readonly="1"/>
+              <field name="due_date" readonly="1"/>
+            </group>
+
+            <group col="1">
+              <field name="summary" readonly="1"/>
+            </group>
+          </sheet>
+
+          <footer>
+            <button name="action_confirm"
+                    type="object"
+                    string="Confirm"
+                    class="btn-primary"/>
+            <button string="Cancel"
+                    special="cancel"
+                    class="btn-secondary"/>
+          </footer>
+        </form>
+      </field>
+    </record>
 
     <record id="view_ci_verification_wizard_form" model="ir.ui.view">
       <field name="name">adi_improvement_app.ci.verification.wizard.form</field>
@@ -229,14 +260,14 @@
         <form string="CI Closure Status">
           <sheet>
             <div style="margin-bottom:12px; color:#495057;">
-              Record the closure result providing guidance if additional work is required or a succinct statement recording the effectiveness of the improvement 
+              Record the closure result providing guidance if additional work is required or a succinct statement recording the effectiveness of the improvement
             </div>
 
             <group col="1">
               <field name="verification_result"/>
               <field name="closure_statement"
                      widget="text"
-                     placeholder="Enter closure statement / verification notes..."/>
+                     placeholder="Enter closure statement / review notes..."/>
             </group>
           </sheet>
 
@@ -326,7 +357,6 @@
       <field name="arch" type="xml">
         <form string="Corrective Action Report (CAR)">
           <header>
-            <!-- Primary buttons and status bar -->
             <button name="action_start_containment"
                     type="object"
                     string="Start Containment"
@@ -350,19 +380,17 @@
                     groups="adi_improvement_app.group_car_admin"/>
             <field name="status"
                    widget="statusbar"
-                   options="{'clickable': true}"
+                   options="{'clickable': False}"
                    statusbar_visible="open,containment,awaiting_verification,closed"/>
           </header>
 
           <sheet>
-            <!--CAR Number Header  -->
             <div class="oe_title">
               <h1>
                 <field name="action_reference" readonly="1"/>
               </h1>
             </div>
 
-            <!--CAR Main form Left hand group  -->
             <group col="2">
               <group>
                 <field name="title" placeholder="Short title (e.g. Supplier NCR on parts batch)"/>
@@ -380,7 +408,6 @@
                 <field name="related_so_description" invisible="1" readonly="1"/>
               </group>
 
-                <!--CAR Main form Right hand group  -->
               <group>
                 <field name="process_area"/>
                 <field name="owner_id"/>
@@ -393,7 +420,6 @@
               </group>
             </group>
 
-            <!-- CAR Containment Block -->
             <div style="border: 1px solid #adb5bd; border-radius: 4px; padding: 10px 14px 14px 14px; margin-bottom: 14px;"
                  invisible="status == 'open'">
 
@@ -453,36 +479,54 @@
               </group>
             </div>
 
-            <!--CAR Verification Block -->
-            <div style="border: 1px solid #adb5bd; padding: 10px 14px 14px 14px; border-radius: 4px; margin-bottom: 14px;"
-                 invisible="status not in ('awaiting_verification', 'closed') and verification_counter == 0">
 
-              <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:8px; margin-bottom:10px; border-bottom:1px solid #adb5bd; color:#495057;">
+            <div style="border: 1px solid #adb5bd; border-radius: 4px; padding: 10px 14px 14px 14px; margin-bottom: 14px;"
+                invisible="status not in ('awaiting_verification', 'closed') and verification_counter == 0">
 
-                <div style="display:flex; align-items:center; gap:24px;">
-                  <div style="font-weight:700; min-width:260px; color:#343a40;">
-                    VERIFICATION STAGE:
-                  </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:8px; margin-bottom:10px; border-bottom:1px solid #adb5bd; color:#495057;">
 
-                  <div style="font-weight:400; color:#495057;">
-                    <field name="est_verify_end_date_display" readonly="1" nolabel="1"/>
-                  </div>
+                    <div style="display:flex; align-items:center; gap:24px;">
+                        <div style="font-weight:700; min-width:260px; color:#343a40;">
+                            VERIFICATION STAGE:
+                        </div>
+
+                        <div style="font-weight:400; color:#495057;">
+                            <field name="est_verify_end_date_display" readonly="1" nolabel="1"/>
+                        </div>
+                    </div>
+
                 </div>
 
-              </div>
+                  <!-- Verification Plan -->
+                  <div class="mb-3">
+                      <div class="o_form_label">
+                          <strong>Verification Plan</strong>
+                          <span style="color:#6c757d; font-weight:400;">
+                              — How will effectiveness be verified? Include method, checks, and responsibilities.
+                          </span>
+                      </div>
+                      <field name="verification_plan" nolabel="1"/>
+                  </div>
 
-              <group col="2">
-                <field name="verification_notes"
-                       widget="text"
-                       string="Verification Evidence"
-                       placeholder="Verification objective evidence and review notes..."/>
-                <field name="est_verify_end_date" label="Estimated date"/>
-                <field name="verified_by"/>
-              </group>
-            </div>
+                          <!-- Verification Evidence -->
+                          <div class="mb-3">
+                              <div class="o_form_label">
+                                  <strong>Verification Evidence</strong>
+                                  <span style="color:#6c757d; font-weight:400;">
+                                      — Objective evidence gathered, findings, and review outcome.
+                                  </span>
+                              </div>
+                              <field name="verification_notes" nolabel="1"/>
+                          </div>
 
+                          <!-- Remaining fields -->
+                          <group col="2">
+                              <field name="est_verify_end_date" string="Estimated Date"/>
+                              <field name="verified_by"/>
+                          </group>
+
+                      </div>
           </sheet>
-          <!--CAR Chatter Section -->
           <div class="oe_chatter">
             <field name="message_follower_ids" widget="mail_followers"/>
             <field name="activity_ids" widget="mail_activity"/>
@@ -512,7 +556,6 @@
       <field name="context"> {'search_default_active': 1,'search_default_group_by_status': 1} </field>
     </record>
 
-    <!-- ROOT APP TILE -->
     <menuitem id="menu_adi_improvement_root"
               name="Improvements"
               sequence="5"
@@ -520,7 +563,6 @@
               web_icon="adi_improvement_app,static/description/icon.png"
               groups="base.group_user"/>
 
-    <!-- FIRST MENU -->
     <menuitem id="menu_ci_improvements"
               name="Continuous Improvements"
               parent="menu_adi_improvement_root"
@@ -528,7 +570,6 @@
               sequence="10"
               groups="base.group_user"/>
 
-    <!-- SECOND MENU -->
     <menuitem id="menu_car"
               name="Corrective Actions (CAR)"
               parent="menu_adi_improvement_root"

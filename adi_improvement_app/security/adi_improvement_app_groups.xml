@@ -8,6 +8,13 @@
             <field name="sequence">30</field>
         </record>
 
+        <!-- Empty group for activity management and bug fixing only  -->
+
+        <record id="group_workflow_activity_override" model="res.groups">
+            <field name="name">Workflow Activity Override</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
         <!-- CI groups -->
         <record id="group_ci_user" model="res.groups">
             <field name="name">CI User</field>
@@ -31,6 +38,7 @@
             <field name="category_id" ref="adi_improvement_app.module_category_adi_improvement_app"/>
             <field name="implied_ids" eval="[(4, ref('adi_improvement_app.group_car_user'))]"/>
         </record>
+
 
     </data>
 </odoo>

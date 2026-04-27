@@ -1,52 +1,57 @@
 from odoo import api, fields, models, _
-from datetime import timedelta
+from odoo.exceptions import ValidationError
+
 
 class MailActivity(models.Model):
     _inherit = "mail.activity"
 
+    is_controlled_workflow_activity = fields.Boolean(
+        string="Controlled Workflow Activity",
+        default=False,
+        copy=False,
+        index=True,
+    )
+
+    def _check_controlled_workflow_activity(self):
+        if self.env.context.get("bypass_locked_workflow_activity"):
+            return
+
+        if self.env.user.has_group("adi_improvement_app.group_workflow_activity_override"):
+            return
+
+        for rec in self:
+            if rec.is_controlled_workflow_activity:
+                raise ValidationError(_(
+                    "This activity is managed by the workflow and is read-only here. "
+                    "Please use the form buttons on the parent record."
+                ))
+
     @api.model_create_multi
     def create(self, vals_list):
-        activities = super().create(vals_list)
+        return super().create(vals_list)
 
-        if self.env.context.get("adi_verification_flow"):
-            for activity in activities:
-                if (
-                    activity.res_model == "adi_improvement_app.improvement"
-                    and activity.res_id
-                ):
-                    improvement = self.env["adi_improvement_app.improvement"].browse(activity.res_id)
-                    if improvement.exists() and improvement.status == "in_progress":
-                        improvement.status = "awaiting_verification"
-                        improvement.date_submitted_for_verification = fields.Date.context_today(improvement)
-                        improvement.message_post(
-                            body=_(
-                                "CI submitted for Effectiveness Review by %s on %s. "
-                                "Review activity assigned to %s with due date %s."
-                            ) % (
-                                self.env.user.name,
-                                fields.Date.context_today(improvement).strftime("%d %b %Y"),
-                                activity.user_id.name,
-                                activity.date_deadline.strftime("%d %b %Y") if activity.date_deadline else "",
-                            )
-                        )
+    def write(self, vals):
+        protected_fields = {
+            "activity_type_id",
+            "summary",
+            "note",
+            "date_deadline",
+            "user_id",
+            "res_id",
+            "res_model_id",
+        }
+        if protected_fields.intersection(vals.keys()):
+            self._check_controlled_workflow_activity()
+        return super().write(vals)
 
-        return activities
+    def unlink(self):
+        self._check_controlled_workflow_activity()
+        return super().unlink()
+
+    def action_feedback(self, feedback=False, attachment_ids=None):
+        self._check_controlled_workflow_activity()
+        return super().action_feedback(
+            feedback=feedback,
+            attachment_ids=attachment_ids,
+        )
     
-    @api.model
-    def default_get(self, fields_list):
-        vals = super().default_get(fields_list)
-
-        if self.env.context.get("adi_verification_flow"):
-            res_model = self.env.context.get("default_res_model")
-            res_id = self.env.context.get("default_res_id")
-
-            if res_model == "adi_improvement_app.improvement" and res_id:
-                improvement = self.env[res_model].browse(res_id)
-                if improvement.exists():
-                    assignee = improvement._get_verification_assignee()
-                    vals["user_id"] = assignee.id
-                    vals["date_deadline"] = fields.Date.context_today(improvement) + timedelta(days=14)
-
-        return vals
-
-
