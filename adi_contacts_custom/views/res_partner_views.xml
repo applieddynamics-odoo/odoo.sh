@@ -1,0 +1,15 @@
+<odoo>
+    <record id="adi_res_partner_form_view" model="ir.ui.view">
+        <field name="name">adi.res.partner.form.view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="adi_approved_helpdesk_domain"
+                       invisible="not is_company"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
