@@ -337,7 +337,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             approved_domains = wizard.env["res.partner"].search([
                 ("is_company", "=", True),
                 ("active", "=", True),
-                ("customer_rank", ">", 0),
                 ("adi_approved_helpdesk_domain", "!=", False),
             ]).mapped("adi_approved_helpdesk_domain")
 
@@ -350,7 +349,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             companies = wizard.env["res.partner"].search([
                 ("is_company", "=", True),
                 ("active", "=", True),
-                ("customer_rank", ">", 0),
                 ("adi_approved_helpdesk_domain", "=ilike", domain),
             ])
 
@@ -365,7 +363,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 wizard.adi_company_domain = str([
                     ("id", "in", companies.ids),
                     ("is_company", "=", True),
-                    ("customer_rank", ">", 0),
                     ("active", "=", True),
                 ])
                 continue

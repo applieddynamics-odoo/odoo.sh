@@ -265,7 +265,6 @@ class HelpdeskTicket(models.Model):
                     if not routing["trusted_contact_id"]:
                         matched_company = self.env["res.partner"].search([
                             ("is_company", "=", True),
-                            ("customer_rank", ">", 0),
                             ("active", "=", True),
                             ("adi_approved_helpdesk_domain", "=ilike", domain),
                         ], limit=1)
