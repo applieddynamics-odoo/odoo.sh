@@ -1,0 +1,302 @@
+/* ---------------------------------------------------------
+   ADI Helpdesk cards
+   --------------------------------------------------------- */
+
+.o_form_view .adi_helpdesk_card {
+    background: #ffffff;
+    border: 1px solid #d8dee8;
+    border-radius: 14px;
+    padding: 14px 20px;
+    margin: 10px 0 14px 0;
+    box-shadow: 0 6px 18px rgba(31, 41, 55, 0.08);
+}
+
+.o_form_view .adi_helpdesk_warning_card {
+    background: #fff7ed;
+    border: 1px solid #fb923c;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.o_form_view .adi_helpdesk_success_card {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 18px;
+}
+
+.o_form_view .adi_helpdesk_debug_card {
+    background: #f8fafc;
+    border: 1px dashed #94a3b8;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+/* ---------------------------------------------------------
+   Shared card headers: Input / Status
+   --------------------------------------------------------- */
+
+.adi_card_header {
+    display: grid;
+    grid-template-columns: 95px 1fr;
+    column-gap: 8px;
+    align-items: start;
+    margin-bottom: 6px;
+}
+
+.adi_card_title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-width: 78px;
+    padding: 4px 12px;
+    background: #f8fafc;
+    border: 1px solid #94a3b8;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.adi_card_items {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3px 0;
+    line-height: 1.2;
+}
+
+.adi_card_item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 400;
+    color: #4b5563;
+    line-height: 1.2;
+}
+
+.adi_card_item::before {
+    content: "|";
+    color: #94a3b8;
+    margin: 0 10px 0 2px;
+    line-height: 1;
+}
+
+.adi_summary_icon {
+    color: #00897b;
+    flex-shrink: 0;
+    line-height: 1;
+}
+/* Normalise Odoo widgets inside compact card headers */
+.adi_card_item > .o_field_widget {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    min-height: unset !important;
+}
+
+.adi_card_item .o_input,
+.adi_card_item select.o_input {
+    height: 24px !important;
+    min-height: 24px !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    font-size: 14px !important;
+}
+
+.adi_card_item .o_field_many2one_selection,
+.adi_card_item .o_input_dropdown,
+.adi_card_item .o-autocomplete {
+    display: inline-flex !important;
+    align-items: center !important;
+    min-height: 24px !important;
+}
+
+.adi_card_item .o_external_button {
+    display: none !important;
+}
+
+/* ---------------------------------------------------------
+   Subject / problem rows
+   --------------------------------------------------------- */
+
+.o_form_view .adi_subject_card {
+    margin-bottom: 14px;
+}
+
+.o_form_view .adi_subject_card hr,
+.o_form_view .adi_management_card hr {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.adi_ticket_summary_row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    column-gap: 10px;
+    align-items: start;
+}
+
+.adi_ticket_summary_label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.adi_ticket_summary_value,
+.adi_problem_inline {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.adi_problem_inline {
+    max-height: 3em;
+    overflow: hidden;
+    display: block;
+}
+
+.adi_problem_inline.adi_problem_expanded {
+    max-height: none;
+}
+
+.adi_problem_label_column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 110px;
+}
+
+.adi_problem_toggle,
+.adi_management_notes_toggle {
+    display: block;
+    margin-top: 4px;
+    color: #00897b;
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.adi_problem_toggle:hover,
+.adi_management_notes_toggle:hover {
+    color: #00695c;
+    text-decoration: none;
+}
+
+/* ---------------------------------------------------------
+   Status / ticket management body
+   --------------------------------------------------------- */
+
+.adi_management_grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 14px 24px;
+}
+
+.adi_management_label {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.adi_management_notes_row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    column-gap: 10px;
+    align-items: start;
+}
+
+.adi_management_notes_label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.adi_management_notes_inline {
+    max-height: 4.5em;
+    overflow: hidden;
+}
+
+.adi_management_notes_inline.adi_management_notes_expanded {
+    max-height: none;
+}
+
+.adi_management_notes_inline textarea {
+    width: 100% !important;
+    min-height: 70px;
+}
+
+
+/* ---------------------------------------------------------
+   Responsive layout
+   --------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+    .adi_management_grid {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .adi_card_header,
+    .adi_ticket_summary_row,
+    .adi_management_notes_row {
+        grid-template-columns: 1fr;
+        row-gap: 4px;
+    }
+
+    .adi_management_grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------------------------------------------------------
+   Chatter communication clarity
+   --------------------------------------------------------- */
+
+.o-mail-Chatter-sendMessage {
+    background-color: #7c2d12 !important;
+    border-color: #7c2d12 !important;
+    color: #ffffff !important;
+    font-size: 0 !important;
+    font-weight: 600 !important;
+}
+
+.o-mail-Chatter-sendMessage::after {
+    content: "Send to Customer";
+    font-size: 13px;
+}
+
+.o-mail-Chatter-logNote {
+    background-color: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #374151 !important;
+    font-size: 0 !important;
+    font-weight: 600 !important;
+}
+
+.o-mail-Chatter-logNote::after {
+    content: "Internal Note Only";
+    font-size: 13px;
+}
+
+.o-mail-Chatter-topbar button {
+    min-height: unset !important;
+    height: 34px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+}
+
+.o-mail-Chatter-topbar::after {
+    content: none !important;
+}
+

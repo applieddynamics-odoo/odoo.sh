@@ -1,0 +1,133 @@
+<odoo>
+
+    <!-- =========================================================
+         Blocklist Tree View
+         Used from Helpdesk → Configuration → Blocked Senders/Domains
+         Shows blocked emails/domains with basic audit information.
+         ========================================================= -->
+    <record id="adi_helpdesk_blocklist_view_tree" model="ir.ui.view">
+        <field name="name">adi.helpdesk.blocklist.tree</field>
+        <field name="model">adi.helpdesk.blocklist</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="block_type"/>
+                <field name="value"/>
+                <field name="reason"/>
+                <field name="create_date" string="Blocked Date"/>
+                <field name="create_uid" string="Blocked By"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- =========================================================
+         Blocklist Form View
+         Used when opening/editing one blocked sender/domain record.
+         Includes read-only audit fields.
+         ========================================================= -->
+    <record id="adi_helpdesk_blocklist_view_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.blocklist.form</field>
+        <field name="model">adi.helpdesk.blocklist</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                    <!-- Main blocklist details -->
+                    <group string="Blocked Sender / Domain">
+                        <field name="block_type"/>
+                        <field name="value"/>
+                        <field name="active"/>
+                    </group>
+
+                    <!-- Optional internal note explaining why it was blocked -->
+                    <group string="Reason">
+                        <field name="reason"/>
+                    </group>
+
+                    <!-- System audit information -->
+                    <group string="Audit">
+                        <field name="create_date" string="Blocked Date" readonly="1"/>
+                        <field name="create_uid" string="Blocked By" readonly="1"/>
+                        <field name="write_date" string="Last Updated" readonly="1"/>
+                        <field name="write_uid" string="Last Updated By" readonly="1"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- =========================================================
+         Blocklist Search View
+         Adds useful filters, including records blocked in the last
+         14 days for periodic review.
+         ========================================================= -->
+    <record id="adi_helpdesk_blocklist_view_search" model="ir.ui.view">
+        <field name="name">adi.helpdesk.blocklist.search</field>
+        <field name="model">adi.helpdesk.blocklist</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="value"/>
+                <field name="block_type"/>
+
+                <filter name="blocked_last_14_days"
+                        string="Blocked Last 14 Days"
+                        domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=14)).strftime('%Y-%m-%d'))]"/>
+
+                <filter name="active"
+                        string="Active"
+                        domain="[('active', '=', True)]"/>
+
+                <filter name="inactive"
+                        string="Inactive"
+                        domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_by_block_type"
+                            string="Block Type"
+                            context="{'group_by': 'block_type'}"/>
+
+                    <filter name="group_by_value"
+                            string="Email / Domain"
+                            context="{'group_by': 'value'}"/>
+
+                    <filter name="group_by_blocked_date"
+                            string="Blocked Date"
+                            context="{'group_by': 'create_date:day'}"/>
+
+                    <filter name="group_by_blocked_by"
+                            string="Blocked By"
+                            context="{'group_by': 'create_uid'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- =========================================================
+         Window Action
+         Opens the blocklist list/form views.
+         Defaults to showing active blocklist records.
+         ========================================================= -->
+    <record id="adi_helpdesk_blocklist_action" model="ir.actions.act_window">
+        <field name="name">Blocked Senders/Domains</field>
+        <field name="res_model">adi.helpdesk.blocklist</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="adi_helpdesk_blocklist_view_search"/>
+        <field name="context">{'search_default_blocked_last_14_days': 1}</field>
+    </record>
+
+
+    <!-- =========================================================
+         Helpdesk Configuration Menu Item
+         Adds Helpdesk → Configuration → Blocked Senders/Domains
+         ========================================================= -->
+    <menuitem id="adi_helpdesk_blocklist_menu"
+              name="Blocked Senders/Domains"
+              parent="helpdesk.helpdesk_menu_config"
+              action="adi_helpdesk_blocklist_action"
+              sequence="80"/>
+
+</odoo>

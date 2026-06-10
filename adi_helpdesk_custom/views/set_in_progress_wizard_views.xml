@@ -1,0 +1,90 @@
+<odoo>
+    <record id="adi_helpdesk_set_in_progress_wizard_view_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.set.in.progress.wizard.form</field>
+        <field name="model">adi.helpdesk.set.in.progress.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Set to In Process">
+
+                <field name="adi_new_contact_review_required" invisible="1"/>
+                <field name="adi_company_domain" invisible="1"/>
+                <field name="adi_domain_status" invisible="1"/>
+
+                <div class="o_form_full_width mb-3"
+                    invisible="not adi_new_contact_review_required">
+                    <div class="alert alert-info mb-0">
+                        <i class="fa fa-envelope me-2"/>
+                        <strong>Email check required</strong><br/>
+                        Check the submitted email address first. Correct any typo. If it matches an existing contact, use that contact. If it is a genuine new contact at the approved company, complete the name and company before continuing.
+                    </div>
+                </div>
+
+                <group string="Contact Review"
+                    invisible="not adi_new_contact_review_required">
+
+                    <field name="contact_email"/>
+
+                    <field name="matched_contact_id" readonly="1"/>
+
+                    <field name="company_id"
+                        options="{'no_create': True, 'no_open': True, 'search_more': False}"
+                        domain="adi_company_domain"
+                        invisible="matched_contact_id"/>
+
+                    <field name="contact_name"
+                        invisible="matched_contact_id"/>
+
+                    <field name="create_contact"
+                        invisible="matched_contact_id"/>
+
+                </group>
+
+                <group string="Ticket Management"
+                    invisible="adi_new_contact_review_required and not matched_contact_id">
+
+                    <group>
+                        <field name="ticket_id"/>
+                        <field name="user_id" options="{'no_create': True}"/>
+
+                        <field name="adi_charge_to"/>
+                        <field name="adi_contract_date_range"/>
+                        <field name="adi_contract_status"/>
+                        <field name="adi_new_contact_review_required" invisible="1"/>
+                    </group>
+
+                    <group>
+                        <field name="adi_test_asset_name"/>
+                        <field name="adi_customer_asset_guidance" 
+                            nolabel="1"
+                            readonly="1"
+                            colspan="2"/>
+
+                        <field name="adi_severity"/>
+                        <field name="adi_severity_guidance"
+                            nolabel="1"
+                            readonly="1"
+                            colspan="2"/>
+                    </group>
+
+                    <newline/>
+
+                </group>
+
+                <footer>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            class="btn-primary"/>
+                    <button name="action_block_sender"
+                            type="object"
+                            string="Block Sender"
+                            class="btn-secondary"
+                            invisible="not adi_new_contact_review_required or matched_contact_id"
+                            confirm="This will block this email address and archive the ticket. Continue?"/>
+                    <button string="Cancel"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+<form string="Closure">
+    <div class="text-muted mb-3">
+        Provide a closure statement which briefs internal stakeholders and the customer.
+        <br/><br/>
+        The internal notes field should be used to document any information that should not be shared with the customer.
+    </div>
+
+    <group>
+        <field name="adi_closure_result" 
+            string="Resolution Category" 
+            placeholder="Select resolution category..."/>
+        <field name="adi_closure_statement"/>
+    </group>
+
+    <footer>
+        <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+        <button string="Cancel" special="cancel" class="btn-secondary"/>
+    </footer>
+</form>
