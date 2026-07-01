@@ -114,6 +114,7 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
         approved_domain = self.env["res.partner"].search([
             ("is_company", "=", True),
             ("active", "=", True),
+            ("customer_rank", ">", 0),
             ("adi_approved_helpdesk_domain", "=ilike", domain),
         ], limit=1)
 
@@ -312,6 +313,7 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             companies = wizard.env["res.partner"].search([
                 ("is_company", "=", True),
                 ("active", "=", True),
+                ("customer_rank", ">", 0),
                 ("adi_approved_helpdesk_domain", "=ilike", domain),
             ])
 
@@ -323,6 +325,7 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
                 wizard.adi_company_domain = str([
                     ("id", "in", companies.ids),
                     ("is_company", "=", True),
+                    ("customer_rank", ">", 0),
                     ("active", "=", True),
                 ])
 
