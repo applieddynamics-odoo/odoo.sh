@@ -300,16 +300,3 @@
     content: none !important;
 }
 
-/* ---------------------------------------------------------
-   Breadcrumb / title area
-   --------------------------------------------------------- */
-
-.o_control_panel .breadcrumb-item.active,
-.o_control_panel .o_last_breadcrumb_item,
-.o_form_view .o_form_view_title {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-    padding: 2px 12px;
-    display: inline-block;
-}

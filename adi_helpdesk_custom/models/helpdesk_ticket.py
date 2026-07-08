@@ -169,6 +169,11 @@ class HelpdeskTicket(models.Model):
     def create(self, vals_list):
         now = fields.Datetime.now()
 
+        if self.env.context.get("adi_internal_ticket_create"):
+            for vals in vals_list:
+                vals.setdefault("adi_stage_entered_date", now)
+            return super().create(vals_list)
+
         validity_check_stage = self.env["helpdesk.stage"].search(
             [("name", "=", "Validity Check")],
             limit=1,
@@ -260,7 +265,6 @@ class HelpdeskTicket(models.Model):
                     if not routing["trusted_contact_id"]:
                         matched_company = self.env["res.partner"].search([
                             ("is_company", "=", True),
-                            ("customer_rank", ">", 0),
                             ("active", "=", True),
                             ("adi_approved_helpdesk_domain", "=ilike", domain),
                         ], limit=1)
@@ -461,4 +465,4 @@ class HelpdeskTicket(models.Model):
                 "default_ticket_id": self.id,
             },
         }            
-                
+             

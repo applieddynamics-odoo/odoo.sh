@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="adi_website_helpdesk_team_form_1" model="ir.ui.view">
+            <field name="name">adi.website.helpdesk.team.form.1</field>
+            <field name="type">qweb</field>
+            <field name="inherit_id" ref="website_helpdesk.team_form_1"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form[@id='helpdesk_ticket_form']/div[contains(@class, 's_website_form_rows')]"
+                       position="replace">
+
+                    <div class="s_website_form_rows row s_col_no_bgcolor">
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                 data-type="char"
+                                                 data-name="Field"
+                                                 data-translated-name="Submitted Email">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Your Email</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <input class="form-control s_website_form_input"
+                                                       type="text"
+                                                       name="adi_submitted_email"
+                                                       required="1"
+                                                       data-fill-with="email"/>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required d-none"
+                                                 data-type="char"
+                                                 data-name="Field"
+                                                 data-translated-name="Submitted Contact Name">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Your Contact Name</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <input class="form-control s_website_form_input"
+                                                       type="text"
+                                                       name="adi_submitted_contact_name"
+                                                       data-fill-with="name"/>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 d-none"
+                                                 data-type="char"
+                                                 data-name="Field"
+                                                 data-translated-name="Submitted Company Name">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Your Company Name</span>
+                                                </label>
+                                                <input class="form-control s_website_form_input"
+                                                       type="text"
+                                                       name="adi_submitted_company_name"/>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                 data-type="many2one"
+                                                 data-name="Field"
+                                                 data-translated-name="Problem Type">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Problem Type</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <select class="form-select s_website_form_input"
+                                                        name="ticket_type_id"
+                                                        required="1">
+                                                    <option value="" selected="selected"/>
+                                                    <t t-foreach="request.env['helpdesk.ticket.type'].sudo().search([])" t-as="ticket_type">
+                                                        <option t-att-value="ticket_type.id">
+                                                            <t t-esc="ticket_type.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12"
+                                                 data-type="many2one"
+                                                 data-name="Field"
+                                                 data-translated-name="Software Version">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Software Version</span>
+                                                </label>
+                                                <select class="form-select s_website_form_input"
+                                                        name="adi_software_version_id">
+                                                    <option value="" selected="selected"/>
+                                                    <t t-foreach="request.env['adi.helpdesk.software.version'].sudo().search([])" t-as="software_version">
+                                                        <option t-att-value="software_version.id">
+                                                            <t t-esc="software_version.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12"
+                                                 data-type="char"
+                                                 data-name="Field"
+                                                 data-translated-name="Serial Number">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Serial Number</span>
+                                                </label>
+                                                <input class="form-control s_website_form_input"
+                                                       type="text"
+                                                       name="adi_customer_input_serial_number"/>
+                                                <div class="s_website_form_field_description small form-text text-muted">
+                                                    Example: S34123-02 or S34155-01
+                                                </div>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_model_required"
+                                                 data-type="char"
+                                                 data-name="Field"
+                                                 data-translated-name="Subject">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Subject</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <input class="form-control s_website_form_input"
+                                                       type="text"
+                                                       name="name"
+                                                       required="1"
+                                                       maxlength="120"
+                                                       placeholder="Brief summary of the issue"/>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                 data-type="html"
+                                                 data-name="Field"
+                                                 data-translated-name="Description">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Description</span>
+                                                    <span class="s_website_form_mark">*</span>
+                                                </label>
+                                                <textarea class="form-control s_website_form_input"
+                                                          name="description"
+                                                          required="1"
+                                                          rows="5"></textarea>
+                                            </div>
+
+                                            <div class="s_website_form_field mb-3 col-12 s_website_form_custom"
+                                                 data-type="binary"
+                                                 data-name="Field"
+                                                 data-translated-name="Attachment">
+                                                <label class="s_website_form_label" style="width: 200px">
+                                                    <span class="s_website_form_label_content">Attachment</span>
+                                                </label>
+                                                <input type="file"
+                                                       class="form-control s_website_form_input"
+                                                       name="Attachment"/>
+                                            </div>
+
+                                            <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_dnone"
+                                                 data-name="Field">
+                                                <input type="hidden"
+                                                       class="form-control s_website_form_input"
+                                                       name="team_id"
+                                                       value="1"/>
+                                            </div>
+
+                                            <div class="mb-0 py-2 col-12 s_website_form_submit"
+                                                 data-name="Submit Button">
+                                                <div style="width: 200px;" class="s_website_form_label"/>
+                                                <a href="#"
+                                                   role="button"
+                                                   class="s_website_form_send btn btn-outline-custom rounded-circle btn-lg"
+                                                   style="border-width: 1px; border-style: solid; border-color: rgb(2, 162, 211); color: rgb(2, 162, 211);">
+                                                    Submit Ticket
+                                                </a>
+                                                <span id="s_website_form_result"/>
+                                            </div>
+                    </div>
+
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
