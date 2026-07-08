@@ -122,8 +122,7 @@ class HelpdeskTicket(models.Model):
         compute="_compute_adi_ticket_kpi_labels",
     )
 
-    adi_test_asset_id = fields.Many2one(
-        "adi.helpdesk.asset",
+    adi_test_asset_id = fields.Char(
         string="Test Asset",
     )
 
@@ -169,6 +168,11 @@ class HelpdeskTicket(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         now = fields.Datetime.now()
+
+        if self.env.context.get("adi_internal_ticket_create"):
+            for vals in vals_list:
+                vals.setdefault("adi_stage_entered_date", now)
+            return super().create(vals_list)
 
         validity_check_stage = self.env["helpdesk.stage"].search(
             [("name", "=", "Validity Check")],
@@ -261,7 +265,6 @@ class HelpdeskTicket(models.Model):
                     if not routing["trusted_contact_id"]:
                         matched_company = self.env["res.partner"].search([
                             ("is_company", "=", True),
-                            ("customer_rank", ">", 0),
                             ("active", "=", True),
                             ("adi_approved_helpdesk_domain", "=ilike", domain),
                         ], limit=1)
@@ -462,4 +465,4 @@ class HelpdeskTicket(models.Model):
                 "default_ticket_id": self.id,
             },
         }            
-                
+             

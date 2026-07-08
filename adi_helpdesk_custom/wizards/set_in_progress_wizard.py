@@ -7,10 +7,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     _name = "adi.helpdesk.set.in.progress.wizard"
     _description = "Set Helpdesk Ticket to In Progress"
 
-    # -------------------------------------------------------------------------
-    # Core ticket fields
-    # -------------------------------------------------------------------------
-
     ticket_id = fields.Many2one(
         "helpdesk.ticket",
         string="Ticket",
@@ -24,10 +20,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         required=True,
     )
 
-    # -------------------------------------------------------------------------
-    # New contact review fields
-    # -------------------------------------------------------------------------
-
     adi_new_contact_review_required = fields.Boolean(
         string="New Contact Review Required",
         related="ticket_id.adi_new_contact_review_required",
@@ -40,13 +32,8 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         domain="[('is_company', '=', True)]",
     )
 
-    contact_name = fields.Char(
-        string="Contact Name",
-    )
-
-    contact_email = fields.Char(
-        string="Contact Email",
-    )
+    contact_name = fields.Char(string="Contact Name")
+    contact_email = fields.Char(string="Contact Email")
 
     create_contact = fields.Boolean(
         string="Create Contact",
@@ -58,10 +45,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         string="Matched Contact",
         readonly=True,
     )
-
-    # -------------------------------------------------------------------------
-    # Domain guidance fields
-    # -------------------------------------------------------------------------
 
     adi_company_domain = fields.Char(
         string="Company Domain",
@@ -88,10 +71,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         compute="_compute_adi_company_guidance",
     )
 
-    # -------------------------------------------------------------------------
-    # Ticket management fields
-    # -------------------------------------------------------------------------
-
     adi_severity = fields.Selection(
         related="ticket_id.adi_severity",
         string="Severity",
@@ -105,9 +84,20 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         readonly=True,
     )
 
-    adi_test_asset_name = fields.Char(
-        string="Test Asset",
+    adi_test_asset_name = fields.Char(string="Test Asset")
+
+    adi_customer_input_serial_number = fields.Char(
+        related="ticket_id.adi_customer_input_serial_number",
+        string="Customer Asset / Serial No",
+        readonly=True,
     )
+
+    adi_customer_asset_guidance = fields.Html(
+        string="Customer Asset Guidance",
+        compute="_compute_adi_customer_asset_guidance",
+        readonly=True,
+    )
+
 
     adi_charge_to = fields.Char(
         string="Charge to",
@@ -130,10 +120,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         readonly=True,
         default="unknown",
     )
-
-    # -------------------------------------------------------------------------
-    # Defaults
-    # -------------------------------------------------------------------------
 
     @api.model
     def default_get(self, fields_list):
@@ -170,10 +156,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
         return res
 
-    # -------------------------------------------------------------------------
-    # Actions
-    # -------------------------------------------------------------------------
-
     def action_confirm(self):
         self.ensure_one()
 
@@ -191,12 +173,23 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         values = {
             "user_id": self.user_id.id,
             "stage_id": stage.id,
+            "adi_test_asset_id": self.adi_test_asset_name,
         }
 
         if self.ticket_id.adi_new_contact_review_required:
             self._adi_prepare_contact_review_values(values)
 
         self.ticket_id.write(values)
+
+        if self.env.context.get("adi_open_ticket_after_set_in_progress"):
+            return {
+                "type": "ir.actions.act_window",
+                "name": self.ticket_id.display_name,
+                "res_model": "helpdesk.ticket",
+                "res_id": self.ticket_id.id,
+                "view_mode": "form",
+                "target": "current",
+            }
 
         return {"type": "ir.actions.act_window_close"}
 
@@ -234,10 +227,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         })
 
         return {"type": "ir.actions.act_window_close"}
-
-    # -------------------------------------------------------------------------
-    # Contact review logic
-    # -------------------------------------------------------------------------
 
     def _adi_prepare_contact_review_values(self, values):
         contact_email = (self.contact_email or "").strip().lower()
@@ -311,10 +300,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             ("is_company", "=", False),
         ], limit=1)
 
-    # -------------------------------------------------------------------------
-    # Onchange
-    # -------------------------------------------------------------------------
-
     @api.onchange("contact_email")
     def _onchange_contact_email(self):
         self.matched_contact_id = False
@@ -328,10 +313,8 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             self.company_id = contact.parent_id.id or contact.commercial_partner_id.id
             self.create_contact = False
 
-    # -------------------------------------------------------------------------
-    # Computes
-    # -------------------------------------------------------------------------
-
+    # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify
+    # the correct company to link to the ticket and ensure that customers from unapproved domains are flagged for review.
     @api.depends("contact_email")
     def _compute_adi_company_guidance(self):
         for wizard in self:
@@ -354,7 +337,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             approved_domains = wizard.env["res.partner"].search([
                 ("is_company", "=", True),
                 ("active", "=", True),
-                ("customer_rank", ">", 0),
                 ("adi_approved_helpdesk_domain", "!=", False),
             ]).mapped("adi_approved_helpdesk_domain")
 
@@ -367,7 +349,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             companies = wizard.env["res.partner"].search([
                 ("is_company", "=", True),
                 ("active", "=", True),
-                ("customer_rank", ">", 0),
                 ("adi_approved_helpdesk_domain", "=ilike", domain),
             ])
 
@@ -382,10 +363,8 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 wizard.adi_company_domain = str([
                     ("id", "in", companies.ids),
                     ("is_company", "=", True),
-                    ("customer_rank", ">", 0),
                     ("active", "=", True),
                 ])
-
                 continue
 
             closest_matches = difflib.get_close_matches(
@@ -407,6 +386,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                     f"<strong>{domain}</strong> is not listed as an approved customer domain."
                 )
 
+    # Compute guidance for severity selection to help the agent choose the right level based on the customer's
+    # description of the problem and its impact on their operations. This is to encourage consistent severity 
+    # selection and ensure that high severity issues are appropriately prioritised.
     @api.depends("adi_severity")
     def _compute_adi_severity_guidance(self):
         guidance = """
@@ -419,3 +401,24 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
         for wizard in self:
             wizard.adi_severity_guidance = guidance
+
+
+    # Compute guidance based on whether the customer indicated an asset/serial number and what that number is
+
+    @api.depends("ticket_id.adi_customer_input_serial_number")
+    def _compute_adi_customer_asset_guidance(self):
+        for wizard in self:
+            asset = (wizard.ticket_id.adi_customer_input_serial_number or "").strip()
+
+            if asset:
+                wizard.adi_customer_asset_guidance = f"""
+                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
+                        * The customer indicated an issue with <strong>{asset}</strong>.
+                    </div>
+                """
+            else:
+                wizard.adi_customer_asset_guidance = """
+                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
+                        * The customer did not indicate which test asset the problem relates to.
+                    </div>
+                """        

@@ -6,3 +6,6 @@ access_adi_helpdesk_review_validity_wizard_user,access.adi.helpdesk.review.valid
 access_adi_helpdesk_blocklist_user,access.adi.helpdesk.blocklist.user,model_adi_helpdesk_blocklist,base.group_user,1,1,1,1
 access_adi_helpdesk_confirm_email_block_wizard_user,access.adi.helpdesk.confirm.email.block.wizard.user,model_adi_helpdesk_confirm_email_block_wizard,base.group_user,1,1,1,1
 access_adi_helpdesk_close_wizard_user,adi.helpdesk.close.wizard.user,model_adi_helpdesk_close_wizard,helpdesk.group_helpdesk_user,1,1,1,1
+access_adi_helpdesk_new_ticket_wizard,access.adi.helpdesk.new.ticket.wizard,model_adi_helpdesk_new_ticket_wizard,helpdesk.group_helpdesk_user,1,1,1,1
+access_adi_helpdesk_enquiry_user,access_adi_helpdesk_enquiry_user,model_adi_helpdesk_enquiry,helpdesk.group_helpdesk_user,1,1,1,0
+access_adi_helpdesk_enquiry_manager,access_adi_helpdesk_enquiry_manager,model_adi_helpdesk_enquiry,helpdesk.group_helpdesk_manager,1,1,1,1

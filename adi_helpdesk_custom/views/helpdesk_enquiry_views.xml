@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_adi_helpdesk_enquiry_tree" model="ir.ui.view">
+        <field name="name">adi.helpdesk.enquiry.tree</field>
+        <field name="model">adi.helpdesk.enquiry</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="company_name"/>
+                <field name="contact_name"/>
+                <field name="email"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_adi_helpdesk_enquiry_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.enquiry.form</field>
+        <field name="model">adi.helpdesk.enquiry</field>
+        <field name="arch" type="xml">
+            <form string="Customer Enquiry">
+                <sheet>
+                    <group>
+                        <field name="state" widget="statusbar"/>
+                    </group>
+
+                    <group>
+                        <field name="name"/>
+                        <field name="email"/>
+                        <field name="contact_name"/>
+                        <field name="company_name"/>
+                        <field name="phone"/>
+                    </group>
+
+                    <group>
+                        <field name="message"/>
+                    </group>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_adi_helpdesk_enquiry" model="ir.actions.act_window">
+        <field name="name">Customer Enquiries</field>
+        <field name="res_model">adi.helpdesk.enquiry</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_adi_helpdesk_enquiry"
+              name="Customer Enquiries"
+              parent="helpdesk.menu_helpdesk_root"
+              action="action_adi_helpdesk_enquiry"
+              sequence="20"/>
+</odoo>
