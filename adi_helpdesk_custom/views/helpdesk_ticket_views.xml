@@ -140,9 +140,9 @@
 
                             <span class="adi_card_item">
                                 <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Asset where found:</span>
+                                <span class="fw-bold">Asset:</span>
                                 <field name="adi_customer_input_serial_number"
-                                       nolabel="1" readonly="1"/>
+                                       nolabel="1"/>
                             </span>
 
                             <span class="adi_card_item">
@@ -205,13 +205,6 @@
                                 <i class="fa fa-exclamation-circle adi_summary_icon"/>
                                 <span class="fw-bold">Severity:</span>
                                 <field name="adi_severity" nolabel="1"/>
-                            </span>
-
-                            <span class="adi_card_item">
-                                <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Asset:</span>
-                                <field name="adi_test_asset_id"
-                                       nolabel="1"/>
                             </span>
 
                             <span class="adi_card_item">
@@ -328,6 +321,12 @@
                             before building the Repair integration.
                         </div>
 
+                        <group string="Repair Bridge">
+                            <field name="use_product_repairs" readonly="1"/>
+                            <field name="ticket_ref" readonly="1"/>
+                            <field name="ticket_type_id" readonly="1"/>
+                        </group>
+
                         <group string="Assignment / Timing">
                             <field name="assign_date" readonly="1"/>
                             <field name="assign_hours" readonly="1"/>
@@ -361,9 +360,9 @@
                         </div>
 
                         <group string="Submitted / Raw Customer Data">
-                            <field name="adi_submitted_email" readonly="1"/>
-                            <field name="adi_submitted_contact_name" readonly="1"/>
-                            <field name="adi_submitted_company_name" readonly="1"/>
+                            <field name="adi_submitted_email" readonly="0"/>
+                            <field name="adi_submitted_contact_name" readonly="0"/>
+                            <field name="adi_submitted_company_name" readonly="0"/>
                         </group>
 
                         <group string="Validated Contact Links">
@@ -376,7 +375,7 @@
                         <group string="Validation Flags">
                             <field name="adi_validity_check_required" readonly="0"/>
                             <field name="adi_new_contact_review_required" readonly="0"/>
-                            <field name="adi_can_repeat_validity" readonly="0"/>
+                            <field name="adi_can_repeat_validity"/>
                         </group>
 
                         <group string="Workflow / Timing">
@@ -385,6 +384,19 @@
                             <field name="adi_create_date_only"/>
                             <field name="adi_stage_entered_date" readonly="0"/>
                             <field name="close_date"/>
+                        </group>
+
+                        <group string="Ticket Management">
+                            <field name="user_id" readonly="0"/>
+                            <field name="adi_severity" readonly="0"/>
+                            <field name="adi_spr_number" readonly="0"/>
+                            <field name="adi_sir_hardware_part_number_ids" readonly="0" widget="many2many_tags"/>
+                        </group>
+
+                        <group string="Customer Input / Reference Data">
+                            <field name="adi_customer_reference_number" readonly="0"/>
+                            <field name="adi_customer_input_serial_number" readonly="0"/>
+                            <field name="adi_customer_input_sales_or_maintenance_order"/>
                         </group>
 
                         <group string="Contract / Asset Data">
@@ -397,7 +409,22 @@
                 </notebook>
             </xpath>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </field>
     </record>
-
 </odoo>
