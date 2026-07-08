@@ -122,8 +122,7 @@ class HelpdeskTicket(models.Model):
         compute="_compute_adi_ticket_kpi_labels",
     )
 
-    adi_test_asset_id = fields.Many2one(
-        "adi.helpdesk.asset",
+    adi_test_asset_id = fields.Char(
         string="Test Asset",
     )
 
