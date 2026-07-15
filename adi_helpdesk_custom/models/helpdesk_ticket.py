@@ -160,10 +160,6 @@ class HelpdeskTicket(models.Model):
         copy=False,
     )
 
-    adi_closure_statement = fields.Text(
-        string="Closure Statement",
-        copy=False,
-    )
 
     @api.model_create_multi
     def create(self, vals_list):

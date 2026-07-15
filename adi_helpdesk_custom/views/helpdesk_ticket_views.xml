@@ -277,19 +277,17 @@
 
                     <hr/>
 
-                    <div invisible="stage_id.name != 'Closed'">
-                        <hr/>
-                        <div class="adi_management_notes_row">
-                            <div class="adi_management_notes_label">
-                                Closure
-                            </div>
-                            <div>
-                                <strong>Result:</strong>
-                                <field name="adi_closure_result" readonly="1" nolabel="1"/>
-                                <br/>
-                                <strong>Statement:</strong>
-                                <field name="adi_closure_statement" readonly="1" nolabel="1"/>
-                            </div>
+
+                    <div class="adi_management_notes_row">
+                        <div class="adi_management_notes_label">
+                            Closure
+                        </div>
+                        <div>
+                            <strong>Result:</strong>
+                            <field name="adi_closure_result" readonly="1" nolabel="1"/>
+                            <br/>
+                            <strong>Statement:</strong>
+                            <field name="adi_closure_statement" readonly="1" nolabel="1"/>
                         </div>
                     </div>
 
@@ -308,13 +306,6 @@
                                    nolabel="1"/>
                         </div>
 
-                        <div invisible="stage_id.name != 'Closed'">
-                            <separator string="Closure"/>
-
-                            <field name="adi_closure_result" readonly="1"/>
-                            <field name="adi_closure_statement" readonly="1"/>
-                            <field name="close_date" readonly="1"/>
-                        </div>
 
                     </div>
 
