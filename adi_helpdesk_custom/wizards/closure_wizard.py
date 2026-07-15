@@ -44,6 +44,7 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
             "stage_id": closed_stage.id,
             "adi_closure_result": self.adi_closure_result,
             "adi_closure_statement": self.adi_closure_statement,
+            "close_date": fields.Datetime.now(),
         })
 
         return {"type": "ir.actions.act_window_close"}
