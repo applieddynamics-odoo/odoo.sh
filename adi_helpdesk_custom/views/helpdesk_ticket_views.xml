@@ -277,20 +277,6 @@
 
                     <hr/>
 
-
-                    <div class="adi_management_notes_row">
-                        <div class="adi_management_notes_label">
-                            Closure
-                        </div>
-                        <div>
-                            <strong>Result:</strong>
-                            <field name="adi_closure_result" readonly="1" nolabel="1"/>
-                            <br/>
-                            <strong>Statement:</strong>
-                            <field name="adi_closure_statement" readonly="1" nolabel="1"/>
-                        </div>
-                    </div>
-
                     <div class="adi_management_notes_row">
                         <div class="adi_management_notes_label">
                             Internal Notes
@@ -305,9 +291,31 @@
                             <field name="adi_internal_notes"
                                    nolabel="1"/>
                         </div>
-
-
                     </div>
+
+                    <div class="adi_management_notes_row">
+                        <div class="adi_management_notes_label">
+                            Closure
+                        </div>
+                        <div>
+                            <strong>Result:</strong>
+                            <field name="adi_closure_result" readonly="1" nolabel="1"/>
+                            <br/>
+                            <strong>Statement:</strong>
+                            <field name="adi_closure_statement" readonly="1" nolabel="1"/>
+                            <strong>Close date:</strong>
+                            <field name="close_date" readonly="1" nolabel="1"/>
+
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+
 
                 </div>
 
