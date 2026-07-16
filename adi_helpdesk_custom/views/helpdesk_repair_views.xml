@@ -9,14 +9,21 @@
 
         <field name="arch" type="xml">
 
-            <xpath expr="//field[@name='stage_id']/button[@name='action_repair_order_form']"
-                   position="attributes">
+            <xpath expr="//field[@name='stage_id'][@position='before']"
+                   position="replace">
 
-                <attribute name="string">Raise RMA</attribute>
+                <field name="stage_id" position="before">
+                    <field name="use_product_repairs"
+                           invisible="1"
+                           groups="stock.group_stock_user"/>
 
-                <attribute name="invisible">
-                    not use_product_repairs or adi_closure_result
-                </attribute>
+                    <button name="action_repair_order_form"
+                            type="object"
+                            groups="stock.group_stock_user"
+                            string="Raise RMA"
+                            invisible="not use_product_repairs or adi_closure_result"
+                            data-hotkey="t"/>
+                </field>
 
             </xpath>
 
