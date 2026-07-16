@@ -31,6 +31,19 @@
                         string="Close Ticket"
                         class="btn-primary"
                         invisible="not adi_show_close_button"/>
+            </xpath>
+
+            <!-- =========================================================
+                 Raise RMA button - inherit the standard Repair Order button to change the label and visibility.
+                 ========================================================= -->
+            <xpath expr="//button[@name='action_repair_order_form']"
+                position="attributes">
+
+                <attribute name="string">Raise RMA</attribute>
+
+                <attribute name="invisible">
+                    not use_product_repairs or adi_closure_result
+                </attribute>
 
             </xpath>
 
@@ -318,8 +331,8 @@
                                 <i class="fa fa-check-circle adi_summary_icon"/>
                                 <span class="fw-bold">Result:</span>
                                 <field name="adi_closure_result"
-                                    readonly="1"
-                                    nolabel="1"/>
+                                    nolabel="1"
+                                    options="{'no_create': True, 'no_create_edit': True}"/>
                             </span>
 
                         </div>
@@ -331,37 +344,11 @@
                         <strong>Closure Statement</strong>
                         <div class="mt-2">
                             <field name="adi_closure_statement"
-                                readonly="1"
                                 nolabel="1"/>
                         </div>
                     </div>
 
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </xpath>
 
             <!-- =========================================================
@@ -431,16 +418,16 @@
                         </group>
 
                         <group string="Workflow / Timing">
-                            <field name="stage_id" readonly="0"/>
+                            <field name="stage_id" readonly="1"/>
                             <field name="create_date"/>
                             <field name="adi_create_date_only"/>
-                            <field name="adi_stage_entered_date" readonly="0"/>
-                            <field name="close_date"/>
+                            <field name="adi_stage_entered_date" readonly="1"/>
+                            <field name="close_date" readonly="1"/>
                         </group>
 
                         <group string="Contract / Asset Data">
-                            <field name="adi_contract_date_range" readonly="0"/>
-                            <field name="adi_contract_status" readonly="0"/>
+                            <field name="adi_contract_date_range" readonly="1"/>
+                            <field name="adi_contract_status" readonly="1"/>
                         </group>
 
                     </page>
