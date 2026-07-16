@@ -5,28 +5,19 @@
         <field name="name">adi.helpdesk.repair.button.view</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id"
-               ref="helpdesk_stock.helpdesk_ticket_view_form_inherit_stock_user"/>
+               ref="helpdesk_repair.helpdesk_ticket_view_form_inherit_stock_user"/>
 
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_repair_order_form']"
+                   position="attributes">
 
-            <xpath expr="//field[@name='stage_id'][@position='before']"
-                   position="replace">
+                <attribute name="string">Raise RMA</attribute>
 
-                <field name="stage_id" position="before">
-                    <field name="use_product_repairs"
-                           invisible="1"
-                           groups="stock.group_stock_user"/>
-
-                    <button name="action_repair_order_form"
-                            type="object"
-                            groups="stock.group_stock_user"
-                            string="Raise RMA"
-                            invisible="not use_product_repairs or adi_closure_result"
-                            data-hotkey="t"/>
-                </field>
+                <attribute name="invisible">
+                    not use_product_repairs or adi_closure_result
+                </attribute>
 
             </xpath>
-
         </field>
     </record>
 
