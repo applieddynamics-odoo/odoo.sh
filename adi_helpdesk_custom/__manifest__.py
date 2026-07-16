@@ -24,6 +24,7 @@
         "views/website_helpdesk_form_templates.xml",
         "views/closure_wizard.xml",
         "views/helpdesk_enquiry_views.xml",
+        "views/helpdesk_repair_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
