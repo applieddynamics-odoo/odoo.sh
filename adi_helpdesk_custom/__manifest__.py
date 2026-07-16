@@ -8,6 +8,7 @@
         "helpdesk",
         "sale_management",
         "stock",
+        "helpdesk_stock",
         "adi_contacts_custom",
         "website_helpdesk",
         "mail",       
