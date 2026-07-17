@@ -40,10 +40,16 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
         if not closed_stage:
             raise UserError("Could not find a Helpdesk stage called 'Closed'.")
 
+        closure_time = fields.Datetime.now()
+
         self.ticket_id.write({
             "stage_id": closed_stage.id,
             "adi_closure_result": self.adi_closure_result,
             "adi_closure_statement": self.adi_closure_statement,
+        })
+
+        self.ticket_id.write({
+            "close_date": closure_time,
         })
 
         return {"type": "ir.actions.act_window_close"}

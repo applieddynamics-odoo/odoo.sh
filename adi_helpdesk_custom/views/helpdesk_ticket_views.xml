@@ -31,8 +31,8 @@
                         string="Close Ticket"
                         class="btn-primary"
                         invisible="not adi_show_close_button"/>
-
             </xpath>
+
 
             <!-- Hide the standard large title. The breadcrumb/control panel carries the ticket reference. -->
             <xpath expr="//h1" position="replace">
@@ -277,22 +277,6 @@
 
                     <hr/>
 
-                    <div invisible="stage_id.name != 'Closed'">
-                        <hr/>
-                        <div class="adi_management_notes_row">
-                            <div class="adi_management_notes_label">
-                                Closure
-                            </div>
-                            <div>
-                                <strong>Result:</strong>
-                                <field name="adi_closure_result" readonly="1" nolabel="1"/>
-                                <br/>
-                                <strong>Statement:</strong>
-                                <field name="adi_closure_statement" readonly="1" nolabel="1"/>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="adi_management_notes_row">
                         <div class="adi_management_notes_label">
                             Internal Notes
@@ -308,9 +292,50 @@
                                    nolabel="1"/>
                         </div>
                     </div>
-
                 </div>
 
+                <!-- =====================================================
+                    Closure card
+                    Visible only after the closure wizard has completed.
+                    ===================================================== -->
+                <div class="adi_helpdesk_card adi_closure_card"
+                    invisible="not adi_closure_result">
+
+                    <div class="adi_card_header">
+                        <span class="adi_card_title">Closure</span>
+
+                        <div class="adi_card_items">
+
+                            <span class="adi_card_item">
+                                <i class="fa fa-calendar-check-o adi_summary_icon"/>
+                                <span class="fw-bold">Closed:</span>
+                                <field name="close_date"
+                                    readonly="1"
+                                    nolabel="1"/>
+                            </span>
+
+                            <span class="adi_card_item">
+                                <i class="fa fa-check-circle adi_summary_icon"/>
+                                <span class="fw-bold">Result:</span>
+                                <field name="adi_closure_result"
+                                    nolabel="1"
+                                    options="{'no_create': True, 'no_create_edit': True}"/>
+                            </span>
+
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    <div class="mt-3">
+                        <strong>Closure Statement</strong>
+                        <div class="mt-2">
+                            <field name="adi_closure_statement"
+                                nolabel="1"/>
+                        </div>
+                    </div>
+
+                </div>
             </xpath>
 
             <!-- =========================================================
@@ -380,16 +405,16 @@
                         </group>
 
                         <group string="Workflow / Timing">
-                            <field name="stage_id" readonly="0"/>
+                            <field name="stage_id" readonly="1"/>
                             <field name="create_date"/>
                             <field name="adi_create_date_only"/>
-                            <field name="adi_stage_entered_date" readonly="0"/>
-                            <field name="close_date"/>
+                            <field name="adi_stage_entered_date" readonly="1"/>
+                            <field name="close_date" readonly="1"/>
                         </group>
 
                         <group string="Contract / Asset Data">
-                            <field name="adi_contract_date_range" readonly="0"/>
-                            <field name="adi_contract_status" readonly="0"/>
+                            <field name="adi_contract_date_range" readonly="1"/>
+                            <field name="adi_contract_status" readonly="1"/>
                         </group>
 
                     </page>

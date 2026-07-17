@@ -8,6 +8,8 @@
         "helpdesk",
         "sale_management",
         "stock",
+        "helpdesk_stock",
+        "helpdesk_repair",
         "adi_contacts_custom",
         "website_helpdesk",
         "mail",       
@@ -24,6 +26,7 @@
         "views/website_helpdesk_form_templates.xml",
         "views/closure_wizard.xml",
         "views/helpdesk_enquiry_views.xml",
+        "views/helpdesk_repair_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
