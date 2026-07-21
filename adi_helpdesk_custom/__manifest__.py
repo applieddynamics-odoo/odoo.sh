@@ -27,6 +27,7 @@
         "views/closure_wizard.xml",
         "views/helpdesk_enquiry_views.xml",
         "views/helpdesk_repair_views.xml",
+        "views/mail_notification_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
