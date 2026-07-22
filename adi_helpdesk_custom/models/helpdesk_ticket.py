@@ -396,6 +396,36 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             ticket.display_name = ticket.ticket_ref or ticket.name or ""
 
+    def _adi_email_subject(self):
+        """Return the standard subject for all Helpdesk correspondence."""
+        self.ensure_one()
+
+        reference = (self.ticket_ref or "").strip()
+        title = (self.name or "").strip()
+
+        if reference and title:
+            return f"[{reference}] {title}"
+
+        if reference:
+            return f"[{reference}]"
+
+        return title
+
+    def _notify_by_email_get_base_mail_values(
+        self,
+        message,
+        additional_values=None,
+    ):
+        values = super()._notify_by_email_get_base_mail_values(
+            message,
+            additional_values=additional_values,
+        )
+
+        if len(self) == 1:
+            values["subject"] = self._adi_email_subject()
+
+        return values
+
     @api.constrains("name")
     def _check_subject_length(self):
         for record in self:
