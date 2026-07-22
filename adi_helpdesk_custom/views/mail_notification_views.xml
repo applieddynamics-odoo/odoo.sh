@@ -5,14 +5,6 @@
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
-        <!-- Suppress personal user signatures on Helpdesk emails -->
-        <xpath expr="//t[@class='o_signature']"
-            position="attributes">
-            <attribute name="t-if">
-                message.model != 'helpdesk.ticket'
-            </attribute>
-        </xpath>
-
         <!-- Replace the standard footer row -->
         <xpath expr="//b[@t-out='company.name']/ancestor::tr[1]"
                position="replace">
@@ -33,29 +25,44 @@
                                line-height:0;
                                margin:16px 0 4px 0;"/>
 
+                    <!-- Helpdesk-specific footer -->
                     <t t-if="message.model == 'helpdesk.ticket'">
+
+                        <b t-if="message.author_id"
+                           t-out="message.author_id.name"/>
+                        <br t-if="message.author_id"/>
+
                         <b>Applied Dynamics International</b>
                         <br/>
 
                         <div style="color:#999999;">
                             <a href="https://www.adi.com/"
-                               style="text-decoration:none; color:#999999;">
+                               style="text-decoration:none;
+                                      color:#999999;">
                                 www.adi.com
                             </a>
                         </div>
+
                     </t>
 
+                    <!-- Standard footer for all other applications -->
                     <t t-else="">
+
                         <b t-out="company.name"/>
                         <br/>
 
                         <div style="color:#999999;">
+
                             <t t-out="company.phone"/>
-                            <t t-if="company.email and company.phone"> |</t>
+
+                            <t t-if="company.email and company.phone">
+                                |
+                            </t>
 
                             <a t-if="company.email"
                                t-att-href="'mailto:%s' % company.email"
-                               style="text-decoration:none; color:#999999;"
+                               style="text-decoration:none;
+                                      color:#999999;"
                                t-out="company.email"/>
 
                             <t t-if="company.website and (company.phone or company.email)">
@@ -64,9 +71,12 @@
 
                             <a t-if="company.website"
                                t-att-href="'%s' % company.website"
-                               style="text-decoration:none; color:#999999;"
+                               style="text-decoration:none;
+                                      color:#999999;"
                                t-out="company.website"/>
+
                         </div>
+
                     </t>
 
                 </td>
@@ -85,6 +95,16 @@
     <template id="adi_mail_notification_layout_footer"
               inherit_id="mail.mail_notification_layout">
 
+        <!-- Suppress personal user signatures on Helpdesk emails -->
+        <xpath expr="//t[@class='o_signature']"
+               position="attributes">
+
+            <attribute name="t-if">
+                message.model != 'helpdesk.ticket'
+            </attribute>
+
+        </xpath>
+
         <!-- Replace the standard footer div -->
         <xpath expr="//b[@t-out='company.name']/parent::div"
                position="replace">
@@ -101,23 +121,36 @@
                            line-height:0;
                            margin:16px 0 4px 0;"/>
 
+                <!-- Helpdesk-specific footer -->
                 <t t-if="message.model == 'helpdesk.ticket'">
+
                     <b t-if="message.author_id"
-                    t-out="message.author_id.name"/>
+                       t-out="message.author_id.name"
+                       style="font-size:11px;"/>
                     <br t-if="message.author_id"/>
 
-                    <b>Applied Dynamics International</b>
+                    <b style="font-size:11px;">
+                        Applied Dynamics International
+                    </b>
                     <br/>
 
-                    <div style="color:#999999;">
+                    <p style="color:#999999;
+                              margin-top:2px;
+                              font-size:11px;">
+
                         <a href="https://www.adi.com/"
-                        style="text-decoration:none; color:#999999;">
+                           style="text-decoration:none;
+                                  color:#999999;">
                             www.adi.com
                         </a>
-                    </div>
+
+                    </p>
+
                 </t>
 
+                <!-- Standard footer for all other applications -->
                 <t t-else="">
+
                     <b t-out="company.name"
                        style="font-size:11px;"/>
                     <br/>
@@ -127,11 +160,15 @@
                               font-size:11px;">
 
                         <t t-out="company.phone"/>
-                        <t t-if="company.email and company.phone"> |</t>
+
+                        <t t-if="company.email and company.phone">
+                            |
+                        </t>
 
                         <a t-if="company.email"
                            t-att-href="'mailto:%s' % company.email"
-                           style="text-decoration:none; color:#999999;"
+                           style="text-decoration:none;
+                                  color:#999999;"
                            t-out="company.email"/>
 
                         <t t-if="company.website and (company.phone or company.email)">
@@ -140,9 +177,12 @@
 
                         <a t-if="company.website"
                            t-att-href="'%s' % company.website"
-                           style="text-decoration:none; color:#999999;"
+                           style="text-decoration:none;
+                                  color:#999999;"
                            t-out="company.website"/>
+
                     </p>
+
                 </t>
 
             </div>
