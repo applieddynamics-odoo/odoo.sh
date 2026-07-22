@@ -5,6 +5,14 @@
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
+        <!-- Suppress personal user signatures on Helpdesk emails -->
+        <xpath expr="//t[@class='o_signature']"
+            position="attributes">
+            <attribute name="t-if">
+                message.model != 'helpdesk.ticket'
+            </attribute>
+        </xpath>
+
         <!-- Replace the standard footer row -->
         <xpath expr="//b[@t-out='company.name']/ancestor::tr[1]"
                position="replace">
@@ -94,19 +102,19 @@
                            margin:16px 0 4px 0;"/>
 
                 <t t-if="message.model == 'helpdesk.ticket'">
-                    <b style="font-size:11px;">
-                        Applied Dynamics International
-                    </b>
+                    <b t-if="message.author_id"
+                    t-out="message.author_id.name"/>
+                    <br t-if="message.author_id"/>
+
+                    <b>Applied Dynamics International</b>
                     <br/>
 
-                    <p style="color:#999999;
-                              margin-top:2px;
-                              font-size:11px;">
+                    <div style="color:#999999;">
                         <a href="https://www.adi.com/"
-                           style="text-decoration:none; color:#999999;">
+                        style="text-decoration:none; color:#999999;">
                             www.adi.com
                         </a>
-                    </p>
+                    </div>
                 </t>
 
                 <t t-else="">
