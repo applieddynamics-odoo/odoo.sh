@@ -1,18 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- ================================================================
+         LIGHT NOTIFICATION LAYOUT
+         Used for some automatic Helpdesk emails
+         ================================================================ -->
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
+        <!-- Replace the standard company footer -->
+        <xpath expr="//b[@t-out='company.name']/parent::div"
+               position="replace">
+
+            <div style="margin-top:32px;">
+                <hr width="100%"
+                    style="background-color:rgb(204,204,204);
+                           border:medium none;
+                           clear:both;
+                           display:block;
+                           font-size:0px;
+                           min-height:1px;
+                           line-height:0;
+                           margin:16px 0px 4px 0px;"/>
+
+                <!-- Helpdesk-specific footer -->
+                <t t-if="message.model == 'helpdesk.ticket'">
+                    <b style="font-size:11px;">
+                        Applied Dynamics International
+                    </b>
+                    <br/>
+
+                    <p style="color:#999999;
+                              margin-top:2px;
+                              font-size:11px;">
+                        <a href="https://www.adi.com/"
+                           style="text-decoration:none;
+                                  color:#999999;">
+                            www.adi.com
+                        </a>
+                    </p>
+                </t>
+
+                <!-- Standard footer for every other Odoo application -->
+                <t t-else="">
+                    <b t-out="company.name"
+                       style="font-size:11px;"/>
+                    <br/>
+
+                    <p style="color:#999999;
+                              margin-top:2px;
+                              font-size:11px;">
+                        <t t-out="company.phone"/>
+
+                        <t t-if="company.email and company.phone">
+                            |
+                        </t>
+
+                        <a t-if="company.email"
+                           t-att-href="'mailto:%s' % company.email"
+                           style="text-decoration:none;
+                                  color:#999999;"
+                           t-out="company.email"/>
+
+                        <t t-if="company.website
+                                and (company.phone or company.email)">
+                            |
+                        </t>
+
+                        <a t-if="company.website"
+                           t-att-href="'%s' % company.website"
+                           style="text-decoration:none;
+                                  color:#999999;"
+                           t-out="company.website"/>
+                    </p>
+                </t>
+            </div>
+
+        </xpath>
+
+        <!-- Remove Powered by Odoo and Unfollow -->
         <xpath expr="//a[contains(@href, 'www.odoo.com')]/ancestor::tr[1]"
                position="replace"/>
 
     </template>
 
 
+    <!-- ================================================================
+         FULL NOTIFICATION LAYOUT
+         Used for chatter and portal notifications
+         ================================================================ -->
     <template id="adi_mail_notification_layout_footer"
               inherit_id="mail.mail_notification_layout">
 
+        <!-- Replace the standard company footer row -->
+        <xpath expr="//b[@t-out='company.name']/ancestor::tr[1]"
+               position="replace">
+
+            <tr>
+                <td align="center"
+                    style="min-width:590px;
+                           padding:0 8px 0 8px;
+                           font-size:11px;">
+
+                    <hr width="100%"
+                        style="background-color:rgb(204,204,204);
+                               border:medium none;
+                               clear:both;
+                               display:block;
+                               font-size:0px;
+                               min-height:1px;
+                               line-height:0;
+                               margin:16px 0px 4px 0px;"/>
+
+                    <!-- Helpdesk-specific footer -->
+                    <t t-if="message.model == 'helpdesk.ticket'">
+                        <b>Applied Dynamics International</b>
+                        <br/>
+
+                        <div style="color:#999999;">
+                            <a href="https://www.adi.com/"
+                               style="text-decoration:none;
+                                      color:#999999;">
+                                www.adi.com
+                            </a>
+                        </div>
+                    </t>
+
+                    <!-- Standard footer for every other Odoo application -->
+                    <t t-else="">
+                        <b t-out="company.name"/>
+                        <br/>
+
+                        <div style="color:#999999;">
+                            <t t-out="company.phone"/>
+
+                            <t t-if="company.email and company.phone">
+                                |
+                            </t>
+
+                            <a t-if="company.email"
+                               t-att-href="'mailto:%s' % company.email"
+                               style="text-decoration:none;
+                                      color:#999999;"
+                               t-out="company.email"/>
+
+                            <t t-if="company.website
+                                    and (company.phone or company.email)">
+                                |
+                            </t>
+
+                            <a t-if="company.website"
+                               t-att-href="'%s' % company.website"
+                               style="text-decoration:none;
+                                      color:#999999;"
+                               t-out="company.website"/>
+                        </div>
+                    </t>
+
+                </td>
+            </tr>
+
+        </xpath>
+
+        <!-- Remove Powered by Odoo and Unfollow -->
         <xpath expr="//span[@id='mail_unfollow']/parent::div"
                position="replace"/>
 
