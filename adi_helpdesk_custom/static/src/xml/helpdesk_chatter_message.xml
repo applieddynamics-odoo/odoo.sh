@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="adi_helpdesk_custom.HelpdeskChatterMessage"
+       t-inherit="mail.Message"
+       t-inherit-mode="extension">
+
+        <xpath expr="//em[contains(@t-if, 'message.subject')]"
+               position="attributes">
+            <attribute name="t-if">
+                message.subject
+                and !message.isSubjectSimilarToOriginThreadName
+                and !message.isSubjectDefault
+                and props.thread?.model !== 'helpdesk.ticket'
+            </attribute>
+        </xpath>
+
+    </t>
+
+</templates>
