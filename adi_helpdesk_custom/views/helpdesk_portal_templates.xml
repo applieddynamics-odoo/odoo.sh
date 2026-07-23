@@ -54,11 +54,12 @@
 
 
     <!-- Remove "Powered by Odoo" from portal pages -->
-    <template id="adi_remove_brand_promotion"
-              inherit_id="web.frontend_layout">
 
-        <xpath expr="//t[@t-call='web.brand_promotion']"
-               position="replace"/>
+    <template id="adi_remove_brand_promotion"
+            inherit_id="website.brand_promotion">
+
+        <xpath expr="//t[@t-call='web.brand_promotion_message']"
+            position="replace"/>
 
     </template>
 
