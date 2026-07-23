@@ -27,13 +27,7 @@
                                line-height:0;
                                margin:16px 0 4px 0;"/>
 
-                    <!--
-                        Helpdesk message written by an internal Odoo user.
-
-                        The author must:
-                        - have a linked Odoo user;
-                        - have at least one linked user with share=False.
-                    -->
+                    <!-- Helpdesk message written by an internal Odoo user -->
                     <t t-if="message.model == 'helpdesk.ticket'
                              and message.author_id.user_ids
                              and False in message.author_id.user_ids.mapped('share')">
@@ -54,12 +48,7 @@
 
                     </t>
 
-                    <!--
-                        Customer-authored Helpdesk message.
-
-                        Deliberately leave this empty so a customer is not
-                        shown as belonging to Applied Dynamics International.
-                    -->
+                    <!-- Customer-authored Helpdesk message: no ADI footer -->
                     <t t-elif="message.model == 'helpdesk.ticket'"/>
 
                     <!-- Standard footer for all non-Helpdesk applications -->
@@ -115,12 +104,7 @@
     <template id="adi_mail_notification_layout_footer"
               inherit_id="mail.mail_notification_layout">
 
-        <!--
-            Suppress users' custom signatures on Helpdesk emails.
-
-            This prevents personal HTML signatures and signature images from
-            being inserted into staff replies sent through Helpdesk.
-        -->
+        <!-- Suppress personal user signatures on Helpdesk emails -->
         <xpath expr="//t[@class='o_signature']"
                position="attributes">
 
@@ -129,6 +113,102 @@
             </attribute>
 
         </xpath>
+
+
+        <!-- ============================================================
+             CUSTOMER-FACING HELPDESK HEADER
+             ============================================================ -->
+
+        <!-- Change "View Helpdesk Ticket" to "View Ticket" -->
+        <xpath expr="//t[@t-out=&quot;button_access['title']&quot;]"
+               position="replace">
+
+            <t t-if="message.model == 'helpdesk.ticket'
+                     and message.author_id.user_ids
+                     and False in message.author_id.user_ids.mapped('share')">
+                View Ticket
+            </t>
+
+            <t t-else=""
+               t-out="button_access['title']"/>
+
+        </xpath>
+
+
+        <!--
+            Hide the duplicate ticket reference shown beside the button
+            when subtitles are present.
+        -->
+        <xpath expr="//td[@t-if='subtitles']"
+               position="attributes">
+
+            <attribute name="t-if">
+                subtitles
+                and not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )
+            </attribute>
+
+        </xpath>
+
+
+        <!--
+            Hide the fallback record name beside the button when there
+            are no subtitles.
+        -->
+        <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
+               position="replace">
+
+            <td t-if="not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )">
+
+                <span style="font-weight:bold;"
+                      t-out="record_name"/>
+                <br/>
+
+            </td>
+
+        </xpath>
+
+
+        <!-- Hide the horizontal separator immediately above the button -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/preceding-sibling::tr[1]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )
+            </attribute>
+
+        </xpath>
+
+
+        <!-- Hide the horizontal separator immediately below the button -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )
+            </attribute>
+
+        </xpath>
+
+
+        <!-- ============================================================
+             FOOTER
+             ============================================================ -->
 
         <!-- Replace the standard company footer -->
         <xpath expr="//b[@t-out='company.name']/parent::div"
@@ -174,7 +254,7 @@
 
                 </t>
 
-                <!-- Customer-authored Helpdesk message: no added footer -->
+                <!-- Customer-authored Helpdesk message: no ADI footer -->
                 <t t-elif="message.model == 'helpdesk.ticket'"/>
 
                 <!-- Standard footer for all non-Helpdesk applications -->
