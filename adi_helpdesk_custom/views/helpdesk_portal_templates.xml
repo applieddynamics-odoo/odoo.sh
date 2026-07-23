@@ -55,11 +55,11 @@
 
     <!-- Remove "Powered by Odoo" from portal pages -->
 
-    <template id="adi_remove_brand_promotion"
-            inherit_id="website.brand_promotion">
+    <template id="adi_remove_portal_powered_by"
+              inherit_id="portal.portal_record_sidebar">
 
-        <xpath expr="//t[@t-call='web.brand_promotion_message']"
-            position="replace"/>
+        <xpath expr="//div[contains(@class, 'text-muted')][contains(., 'Powered by')]"
+               position="replace"/>
 
     </template>
 
