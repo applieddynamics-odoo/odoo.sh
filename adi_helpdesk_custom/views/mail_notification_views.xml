@@ -140,15 +140,10 @@
             when subtitles are present.
         -->
         <xpath expr="//td[@t-if='subtitles']"
-               position="attributes">
+            position="attributes">
 
             <attribute name="t-if">
-                subtitles
-                and not (
-                    message.model == 'helpdesk.ticket'
-                    and message.author_id.user_ids
-                    and False in message.author_id.user_ids.mapped('share')
-                )
+                subtitles and message.model != 'helpdesk.ticket'
             </attribute>
 
         </xpath>
@@ -159,16 +154,12 @@
             are no subtitles.
         -->
         <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
-               position="replace">
+            position="replace">
 
-            <td t-if="not (
-                    message.model == 'helpdesk.ticket'
-                    and message.author_id.user_ids
-                    and False in message.author_id.user_ids.mapped('share')
-                )">
+            <td t-if="message.model != 'helpdesk.ticket'">
 
                 <span style="font-weight:bold;"
-                      t-out="record_name"/>
+                    t-out="record_name"/>
                 <br/>
 
             </td>
