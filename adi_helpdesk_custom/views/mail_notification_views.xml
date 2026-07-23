@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Table-based light notification layout -->
+    <!-- ================================================================
+         TABLE-BASED LIGHT NOTIFICATION LAYOUT
+         ================================================================ -->
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
-        <!-- Replace the standard footer row -->
+        <!-- Replace the standard company footer row -->
         <xpath expr="//b[@t-out='company.name']/ancestor::tr[1]"
                position="replace">
 
@@ -25,12 +27,19 @@
                                line-height:0;
                                margin:16px 0 4px 0;"/>
 
-                    <!-- Helpdesk-specific footer -->
-                    <t t-if="message.model == 'helpdesk.ticket'">
+                    <!--
+                        Helpdesk message written by an internal Odoo user.
 
-                        <b t-if="message.author_id"
-                           t-out="message.author_id.name"/>
-                        <br t-if="message.author_id"/>
+                        The author must:
+                        - have a linked Odoo user;
+                        - have at least one linked user with share=False.
+                    -->
+                    <t t-if="message.model == 'helpdesk.ticket'
+                             and message.author_id.user_ids
+                             and False in message.author_id.user_ids.mapped('share')">
+
+                        <b t-out="message.author_id.name"/>
+                        <br/>
 
                         <b>Applied Dynamics International</b>
                         <br/>
@@ -45,7 +54,15 @@
 
                     </t>
 
-                    <!-- Standard footer for all other applications -->
+                    <!--
+                        Customer-authored Helpdesk message.
+
+                        Deliberately leave this empty so a customer is not
+                        shown as belonging to Applied Dynamics International.
+                    -->
+                    <t t-elif="message.model == 'helpdesk.ticket'"/>
+
+                    <!-- Standard footer for all non-Helpdesk applications -->
                     <t t-else="">
 
                         <b t-out="company.name"/>
@@ -65,7 +82,8 @@
                                       color:#999999;"
                                t-out="company.email"/>
 
-                            <t t-if="company.website and (company.phone or company.email)">
+                            <t t-if="company.website
+                                    and (company.phone or company.email)">
                                 |
                             </t>
 
@@ -91,11 +109,18 @@
     </template>
 
 
-    <!-- Div-based standard notification layout -->
+    <!-- ================================================================
+         DIV-BASED STANDARD NOTIFICATION LAYOUT
+         ================================================================ -->
     <template id="adi_mail_notification_layout_footer"
               inherit_id="mail.mail_notification_layout">
 
-        <!-- Suppress personal user signatures on Helpdesk emails -->
+        <!--
+            Suppress users' custom signatures on Helpdesk emails.
+
+            This prevents personal HTML signatures and signature images from
+            being inserted into staff replies sent through Helpdesk.
+        -->
         <xpath expr="//t[@class='o_signature']"
                position="attributes">
 
@@ -105,7 +130,7 @@
 
         </xpath>
 
-        <!-- Replace the standard footer div -->
+        <!-- Replace the standard company footer -->
         <xpath expr="//b[@t-out='company.name']/parent::div"
                position="replace">
 
@@ -121,13 +146,14 @@
                            line-height:0;
                            margin:16px 0 4px 0;"/>
 
-                <!-- Helpdesk-specific footer -->
-                <t t-if="message.model == 'helpdesk.ticket'">
+                <!-- Helpdesk message written by an internal Odoo user -->
+                <t t-if="message.model == 'helpdesk.ticket'
+                         and message.author_id.user_ids
+                         and False in message.author_id.user_ids.mapped('share')">
 
-                    <b t-if="message.author_id"
-                       t-out="message.author_id.name"
+                    <b t-out="message.author_id.name"
                        style="font-size:11px;"/>
-                    <br t-if="message.author_id"/>
+                    <br/>
 
                     <b style="font-size:11px;">
                         Applied Dynamics International
@@ -148,7 +174,10 @@
 
                 </t>
 
-                <!-- Standard footer for all other applications -->
+                <!-- Customer-authored Helpdesk message: no added footer -->
+                <t t-elif="message.model == 'helpdesk.ticket'"/>
+
+                <!-- Standard footer for all non-Helpdesk applications -->
                 <t t-else="">
 
                     <b t-out="company.name"
@@ -171,7 +200,8 @@
                                   color:#999999;"
                            t-out="company.email"/>
 
-                        <t t-if="company.website and (company.phone or company.email)">
+                        <t t-if="company.website
+                                and (company.phone or company.email)">
                             |
                         </t>
 
