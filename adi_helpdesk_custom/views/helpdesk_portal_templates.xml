@@ -53,11 +53,11 @@
     </template>
 
 
-    <!-- Remove Powered by Odoo from the portal -->
-    <template id="adi_portal_remove_powered_by_odoo"
-              inherit_id="portal.portal_layout">
+    <!-- Remove "Powered by Odoo" from portal pages -->
+    <template id="adi_remove_brand_promotion"
+              inherit_id="web.frontend_layout">
 
-        <xpath expr="//div[contains(@class, 'small') and contains(@class, 'text-center')][a[contains(@href, 'odoo.com')]]"
+        <xpath expr="//t[@t-call='web.brand_promotion']"
                position="replace"/>
 
     </template>
