@@ -1,92 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ================================================================
-         HELPDESK PORTAL: BREADCRUMB TITLE
-         ================================================================ -->
-    <template id="adi_helpdesk_portal_breadcrumb"
-              inherit_id="helpdesk.portal_my_home_menu_helpdesk">
-
-        <xpath expr="//li[@t-if='ticket'][hasclass('breadcrumb-item')]"
-               position="replace">
-
-            <li t-if="ticket"
-                class="breadcrumb-item active text-truncate">
-
-                <t t-if="ticket.ticket_ref">
-                    [<span t-field="ticket.ticket_ref"/>]
-                </t>
-
-                <span t-field="ticket.name"/>
-
-            </li>
-
-        </xpath>
-
-    </template>
-
-
-    <!-- ================================================================
-         HELPDESK PORTAL: INDIVIDUAL TICKET PAGE
-         ================================================================ -->
+    <!-- ==========================================================
+         Helpdesk Portal - Customer Ticket Page
+         ========================================================== -->
     <template id="adi_helpdesk_portal_ticket"
               inherit_id="helpdesk.tickets_followup">
 
-        <!-- Browser/page title -->
-        <xpath expr="//t[@t-set='title']"
-               position="replace">
-
-            <t t-set="title"
-               t-value="'[%s] %s' % (ticket.ticket_ref, ticket.name)
-                        if ticket.ticket_ref
-                        else ticket.name"/>
-
-        </xpath>
-
-
-        <!--
-            Hide the portal footer on Helpdesk ticket pages.
-
-            This removes the "Powered by Odoo" footer without changing
-            the rest of the website or other portal applications.
-        -->
-        <xpath expr="//t[@t-call='portal.portal_layout']"
-               position="inside">
-
-            <style>
-                footer,
-                .o_footer,
-                .o_footer_copyright {
-                    display: none !important;
-                }
-            </style>
-
-        </xpath>
-
-
-        <!-- Standardise the visible ticket heading -->
-        <xpath expr="//div[@id='card_header']//div[hasclass('col-md-9')]"
+        <!-- Replace the ticket heading -->
+        <xpath expr="//div[@id='card_header']//div[@class='col-md-9 text-truncate']"
                position="replace">
 
             <div class="col-md-9 text-truncate">
-
                 <span class="h3">
-
                     <t t-if="ticket.ticket_ref">
                         [<span t-field="ticket.ticket_ref"/>]
                     </t>
-
                     <span t-field="ticket.name"/>
-
                 </span>
-
             </div>
 
         </xpath>
 
-
-        <!-- Hide the ticket stage from the customer -->
-        <xpath expr="//div[@id='card_header']//span[@t-field='ticket.stage_id.name']/parent::div"
+        <!-- Remove the Stage block -->
+        <xpath expr="//div[@id='card_header']//div[@class='col col-auto']"
                position="replace"/>
 
     </template>
