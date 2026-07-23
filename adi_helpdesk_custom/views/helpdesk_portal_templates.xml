@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ==========================================================
-         Helpdesk Portal - Customer Ticket Page
-         ========================================================== -->
     <template id="adi_helpdesk_portal_ticket"
               inherit_id="helpdesk.tickets_followup">
 
-        <!-- Replace the ticket heading -->
+        <!-- Change visible ticket heading -->
         <xpath expr="//div[@id='card_header']//div[@class='col-md-9 text-truncate']"
                position="replace">
 
@@ -22,7 +19,7 @@
 
         </xpath>
 
-        <!-- Remove the Stage block -->
+        <!-- Remove Stage from the customer portal ticket page -->
         <xpath expr="//div[@id='card_header']//div[@class='col col-auto']"
                position="replace"/>
 
