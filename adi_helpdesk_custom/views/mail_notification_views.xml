@@ -46,7 +46,7 @@
                                         style="padding:0 14px 0 0;
                                                vertical-align:middle;">
 
-                                        <img src="/adi_helpdesk_custom/static/src/img/adi_logo_2024.png"
+                                        <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
                                              alt="Applied Dynamics International"
                                              width="105"
                                              style="display:block;
@@ -280,7 +280,7 @@
                                     style="padding:0 14px 0 0;
                                            vertical-align:middle;">
 
-                                    <img src="/adi_helpdesk_custom/static/src/img/adi_logo_2024.png"
+                                    <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
                                          alt="Applied Dynamics International"
                                          width="105"
                                          style="display:block;
