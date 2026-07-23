@@ -1,8 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Helpdesk portal breadcrumb -->
+    <template id="adi_helpdesk_portal_breadcrumb"
+              inherit_id="helpdesk.portal_my_home_menu_helpdesk">
+
+        <xpath expr="//li[@t-if='ticket'][hasclass('breadcrumb-item')]"
+               position="replace">
+
+            <li t-if="ticket"
+                class="breadcrumb-item active text-truncate">
+
+                <t t-if="ticket.ticket_ref">
+                    [<span t-field="ticket.ticket_ref"/>]
+                </t>
+
+                <span t-field="ticket.name"/>
+
+            </li>
+
+        </xpath>
+
+    </template>
+
+
+    <!-- Helpdesk portal ticket page -->
     <template id="adi_helpdesk_portal_ticket"
               inherit_id="helpdesk.tickets_followup">
+
+        <!-- Hide the footer on Helpdesk ticket pages -->
+        <xpath expr="//t[@t-call='portal.portal_layout']"
+               position="inside">
+
+            <style>
+                footer,
+                .o_footer,
+                .o_footer_copyright {
+                    display: none !important;
+                }
+            </style>
+
+        </xpath>
 
         <!-- Change visible ticket heading -->
         <xpath expr="//div[@id='card_header']//div[@class='col-md-9 text-truncate']"
@@ -10,16 +48,19 @@
 
             <div class="col-md-9 text-truncate">
                 <span class="h3">
+
                     <t t-if="ticket.ticket_ref">
                         [<span t-field="ticket.ticket_ref"/>]
                     </t>
+
                     <span t-field="ticket.name"/>
+
                 </span>
             </div>
 
         </xpath>
 
-        <!-- Remove Stage from the customer portal ticket page -->
+        <!-- Hide Stage from the customer -->
         <xpath expr="//div[@id='card_header']//div[@class='col col-auto']"
                position="replace"/>
 
