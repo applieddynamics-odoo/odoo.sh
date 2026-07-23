@@ -28,20 +28,6 @@
     <template id="adi_helpdesk_portal_ticket"
               inherit_id="helpdesk.tickets_followup">
 
-        <!-- Hide the footer on Helpdesk ticket pages -->
-        <xpath expr="//t[@t-call='portal.portal_layout']"
-               position="inside">
-
-            <style>
-                footer,
-                .o_footer,
-                .o_footer_copyright {
-                    display: none !important;
-                }
-            </style>
-
-        </xpath>
-
         <!-- Change visible ticket heading -->
         <xpath expr="//div[@id='card_header']//div[@class='col-md-9 text-truncate']"
                position="replace">
@@ -62,6 +48,16 @@
 
         <!-- Hide Stage from the customer -->
         <xpath expr="//div[@id='card_header']//div[@class='col col-auto']"
+               position="replace"/>
+
+    </template>
+
+
+    <!-- Remove Powered by Odoo from the portal -->
+    <template id="adi_portal_remove_powered_by_odoo"
+              inherit_id="portal.portal_layout">
+
+        <xpath expr="//div[contains(@class, 'small') and contains(@class, 'text-center')][a[contains(@href, 'odoo.com')]]"
                position="replace"/>
 
     </template>
