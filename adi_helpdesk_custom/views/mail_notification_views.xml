@@ -25,26 +25,72 @@
                                font-size:0px;
                                min-height:1px;
                                line-height:0;
-                               margin:16px 0 4px 0;"/>
+                               margin:16px 0 10px 0;"/>
 
                     <!-- Helpdesk message written by an internal Odoo user -->
                     <t t-if="message.model == 'helpdesk.ticket'
                              and message.author_id.user_ids
                              and False in message.author_id.user_ids.mapped('share')">
 
-                        <b t-out="message.author_id.name"/>
-                        <br/>
+                        <table role="presentation"
+                               cellspacing="0"
+                               cellpadding="0"
+                               border="0"
+                               align="center"
+                               style="border-collapse:collapse;
+                                      margin:0 auto;">
 
-                        <b>Applied Dynamics International</b>
-                        <br/>
+                            <tbody>
+                                <tr>
+                                    <td valign="middle"
+                                        style="padding:0 14px 0 0;
+                                               vertical-align:middle;">
 
-                        <div style="color:#999999;">
-                            <a href="https://www.adi.com/"
-                               style="text-decoration:none;
-                                      color:#999999;">
-                                www.adi.com
-                            </a>
-                        </div>
+                                        <img src="/adi_helpdesk_custom/static/src/img/adi_logo_2024.png"
+                                             alt="Applied Dynamics International"
+                                             width="105"
+                                             style="display:block;
+                                                    border:0;
+                                                    width:105px;
+                                                    height:auto;
+                                                    max-height:55px;"/>
+
+                                    </td>
+
+                                    <td valign="middle"
+                                        align="left"
+                                        style="padding:0;
+                                               vertical-align:middle;
+                                               text-align:left;
+                                               font-family:Verdana, Arial, sans-serif;
+                                               line-height:1.45;">
+
+                                        <div style="font-size:11px;
+                                                    font-weight:bold;
+                                                    color:#454748;">
+                                            <t t-out="message.author_id.name"/>
+                                        </div>
+
+                                        <div style="font-size:11px;
+                                                    font-weight:bold;
+                                                    color:#454748;">
+                                            Applied Dynamics International
+                                        </div>
+
+                                        <div style="font-size:11px;
+                                                    color:#999999;">
+                                            <a href="https://www.adi.com/"
+                                               style="text-decoration:none;
+                                                      color:#999999;">
+                                                www.adi.com
+                                            </a>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
 
                     </t>
 
@@ -140,7 +186,7 @@
             when subtitles are present.
         -->
         <xpath expr="//td[@t-if='subtitles']"
-            position="attributes">
+               position="attributes">
 
             <attribute name="t-if">
                 subtitles and message.model != 'helpdesk.ticket'
@@ -154,12 +200,12 @@
             are no subtitles.
         -->
         <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
-            position="replace">
+               position="replace">
 
             <td t-if="message.model != 'helpdesk.ticket'">
 
                 <span style="font-weight:bold;"
-                    t-out="record_name"/>
+                      t-out="record_name"/>
                 <br/>
 
             </td>
@@ -215,33 +261,68 @@
                            font-size:0px;
                            min-height:1px;
                            line-height:0;
-                           margin:16px 0 4px 0;"/>
+                           margin:16px 0 10px 0;"/>
 
                 <!-- Helpdesk message written by an internal Odoo user -->
                 <t t-if="message.model == 'helpdesk.ticket'
                          and message.author_id.user_ids
                          and False in message.author_id.user_ids.mapped('share')">
 
-                    <b t-out="message.author_id.name"
-                       style="font-size:11px;"/>
-                    <br/>
+                    <table role="presentation"
+                           cellspacing="0"
+                           cellpadding="0"
+                           border="0"
+                           style="border-collapse:collapse;">
 
-                    <b style="font-size:11px;">
-                        Applied Dynamics International
-                    </b>
-                    <br/>
+                        <tbody>
+                            <tr>
+                                <td valign="middle"
+                                    style="padding:0 14px 0 0;
+                                           vertical-align:middle;">
 
-                    <p style="color:#999999;
-                              margin-top:2px;
-                              font-size:11px;">
+                                    <img src="/adi_helpdesk_custom/static/src/img/adi_logo_2024.png"
+                                         alt="Applied Dynamics International"
+                                         width="105"
+                                         style="display:block;
+                                                border:0;
+                                                width:105px;
+                                                height:auto;
+                                                max-height:55px;"/>
 
-                        <a href="https://www.adi.com/"
-                           style="text-decoration:none;
-                                  color:#999999;">
-                            www.adi.com
-                        </a>
+                                </td>
 
-                    </p>
+                                <td valign="middle"
+                                    style="padding:0;
+                                           vertical-align:middle;
+                                           font-family:Verdana, Arial, sans-serif;
+                                           line-height:1.45;">
+
+                                    <div style="font-size:11px;
+                                                font-weight:bold;
+                                                color:#454748;">
+                                        <t t-out="message.author_id.name"/>
+                                    </div>
+
+                                    <div style="font-size:11px;
+                                                font-weight:bold;
+                                                color:#454748;">
+                                        Applied Dynamics International
+                                    </div>
+
+                                    <div style="font-size:11px;
+                                                color:#999999;">
+                                        <a href="https://www.adi.com/"
+                                           style="text-decoration:none;
+                                                  color:#999999;">
+                                            www.adi.com
+                                        </a>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
 
                 </t>
 
