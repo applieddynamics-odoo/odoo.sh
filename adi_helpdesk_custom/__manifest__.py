@@ -28,6 +28,7 @@
         "views/helpdesk_enquiry_views.xml",
         "views/helpdesk_repair_views.xml",
         "views/mail_notification_views.xml",
+        "views/helpdesk_portal_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [
