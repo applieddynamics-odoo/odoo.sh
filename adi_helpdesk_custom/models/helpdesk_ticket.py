@@ -432,7 +432,19 @@ class HelpdeskTicket(models.Model):
         )
 
         if len(self) == 1:
-            values["subject"] = self._adi_email_subject()
+            base_subject = self._adi_email_subject()
+
+            # A template-generated email may provide its own subject.
+            # Treat that subject as an editable suffix to the standard
+            # Helpdesk ticket subject.
+            template_subject = (
+                (additional_values or {}).get("subject") or ""
+            ).strip()
+
+            if template_subject and template_subject != base_subject:
+                values["subject"] = f"{base_subject}: {template_subject}"
+            else:
+                values["subject"] = base_subject
 
         return values
 
