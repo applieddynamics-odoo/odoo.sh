@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.tools import email_split
 from odoo.exceptions import ValidationError
 
 
@@ -198,7 +199,16 @@ class HelpdeskTicket(models.Model):
             if submitted_company_name:
                 vals["adi_submitted_company_name"] = submitted_company_name.strip()
 
-            submitted_email = submitted_email.strip().lower() if submitted_email else False
+            if submitted_email:
+                parsed_emails = email_split(submitted_email)
+                submitted_email = (
+                    parsed_emails[0].strip().lower()
+                    if parsed_emails
+                    else False
+                )
+            else:
+                submitted_email = False
+
             vals["adi_submitted_email"] = submitted_email or False
 
             vals["partner_id"] = False
