@@ -406,20 +406,17 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             ticket.display_name = ticket.ticket_ref or ticket.name or ""
 
-    def _adi_email_subject(self):
-        """Return the standard subject for all Helpdesk correspondence."""
+    def _adi_email_subject(self, email_type=None):
+        """Return the standard ADI Helpdesk email subject."""
+
         self.ensure_one()
 
-        reference = (self.ticket_ref or "").strip()
-        title = (self.name or "").strip()
+        subject = f"[{self.ticket_ref}] : {self.name}"
 
-        if reference and title:
-            return f"[{reference}] {title}"
+        if email_type:
+            subject += f" <{email_type}>"
 
-        if reference:
-            return f"[{reference}]"
-
-        return title
+        return subject
 
     def _notify_by_email_get_base_mail_values(
         self,
@@ -433,31 +430,36 @@ class HelpdeskTicket(models.Model):
 
         self.ensure_one()
 
-        base_subject = self._adi_email_subject()
-
         template_subject = (
             (additional_values or {}).get("subject") or ""
         ).strip()
 
         message_body = str(message.body or "")
 
-        # Rating requests pass through mail.compose.message. Although the
-        # composer contains "Support Rating", Odoo replaces the mail.message
-        # subject with the normal ticket subject before reaching this method.
-        #
-        # Identify the rating request from its unique rating links and images.
+        # Odoo loses the rating template subject before this method is reached,
+        # so identify rating requests from their unique rating content.
         is_rating_request = (
             message.message_type == "auto_comment"
             and "/rate/" in message_body
             and "rating/static/src/img/rating_" in message_body
         )
 
+        # The closure email reaches this method with its template subject,
+        # currently normally "Ticket closed".
+        is_closure_email = template_subject.casefold() in {
+            "ticket closed",
+            "ticket closure",
+            "closure",
+        }
+
         if is_rating_request:
-            values["subject"] = f"{base_subject}: Support Rating"
-        elif template_subject and template_subject != base_subject:
-            values["subject"] = f"{base_subject}: {template_subject}"
+            values["subject"] = self._adi_email_subject("Support Rating")
+        elif is_closure_email:
+            values["subject"] = self._adi_email_subject("Closure")
+        elif template_subject:
+            values["subject"] = self._adi_email_subject(template_subject)
         else:
-            values["subject"] = base_subject
+            values["subject"] = self._adi_email_subject()
 
         return values
 
