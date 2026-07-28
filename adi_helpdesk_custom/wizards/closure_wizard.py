@@ -103,6 +103,7 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
         ticket.message_post(
             body=message_body,
+            subject=f"{ticket._adi_email_subject()}: Ticket closed",
             message_type="comment",
             subtype_xmlid="mail.mt_comment",
         )
