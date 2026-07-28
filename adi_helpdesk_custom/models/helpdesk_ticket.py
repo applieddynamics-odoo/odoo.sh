@@ -431,20 +431,33 @@ class HelpdeskTicket(models.Model):
             additional_values=additional_values,
         )
 
-        if len(self) == 1:
-            base_subject = self._adi_email_subject()
+        self.ensure_one()
 
-            # A template-generated email may provide its own subject.
-            # Treat that subject as an editable suffix to the standard
-            # Helpdesk ticket subject.
-            template_subject = (
-                (additional_values or {}).get("subject") or ""
-            ).strip()
+        base_subject = self._adi_email_subject()
 
-            if template_subject and template_subject != base_subject:
-                values["subject"] = f"{base_subject}: {template_subject}"
-            else:
-                values["subject"] = base_subject
+        template_subject = (
+            (additional_values or {}).get("subject") or ""
+        ).strip()
+
+        message_body = str(message.body or "")
+
+        # Rating requests pass through mail.compose.message. Although the
+        # composer contains "Support Rating", Odoo replaces the mail.message
+        # subject with the normal ticket subject before reaching this method.
+        #
+        # Identify the rating request from its unique rating links and images.
+        is_rating_request = (
+            message.message_type == "auto_comment"
+            and "/rate/" in message_body
+            and "rating/static/src/img/rating_" in message_body
+        )
+
+        if is_rating_request:
+            values["subject"] = f"{base_subject}: Support Rating"
+        elif template_subject and template_subject != base_subject:
+            values["subject"] = f"{base_subject}: {template_subject}"
+        else:
+            values["subject"] = base_subject
 
         return values
 
