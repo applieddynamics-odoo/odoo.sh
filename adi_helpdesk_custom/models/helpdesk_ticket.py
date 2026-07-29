@@ -461,77 +461,41 @@ class HelpdeskTicket(models.Model):
 
         return values
 
-
     def rating_send_request(self, template, lang=False, force_send=True):
-        """Send the standard rating request and tidy its chatter entry."""
+        """Send the standard rating request and simplify its chatter entry."""
 
-        MailMessage = self.env["mail.message"]
+        if lang:
+            template = template.with_context(lang=lang)
 
-        # Record the latest message before Odoo creates the rating request.
-        latest_message = MailMessage.search(
-            [],
-            order="id desc",
-            limit=1,
-        )
-        previous_message_id = latest_message.id or 0
-
-        # Preserve Odoo's standard rating process:
-        # - rating access token
-        # - smiley links
-        # - recipients
-        # - email layout
-        # - sending behaviour
-        result = super().rating_send_request(
+        rating_messages = self.with_context(
+            mail_notify_force_send=force_send,
+        ).message_post_with_source(
             template,
-            lang=lang,
+            email_layout_xmlid="mail.mail_notification_light",
             force_send=force_send,
+            subtype_xmlid="mail.mt_note",
         )
 
-        # Find messages created by the rating-send operation.
-        new_messages = MailMessage.search([
-            ("id", ">", previous_message_id),
-            ("model", "=", self._name),
-            ("res_id", "in", self.ids),
-            ("message_type", "=", "auto_comment"),
-        ])
+        rating_messages.write({
+            "message_type": "comment",
+            "subtype_id": self.env.ref("mail.mt_comment").id,
+            "body": """
+                <p>
+                    <strong>Support Rating Invitation Sent</strong>
+                </p>
+                <p>
+                    A customer feedback request has been emailed to the customer.
+                </p>
+            """,
+        })
 
-        for message in new_messages:
-            message_body = str(message.body or "")
+        return rating_messages
 
-            is_rating_request = (
-                "/rate/" in message_body
-                and "rating/static/src/img/rating_" in message_body
-            )
 
-            if not is_rating_request:
-                continue
 
-            ticket = self.filtered(lambda record: record.id == message.res_id)[:1]
 
-            message.write({
-                # This is the important change. An auto_comment is displayed
-                # as the blank envelope entry; a comment displays its body.
-                "message_type": "comment",
-                "subtype_id": self.env.ref("mail.mt_note").id,
-                "subject": (
-                    ticket._adi_email_subject("Support Rating")
-                    if ticket
-                    else message.subject
-                ),
-                "body": """
-                    <div>
-                        <p>
-                            <strong>Support Rating Invitation Sent</strong>
-                        </p>
-                        <p>
-                            A customer feedback request has been emailed
-                            to the customer.
-                        </p>
-                    </div>
-                """,
-            })
 
-        return result
+
 
     @api.constrains("name")
     def _check_subject_length(self):
