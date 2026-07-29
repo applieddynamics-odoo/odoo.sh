@@ -438,7 +438,7 @@ class HelpdeskTicket(models.Model):
 
         # Odoo loses the rating template subject before this method is reached,
         # so identify rating requests from their unique rating content.
-        
+
         is_rating_request = (
             message.message_type == "auto_comment"
             and "/rate/" in message_body
@@ -460,6 +460,64 @@ class HelpdeskTicket(models.Model):
             values["subject"] = self._adi_email_subject()
 
         return values
+
+
+    def rating_send_request(self, template, lang=False, force_send=True):
+        """Send the standard rating email and tidy its chatter entry."""
+
+        # Record the latest message before Odoo creates the rating notification.
+        last_message_id = self.env["mail.message"].search(
+            [
+                ("model", "=", self._name),
+                ("res_id", "in", self.ids),
+            ],
+            order="id desc",
+            limit=1,
+        ).id
+
+        result = super().rating_send_request(
+            template,
+            lang=lang,
+            force_send=force_send,
+        )
+
+        # The rating email has now been generated/sent. Find only the new
+        # rating-request chatter messages created by that operation.
+        domain = [
+            ("model", "=", self._name),
+            ("res_id", "in", self.ids),
+            ("message_type", "=", "auto_comment"),
+        ]
+
+        if last_message_id:
+            domain.append(("id", ">", last_message_id))
+
+        new_messages = self.env["mail.message"].search(domain)
+
+        for message in new_messages:
+            message_body = str(message.body or "")
+
+            is_rating_request = (
+                "/rate/" in message_body
+                and "rating/static/src/img/rating_" in message_body
+            )
+
+            if is_rating_request:
+                message.write({
+                    "body": """
+                        <div>
+                            <p>
+                                <strong>Support Rating Invitation Sent</strong>
+                            </p>
+                            <p>
+                                A customer feedback request has been emailed
+                                to the customer.
+                            </p>
+                        </div>
+                    """,
+                })
+
+        return result
 
     @api.constrains("name")
     def _check_subject_length(self):
