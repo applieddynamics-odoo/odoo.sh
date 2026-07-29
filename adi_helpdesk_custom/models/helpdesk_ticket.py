@@ -488,19 +488,22 @@ class HelpdeskTicket(models.Model):
                     and message.res_id in self.ids
             )
 
-            ticket_messages.write({
-                "message_type": "comment",
-                "subtype_id": self.env.ref("mail.mt_comment").id,
-                "subject": False,
-                "body": """
-                    <p>
-                        <strong>Support Rating Invitation Sent</strong>
-                    </p>
-                    <p>
-                        A customer feedback request has been emailed to the customer.
-                    </p>
-                """,
-            })
+            for message in ticket_messages:
+                ticket = self.browse(message.res_id)
+
+                message.write({
+                    "message_type": "comment",
+                    "subtype_id": self.env.ref("mail.mt_comment").id,
+                    "subject": ticket._adi_email_subject("Support Rating"),
+                    "body": """
+                        <p>
+                            <strong>Support Rating Invitation Sent</strong>
+                        </p>
+                        <p>
+                            A customer feedback request has been emailed to the customer.
+                        </p>
+                    """,
+                })
 
         return messages
 
