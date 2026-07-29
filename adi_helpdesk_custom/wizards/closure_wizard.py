@@ -73,28 +73,13 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
         message_body = Markup("""
             <div>
-                <p>
-                    <strong>Ticket Closed</strong>
-                </p>
+                <p><strong>Ticket Closed:</strong> Your support request has now been completed.</p>
 
-                <p>
-                    Your support request has now been completed.
-                </p>
+                <p><strong>Closure result:</strong> Resolved - fault fixed</p>
 
-                <p>
-                    <strong>Closure result</strong><br/>
-                    {closure_result}
-                </p>
+                <p><strong>Closure statement:</strong> test email</p>
 
-                <p>
-                    <strong>Closure statement</strong><br/>
-                    {closure_statement}
-                </p>
-
-                <p>
-                    You will shortly receive an email inviting you to rate
-                    the support you received.
-                </p>
+                <p><em>You will receive a separate email inviting you to rate the support you received.</em></p>
             </div>
         """).format(
             closure_result=escape(closure_result_label),

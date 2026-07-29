@@ -500,7 +500,7 @@ class HelpdeskTicket(models.Model):
                             <strong>Support Rating Invitation Sent</strong>
                         </p>
                         <p>
-                            A customer feedback request has been emailed to the customer.
+                            Customer feedback requested.
                         </p>
                     """,
                 })
