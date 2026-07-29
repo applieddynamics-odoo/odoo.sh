@@ -48,11 +48,10 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
         ticket = self.ticket_id
 
+        # Save the latest closure information first.
         ticket.write({
-            "stage_id": closed_stage.id,
             "adi_closure_result": self.adi_closure_result,
             "adi_closure_statement": self.adi_closure_statement,
-            "close_date": fields.Datetime.now(),
         })
 
         closure_result_labels = dict(
@@ -73,18 +72,38 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
         message_body = Markup("""
             <div>
-                <p><strong>Ticket Closed:</strong> Your support request has now been completed.</p>
+                <p>
+                    <strong>Ticket Closed:</strong>
+                    Your support request has now been completed.
+                </p>
 
-                <p><strong>Closure result:</strong> Resolved - fault fixed</p>
+                <p>
+                    <strong>Result:</strong>
+                    {closure_result}
+                </p>
 
-                <p><strong>Closure statement:</strong> test email</p>
+                <p>
+                    <strong>Closure statement:</strong>
+                    {closure_statement}
+                </p>
 
-                <p><em>You will receive a separate email inviting you to rate the support you received.</em></p>
+                <p>
+                    <em>
+                        You will receive a separate email inviting you to rate
+                        the support you received.
+                    </em>
+                </p>
             </div>
         """).format(
             closure_result=escape(closure_result_label),
             closure_statement=closure_statement_html,
         )
+
+        # Change stage only after the new closure values have been saved.
+        ticket.write({
+            "stage_id": closed_stage.id,
+            "close_date": fields.Datetime.now(),
+        })
 
         ticket.message_post(
             body=message_body,
