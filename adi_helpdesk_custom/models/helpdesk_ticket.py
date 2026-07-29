@@ -461,41 +461,48 @@ class HelpdeskTicket(models.Model):
 
         return values
 
-    def rating_send_request(self, template, lang=False, force_send=True):
-        """Send the standard rating request and simplify its chatter entry."""
+    def message_post_with_source(self, source_ref, *args, **kwargs):
+        """Simplify the chatter copy of the Helpdesk rating invitation."""
 
-        if lang:
-            template = template.with_context(lang=lang)
-
-        rating_messages = self.with_context(
-            mail_notify_force_send=force_send,
-        ).message_post_with_source(
-            template,
-            email_layout_xmlid="mail.mail_notification_light",
-            force_send=force_send,
-            subtype_xmlid="mail.mt_note",
+        messages = super().message_post_with_source(
+            source_ref,
+            *args,
+            **kwargs,
         )
 
-        rating_messages.write({
-            "message_type": "comment",
-            "subtype_id": self.env.ref("mail.mt_comment").id,
-            "body": """
-                <p>
-                    <strong>Support Rating Invitation Sent</strong>
-                </p>
-                <p>
-                    A customer feedback request has been emailed to the customer.
-                </p>
-            """,
-        })
+        rating_template = self.env.ref(
+            "helpdesk.rating_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
 
-        return rating_messages
+        is_helpdesk_rating_template = (
+            rating_template
+            and getattr(source_ref, "_name", False) == "mail.template"
+            and source_ref.id == rating_template.id
+        )
 
+        if is_helpdesk_rating_template and messages:
+            ticket_messages = messages.filtered(
+                lambda message:
+                    message.model == self._name
+                    and message.res_id in self.ids
+            )
 
+            ticket_messages.write({
+                "message_type": "comment",
+                "subtype_id": self.env.ref("mail.mt_comment").id,
+                "subject": False,
+                "body": """
+                    <p>
+                        <strong>Support Rating Invitation Sent</strong>
+                    </p>
+                    <p>
+                        A customer feedback request has been emailed to the customer.
+                    </p>
+                """,
+            })
 
-
-
-
+        return messages
 
     @api.constrains("name")
     def _check_subject_length(self):
