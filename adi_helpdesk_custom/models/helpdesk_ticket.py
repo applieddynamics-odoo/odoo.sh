@@ -447,7 +447,7 @@ class HelpdeskTicket(models.Model):
 
         is_closure_email = (
             message.message_type == "comment"
-            and "<strong>Ticket Closed</strong>" in message_body
+            and "<strong>Ticket Closed" in message_body
         )
 
         if is_rating_request:
