@@ -438,19 +438,17 @@ class HelpdeskTicket(models.Model):
 
         # Odoo loses the rating template subject before this method is reached,
         # so identify rating requests from their unique rating content.
+        
         is_rating_request = (
             message.message_type == "auto_comment"
             and "/rate/" in message_body
             and "rating/static/src/img/rating_" in message_body
         )
 
-        # The closure email reaches this method with its template subject,
-        # currently normally "Ticket closed".
-        is_closure_email = template_subject.casefold() in {
-            "ticket closed",
-            "ticket closure",
-            "closure",
-        }
+        is_closure_email = (
+            message.message_type == "comment"
+            and "<strong>Ticket Closed</strong>" in message_body
+        )
 
         if is_rating_request:
             values["subject"] = self._adi_email_subject("Support Rating")
