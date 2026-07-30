@@ -501,7 +501,35 @@ class HelpdeskTicket(models.Model):
 
 
     def message_post_with_source(self, source_ref, *args, **kwargs):
-        """Simplify the chatter copy of the Helpdesk rating invitation."""
+        """Set automated Helpdesk identities and simplify rating chatter."""
+
+        new_ticket_template = self.env.ref(
+            "helpdesk.new_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
+        is_new_ticket_template = (
+            new_ticket_template
+            and getattr(source_ref, "_name", False) == "mail.template"
+            and source_ref.id == new_ticket_template.id
+        )
+
+        if is_new_ticket_template and len(self) == 1:
+            ticket = self[0]
+            team = ticket.team_id
+            author = team.adi_message_author_id
+
+            if author:
+                kwargs = dict(kwargs)
+
+                kwargs.update({
+                    "author_id": author.id,
+                    "email_from": (
+                        f"{team.name} <{team.alias_email}>"
+                        if team.alias_email
+                        else author.email_formatted
+                    ),
+                })
 
         messages = super().message_post_with_source(
             source_ref,
