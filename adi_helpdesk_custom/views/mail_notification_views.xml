@@ -27,10 +27,16 @@
                                line-height:0;
                                margin:16px 0 10px 0;"/>
 
-                    <!-- Helpdesk message written by an internal Odoo user -->
-                    <t t-if="message.model == 'helpdesk.ticket'
-                             and message.author_id.user_ids
-                             and False in message.author_id.user_ids.mapped('share')">
+                        <t t-if="
+                            message.model == 'helpdesk.ticket'
+                            and (
+                                (
+                                    message.author_id.user_ids
+                                    and False in message.author_id.user_ids.mapped('share')
+                                )
+                                or message.author_id.email == 'helpdesk@support.adi.com'
+                            )
+                        ">
 
                         <table role="presentation"
                                cellspacing="0"
@@ -264,9 +270,16 @@
                            margin:16px 0 10px 0;"/>
 
                 <!-- Helpdesk message written by an internal Odoo user -->
-                <t t-if="message.model == 'helpdesk.ticket'
-                         and message.author_id.user_ids
-                         and False in message.author_id.user_ids.mapped('share')">
+                <t t-if="
+                    message.model == 'helpdesk.ticket'
+                    and (
+                        (
+                            message.author_id.user_ids
+                            and False in message.author_id.user_ids.mapped('share')
+                        )
+                        or message.author_id.email == 'helpdesk@support.adi.com'
+                    )
+                ">
 
                     <table role="presentation"
                            cellspacing="0"
