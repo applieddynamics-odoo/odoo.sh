@@ -535,12 +535,14 @@ class HelpdeskTicket(models.Model):
                     "subtype_id": self.env.ref("mail.mt_comment").id,
                     "subject": ticket._adi_email_subject("Support Rating"),
                     "body": """
-                        <p>
-                            <strong>Support Rating Invitation Sent</strong>
-                        </p>
-                        <p>
-                            Customer feedback requested.
-                        </p>
+                        <div class="adi_auto_helpdesk_message">
+                            <p>
+                                <strong>Support Rating Invitation Sent</strong>
+                            </p>
+                            <p>
+                                Customer feedback requested.
+                            </p>
+                        </div>
                     """,
                 })
 
