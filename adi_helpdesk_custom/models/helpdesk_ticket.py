@@ -461,6 +461,45 @@ class HelpdeskTicket(models.Model):
 
         return values
 
+    def _track_template(self, changes):
+        res = super()._track_template(changes)
+
+        if "stage_id" not in res:
+            return res
+
+        template, mail_values = res["stage_id"]
+
+        rating_template = self.env.ref(
+            "helpdesk.rating_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
+        if not rating_template or template != rating_template:
+            return res
+
+        ticket = self[0]
+        team = ticket.team_id
+        author = team.adi_message_author_id
+
+        if not author:
+            return res
+
+        mail_values = dict(mail_values)
+
+        mail_values.update({
+            "author_id": author.id,
+            "email_from": (
+                f"{team.name} <{team.alias_email}>"
+                if team.alias_email
+                else author.email_formatted
+            ),
+        })
+
+        res["stage_id"] = (template, mail_values)
+
+        return res
+
+
     def message_post_with_source(self, source_ref, *args, **kwargs):
         """Simplify the chatter copy of the Helpdesk rating invitation."""
 
