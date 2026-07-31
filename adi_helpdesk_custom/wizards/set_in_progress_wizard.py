@@ -351,6 +351,13 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     # This is to help the agent quickly identify whether the customer is in contract, 
     # out of contract, or nearing contract expiry, so they can make informed decisions about how to handle the ticket.
 
+    def _adi_format_date(self, date_value):
+        return (
+            date_value.strftime("%d %b %Y")
+            if date_value
+            else ""
+        )
+
     @api.onchange("adi_charge_to_order_id")
     def _onchange_adi_charge_to_order_id(self):
         for wizard in self:
@@ -367,19 +374,21 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
             if start_date and end_date:
                 wizard.adi_contract_date_range = (
-                    f"{start_date.strftime('%d/%m/%Y')} - "
-                    f"{end_date.strftime('%d/%m/%Y')}"
+                    f"{wizard._adi_format_date(start_date)} - "
+                    f"{wizard._adi_format_date(end_date)}"
                 )
             elif start_date:
                 wizard.adi_contract_date_range = (
-                    f"From {start_date.strftime('%d/%m/%Y')}"
+                    f"From {wizard._adi_format_date(start_date)}"
                 )
             elif end_date:
                 wizard.adi_contract_date_range = (
-                    f"Until {end_date.strftime('%d/%m/%Y')}"
+                    f"Until {wizard._adi_format_date(end_date)}"
                 )
             else:
-                wizard.adi_contract_date_range = "No cover dates recorded"
+                wizard.adi_contract_date_range = (
+                    "No cover dates recorded"
+                )
 
             if start_date and today < start_date:
                 wizard.adi_contract_status = "warning"
