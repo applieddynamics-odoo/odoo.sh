@@ -8,6 +8,7 @@
                 <field name="adi_new_contact_review_required" invisible="1"/>
                 <field name="adi_company_domain" invisible="1"/>
                 <field name="adi_domain_status" invisible="1"/>
+                <field name="adi_charge_to_order_domain" invisible="1"/>
 
                 <div class="o_form_full_width mb-3"
                     invisible="not adi_new_contact_review_required">
@@ -46,6 +47,7 @@
                         <field name="user_id" options="{'no_create': True}"/>
 
                         <field name="adi_charge_to_order_id"
+                            domain="adi_charge_to_order_domain"
                             options="{'no_create': True, 'no_open': True}"/>
                         <field name="adi_contract_date_range"/>
                         <field name="adi_contract_status"/>
