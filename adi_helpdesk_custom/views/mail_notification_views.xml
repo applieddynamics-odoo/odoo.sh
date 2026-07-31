@@ -1,10 +1,391 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- ================================================================
+         TABLE-BASED LIGHT NOTIFICATION LAYOUT
+         ================================================================ -->
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
+        <!-- Replace the standard company footer row -->
+        <xpath expr="//b[@t-out='company.name']/ancestor::tr[1]"
+               position="replace">
+
+            <tr>
+                <td align="center"
+                    style="min-width: 590px;
+                           padding: 0 8px 0 8px;
+                           font-size: 11px;">
+
+                    <hr width="100%"
+                        style="background-color:rgb(204,204,204);
+                               border:medium none;
+                               clear:both;
+                               display:block;
+                               font-size:0px;
+                               min-height:1px;
+                               line-height:0;
+                               margin:16px 0 10px 0;"/>
+
+                        <t t-if="
+                            message.model == 'helpdesk.ticket'
+                            and (
+                                (
+                                    message.author_id.user_ids
+                                    and False in message.author_id.user_ids.mapped('share')
+                                )
+                                or message.author_id.email == 'helpdesk@support.adi.com'
+                            )
+                        ">
+
+                        <table role="presentation"
+                               cellspacing="0"
+                               cellpadding="0"
+                               border="0"
+                               align="center"
+                               style="border-collapse:collapse;
+                                      margin:0 auto;">
+
+                            <tbody>
+                                <tr>
+                                    <td valign="middle"
+                                        style="padding:0 14px 0 0;
+                                               vertical-align:middle;">
+
+                                        <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
+                                             alt="Applied Dynamics International"
+                                             width="105"
+                                             style="display:block;
+                                                    border:0;
+                                                    width:105px;
+                                                    height:auto;
+                                                    max-height:55px;"/>
+
+                                    </td>
+
+                                    <td valign="middle"
+                                        align="left"
+                                        style="padding:0;
+                                               vertical-align:middle;
+                                               text-align:left;
+                                               font-family:Verdana, Arial, sans-serif;
+                                               line-height:1.45;">
+
+                                        <div style="font-size:11px;
+                                                    font-weight:bold;
+                                                    color:#454748;">
+                                            <t t-out="message.author_id.name"/>
+                                        </div>
+
+                                        <div style="font-size:11px;
+                                                    font-weight:bold;
+                                                    color:#454748;">
+                                            Applied Dynamics International
+                                        </div>
+
+                                        <div style="font-size:11px;
+                                                    color:#999999;">
+                                            <a href="https://www.adi.com/"
+                                               style="text-decoration:none;
+                                                      color:#999999;">
+                                                www.adi.com
+                                            </a>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </t>
+
+                    <!-- Customer-authored Helpdesk message: no ADI footer -->
+                    <t t-elif="message.model == 'helpdesk.ticket'"/>
+
+                    <!-- Standard footer for all non-Helpdesk applications -->
+                    <t t-else="">
+
+                        <b t-out="company.name"/>
+                        <br/>
+
+                        <div style="color:#999999;">
+
+                            <t t-out="company.phone"/>
+
+                            <t t-if="company.email and company.phone">
+                                |
+                            </t>
+
+                            <a t-if="company.email"
+                               t-att-href="'mailto:%s' % company.email"
+                               style="text-decoration:none;
+                                      color:#999999;"
+                               t-out="company.email"/>
+
+                            <t t-if="company.website
+                                    and (company.phone or company.email)">
+                                |
+                            </t>
+
+                            <a t-if="company.website"
+                               t-att-href="'%s' % company.website"
+                               style="text-decoration:none;
+                                      color:#999999;"
+                               t-out="company.website"/>
+
+                        </div>
+
+                    </t>
+
+                </td>
+            </tr>
+
+        </xpath>
+
+        <!-- Remove Powered by Odoo and Unfollow -->
         <xpath expr="//a[contains(@href, 'www.odoo.com')]/ancestor::tr[1]"
+               position="replace"/>
+
+    </template>
+
+
+    <!-- ================================================================
+         DIV-BASED STANDARD NOTIFICATION LAYOUT
+         ================================================================ -->
+    <template id="adi_mail_notification_layout_footer"
+              inherit_id="mail.mail_notification_layout">
+
+        <!-- Suppress personal user signatures on Helpdesk emails -->
+        <xpath expr="//t[@class='o_signature']"
+               position="attributes">
+
+            <attribute name="t-if">
+                message.model != 'helpdesk.ticket'
+            </attribute>
+
+        </xpath>
+
+
+        <!-- ============================================================
+             CUSTOMER-FACING HELPDESK HEADER
+             ============================================================ -->
+
+        <!-- Change "View Helpdesk Ticket" to "View Ticket" -->
+        <xpath expr="//t[@t-out=&quot;button_access['title']&quot;]"
+               position="replace">
+
+            <t t-if="message.model == 'helpdesk.ticket'
+                     and message.author_id.user_ids
+                     and False in message.author_id.user_ids.mapped('share')">
+                View Ticket
+            </t>
+
+            <t t-else=""
+               t-out="button_access['title']"/>
+
+        </xpath>
+
+
+        <!--
+            Hide the duplicate ticket reference shown beside the button
+            when subtitles are present.
+        -->
+        <xpath expr="//td[@t-if='subtitles']"
+               position="attributes">
+
+            <attribute name="t-if">
+                subtitles and message.model != 'helpdesk.ticket'
+            </attribute>
+
+        </xpath>
+
+
+        <!--
+            Hide the fallback record name beside the button when there
+            are no subtitles.
+        -->
+        <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
+               position="replace">
+
+            <td t-if="message.model != 'helpdesk.ticket'">
+
+                <span style="font-weight:bold;"
+                      t-out="record_name"/>
+                <br/>
+
+            </td>
+
+        </xpath>
+
+
+        <!-- Hide the horizontal separator immediately above the button -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/preceding-sibling::tr[1]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )
+            </attribute>
+
+        </xpath>
+
+
+        <!-- Hide the horizontal separator immediately below the button -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not (
+                    message.model == 'helpdesk.ticket'
+                    and message.author_id.user_ids
+                    and False in message.author_id.user_ids.mapped('share')
+                )
+            </attribute>
+
+        </xpath>
+
+
+        <!-- ============================================================
+             FOOTER
+             ============================================================ -->
+
+        <!-- Replace the standard company footer -->
+        <xpath expr="//b[@t-out='company.name']/parent::div"
+               position="replace">
+
+            <div style="margin-top:32px;">
+
+                <hr width="100%"
+                    style="background-color:rgb(204,204,204);
+                           border:medium none;
+                           clear:both;
+                           display:block;
+                           font-size:0px;
+                           min-height:1px;
+                           line-height:0;
+                           margin:16px 0 10px 0;"/>
+
+                <!-- Helpdesk message written by an internal Odoo user -->
+                <t t-if="
+                    message.model == 'helpdesk.ticket'
+                    and (
+                        (
+                            message.author_id.user_ids
+                            and False in message.author_id.user_ids.mapped('share')
+                        )
+                        or message.author_id.email == 'helpdesk@support.adi.com'
+                    )
+                ">
+
+                    <table role="presentation"
+                           cellspacing="0"
+                           cellpadding="0"
+                           border="0"
+                           style="border-collapse:collapse;">
+
+                        <tbody>
+                            <tr>
+                                <td valign="middle"
+                                    style="padding:0 14px 0 0;
+                                           vertical-align:middle;">
+
+                                    <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
+                                         alt="Applied Dynamics International"
+                                         width="105"
+                                         style="display:block;
+                                                border:0;
+                                                width:105px;
+                                                height:auto;
+                                                max-height:55px;"/>
+
+                                </td>
+
+                                <td valign="middle"
+                                    style="padding:0;
+                                           vertical-align:middle;
+                                           font-family:Verdana, Arial, sans-serif;
+                                           line-height:1.45;">
+
+                                    <div style="font-size:11px;
+                                                font-weight:bold;
+                                                color:#454748;">
+                                        <t t-out="message.author_id.name"/>
+                                    </div>
+
+                                    <div style="font-size:11px;
+                                                font-weight:bold;
+                                                color:#454748;">
+                                        Applied Dynamics International
+                                    </div>
+
+                                    <div style="font-size:11px;
+                                                color:#999999;">
+                                        <a href="https://www.adi.com/"
+                                           style="text-decoration:none;
+                                                  color:#999999;">
+                                            www.adi.com
+                                        </a>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </t>
+
+                <!-- Customer-authored Helpdesk message: no ADI footer -->
+                <t t-elif="message.model == 'helpdesk.ticket'"/>
+
+                <!-- Standard footer for all non-Helpdesk applications -->
+                <t t-else="">
+
+                    <b t-out="company.name"
+                       style="font-size:11px;"/>
+                    <br/>
+
+                    <p style="color:#999999;
+                              margin-top:2px;
+                              font-size:11px;">
+
+                        <t t-out="company.phone"/>
+
+                        <t t-if="company.email and company.phone">
+                            |
+                        </t>
+
+                        <a t-if="company.email"
+                           t-att-href="'mailto:%s' % company.email"
+                           style="text-decoration:none;
+                                  color:#999999;"
+                           t-out="company.email"/>
+
+                        <t t-if="company.website
+                                and (company.phone or company.email)">
+                            |
+                        </t>
+
+                        <a t-if="company.website"
+                           t-att-href="'%s' % company.website"
+                           style="text-decoration:none;
+                                  color:#999999;"
+                           t-out="company.website"/>
+
+                    </p>
+
+                </t>
+
+            </div>
+
+        </xpath>
+
+        <!-- Remove Powered by Odoo and Unfollow -->
+        <xpath expr="//span[@id='mail_unfollow']/parent::div"
                position="replace"/>
 
     </template>

@@ -99,10 +99,36 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     )
 
 
-    adi_charge_to = fields.Char(
+    adi_charge_to_order_id = fields.Many2one(
+        "sale.order",
         string="Charge to",
-        readonly=True,
     )
+
+    adi_charge_to_order_domain = fields.Binary(
+        compute="_compute_adi_charge_to_order_domain",
+    )
+
+    @api.depends(
+        "ticket_id.partner_id",
+        "company_id",
+        "matched_contact_id",
+    )
+    def _compute_adi_charge_to_order_domain(self):
+        for wizard in self:
+            company = (
+                wizard.company_id
+                or wizard.matched_contact_id.commercial_partner_id
+                or wizard.ticket_id.partner_id.commercial_partner_id
+            )
+
+            if company:
+                wizard.adi_charge_to_order_domain = [
+                    ("partner_id", "child_of", company.id),
+                ]
+            else:
+                wizard.adi_charge_to_order_domain = [
+                    ("id", "=", 0),
+                ]
 
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
@@ -174,6 +200,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "user_id": self.user_id.id,
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
+            "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
         }
 
         if self.ticket_id.adi_new_contact_review_required:

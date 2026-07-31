@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.tools import email_split
 from odoo.exceptions import ValidationError
 
 
@@ -198,7 +199,16 @@ class HelpdeskTicket(models.Model):
             if submitted_company_name:
                 vals["adi_submitted_company_name"] = submitted_company_name.strip()
 
-            submitted_email = submitted_email.strip().lower() if submitted_email else False
+            if submitted_email:
+                parsed_emails = email_split(submitted_email)
+                submitted_email = (
+                    parsed_emails[0].strip().lower()
+                    if parsed_emails
+                    else False
+                )
+            else:
+                submitted_email = False
+
             vals["adi_submitted_email"] = submitted_email or False
 
             vals["partner_id"] = False
@@ -395,6 +405,181 @@ class HelpdeskTicket(models.Model):
     def _compute_display_name(self):
         for ticket in self:
             ticket.display_name = ticket.ticket_ref or ticket.name or ""
+
+    def _adi_email_subject(self, email_type=None):
+        """Return the standard ADI Helpdesk email subject."""
+
+        self.ensure_one()
+
+        subject = f"[{self.ticket_ref}] : {self.name}"
+
+        if email_type:
+            subject += f" <{email_type}>"
+
+        return subject
+
+    def _notify_by_email_get_base_mail_values(
+        self,
+        message,
+        additional_values=None,
+    ):
+        values = super()._notify_by_email_get_base_mail_values(
+            message,
+            additional_values=additional_values,
+        )
+
+        self.ensure_one()
+
+        template_subject = (
+            (additional_values or {}).get("subject") or ""
+        ).strip()
+
+        message_body = str(message.body or "")
+
+        # Odoo loses the rating template subject before this method is reached,
+        # so identify rating requests from their unique rating content.
+
+        is_rating_request = (
+            message.message_type == "auto_comment"
+            and "/rate/" in message_body
+            and "rating/static/src/img/rating_" in message_body
+        )
+
+        is_closure_email = (
+            message.message_type == "comment"
+            and "<strong>Ticket Closed" in message_body
+        )
+
+        if is_rating_request:
+            values["subject"] = self._adi_email_subject("Support Rating")
+        elif is_closure_email:
+            values["subject"] = self._adi_email_subject("Closure")
+        elif template_subject:
+            values["subject"] = self._adi_email_subject(template_subject)
+        else:
+            values["subject"] = self._adi_email_subject()
+
+        return values
+
+    def _track_template(self, changes):
+        res = super()._track_template(changes)
+
+        if "stage_id" not in res:
+            return res
+
+        template, mail_values = res["stage_id"]
+
+        rating_template = self.env.ref(
+            "helpdesk.rating_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
+        if not rating_template or template != rating_template:
+            return res
+
+        ticket = self[0]
+        team = ticket.team_id
+        author = team.adi_message_author_id
+
+        if not author:
+            return res
+
+        mail_values = dict(mail_values)
+
+        mail_values.update({
+            "author_id": author.id,
+            "email_from": (
+                f"{team.name} <{team.alias_email}>"
+                if team.alias_email
+                else author.email_formatted
+            ),
+        })
+
+        res["stage_id"] = (template, mail_values)
+
+        return res
+
+
+    def message_post_with_source(self, source_ref, *args, **kwargs):
+        """Set automated Helpdesk identities and simplify rating chatter."""
+
+        new_ticket_template = self.env.ref(
+            "helpdesk.new_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
+        is_new_ticket_template = (
+            new_ticket_template
+            and getattr(source_ref, "_name", False) == "mail.template"
+            and source_ref.id == new_ticket_template.id
+        )
+
+        if is_new_ticket_template and len(self) == 1:
+            ticket = self[0]
+            team = ticket.team_id
+            author = team.adi_message_author_id
+
+            if author:
+                kwargs = dict(kwargs)
+
+                kwargs.update({
+                    "author_id": author.id,
+                    "email_from": (
+                        f"{team.name} <{team.alias_email}>"
+                        if team.alias_email
+                        else author.email_formatted
+                    ),
+                })
+
+        messages = super().message_post_with_source(
+            source_ref,
+            *args,
+            **kwargs,
+        )
+
+        rating_template = self.env.ref(
+            "helpdesk.rating_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
+        is_helpdesk_rating_template = (
+            rating_template
+            and getattr(source_ref, "_name", False) == "mail.template"
+            and source_ref.id == rating_template.id
+        )
+
+        if is_helpdesk_rating_template and messages:
+            ticket_messages = messages.filtered(
+                lambda message:
+                    message.model == self._name
+                    and message.res_id in self.ids
+            )
+
+            for message in ticket_messages:
+                ticket = self.browse(message.res_id)
+
+            message.write({
+                "message_type": "comment",
+                "subtype_id": self.env.ref("mail.mt_comment").id,
+                "subject": ticket._adi_email_subject("Support Rating"),
+                "body": """
+                    <div style="
+                        background-color: #d9f0dc;
+                        border: 1px solid #9ec7a5;
+                        border-radius: 8px;
+                        padding: 12px 16px;
+                    ">
+                        <p style="margin: 0 0 6px 0;">
+                            <strong>Support Rating Invitation Sent</strong>
+                        </p>
+                        <p style="margin: 0;">
+                            Customer feedback requested.
+                        </p>
+                    </div>
+                """,
+            })
+
+        return messages
 
     @api.constrains("name")
     def _check_subject_length(self):
