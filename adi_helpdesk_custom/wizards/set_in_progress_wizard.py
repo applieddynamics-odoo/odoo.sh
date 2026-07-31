@@ -124,6 +124,13 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             if company:
                 wizard.adi_charge_to_order_domain = [
                     ("partner_id", "child_of", company.id),
+                    ("state", "=", "sale"),
+                    ("x_studio_lifecycle", "=", "In Progress"),
+                    (
+                        "x_studio_sales_order_type",
+                        "in",
+                        ["Maintenance", "Maintenance Plus"],
+                    ),
                 ]
             else:
                 wizard.adi_charge_to_order_domain = [
