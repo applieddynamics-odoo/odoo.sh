@@ -40,6 +40,8 @@
         "web.assets_frontend": [
             "adi_helpdesk_custom/static/src/js/website_form_message.js",
             "adi_helpdesk_custom/static/src/js/website_helpdesk_email_check.js",
+            "adi_helpdesk_custom/static/src/xml/portal_chatter_message.xml",
+            "adi_helpdesk_custom/static/src/scss/portal_chatter.scss",
         ],
     },
     "installable": True,
