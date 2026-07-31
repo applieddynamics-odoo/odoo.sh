@@ -347,6 +347,52 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             self.company_id = contact.parent_id.id or contact.commercial_partner_id.id
             self.create_contact = False
 
+    # Compute the contract date range and status based on the selected charge-to order. 
+    # This is to help the agent quickly identify whether the customer is in contract, 
+    # out of contract, or nearing contract expiry, so they can make informed decisions about how to handle the ticket.
+
+    @api.onchange("adi_charge_to_order_id")
+    def _onchange_adi_charge_to_order_id(self):
+        for wizard in self:
+            order = wizard.adi_charge_to_order_id
+
+            if not order:
+                wizard.adi_contract_date_range = False
+                wizard.adi_contract_status = "unknown"
+                continue
+
+            start_date = order.x_studio_mnt_start_of_cover_date
+            end_date = order.x_studio_mnt_end_of_cover_date
+            today = fields.Date.context_today(wizard)
+
+            if start_date and end_date:
+                wizard.adi_contract_date_range = (
+                    f"{start_date.strftime('%d/%m/%Y')} - "
+                    f"{end_date.strftime('%d/%m/%Y')}"
+                )
+            elif start_date:
+                wizard.adi_contract_date_range = (
+                    f"From {start_date.strftime('%d/%m/%Y')}"
+                )
+            elif end_date:
+                wizard.adi_contract_date_range = (
+                    f"Until {end_date.strftime('%d/%m/%Y')}"
+                )
+            else:
+                wizard.adi_contract_date_range = "No cover dates recorded"
+
+            if start_date and today < start_date:
+                wizard.adi_contract_status = "warning"
+            elif end_date and today > end_date:
+                wizard.adi_contract_status = "expired"
+            elif end_date and (end_date - today).days <= 30:
+                wizard.adi_contract_status = "warning"
+            elif start_date or end_date:
+                wizard.adi_contract_status = "active"
+            else:
+                wizard.adi_contract_status = "unknown"
+
+
     # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify
     # the correct company to link to the ticket and ensure that customers from unapproved domains are flagged for review.
     @api.depends("contact_email")
