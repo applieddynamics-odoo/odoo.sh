@@ -99,9 +99,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     )
 
 
-    adi_charge_to = fields.Char(
+    adi_charge_to_order_id = fields.Many2one(
+        "sale.order",
         string="Charge to",
-        readonly=True,
     )
 
     adi_contract_date_range = fields.Char(
@@ -174,6 +174,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "user_id": self.user_id.id,
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
+            "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
         }
 
         if self.ticket_id.adi_new_contact_review_required:
