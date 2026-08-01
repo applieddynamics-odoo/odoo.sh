@@ -104,6 +104,10 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         string="Charge to",
     )
 
+    adi_non_contract = fields.Boolean(
+        string="No contract - expense to 78000 - Customer Support (non-contract)",
+    )
+
     adi_charge_to_order_domain = fields.Binary(
         compute="_compute_adi_charge_to_order_domain",
     )
@@ -207,6 +211,12 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         if not self.user_id:
             raise UserError("Please select an Assigned to user before continuing.")
 
+        if not self.adi_charge_to_order_id and not self.adi_non_contract:
+            raise UserError(
+                "Please select a Sales Order or confirm that this is "
+                "non-contract support."
+        )
+
         stage = self.env["helpdesk.stage"].search(
             [("name", "=", "In Progress")],
             limit=1,
@@ -220,6 +230,14 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
             "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
+            "adi_non_contract": self.adi_non_contract,
+            "adi_contract_date_range": self.adi_contract_date_range,
+            "adi_contract_status": dict(
+                self._fields["adi_contract_status"].selection
+            ).get(
+                self.adi_contract_status,
+                "Unknown",
+            )
         }
 
         if self.ticket_id.adi_new_contact_review_required:
@@ -375,9 +393,17 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         for wizard in self:
             order = wizard.adi_charge_to_order_id
 
+            if order:
+                wizard.adi_non_contract = False
+
             if not order:
                 wizard.adi_contract_date_range = False
-                wizard.adi_contract_status = "unknown"
+
+                if wizard.adi_non_contract:
+                    wizard.adi_contract_status = "unknown"
+                else:
+                    wizard.adi_contract_status = "unknown"
+
                 continue
 
             start_date = order.x_studio_mnt_start_of_cover_date
@@ -412,6 +438,19 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 wizard.adi_contract_status = "active"
             else:
                 wizard.adi_contract_status = "unknown"
+
+    @api.onchange("adi_non_contract")
+    def _onchange_adi_non_contract(self):
+        for wizard in self:
+            if wizard.adi_non_contract:
+                wizard.adi_charge_to_order_id = False
+                wizard.adi_contract_date_range = False
+                wizard.adi_contract_status = "unknown"
+
+
+
+
+
 
 
     # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify

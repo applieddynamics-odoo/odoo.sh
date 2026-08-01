@@ -49,7 +49,11 @@
                         <field name="adi_charge_to_order_id"
                             domain="adi_charge_to_order_domain"
                             context="{'adi_helpdesk_charge_to': True}"
-                            options="{'no_create': True, 'no_open': True}"/>
+                            options="{'no_create': True, 'no_open': True}"
+                            readonly="adi_non_contract"/>
+
+                        <field name="adi_non_contract"/>
+                        
                         <field name="adi_contract_date_range"/>
                         <field name="adi_contract_status"/>
                         <field name="adi_new_contact_review_required" invisible="1"/>
