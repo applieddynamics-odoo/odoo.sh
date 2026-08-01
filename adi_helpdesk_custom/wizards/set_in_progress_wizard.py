@@ -121,21 +121,33 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 or wizard.ticket_id.partner_id.commercial_partner_id
             )
 
-            if company:
-                wizard.adi_charge_to_order_domain = [
-                    ("partner_id", "child_of", company.id),
-                    ("state", "=", "sale"),
-                    ("x_studio_lifecycle", "=", "In progress"),
-                    (
-                        "x_studio_sales_order_type",
-                        "in",
-                        ["Maintenance", "Maintenance Plus"],
-                    ),
-                ]
-            else:
+            if not company:
                 wizard.adi_charge_to_order_domain = [
                     ("id", "=", 0),
                 ]
+                continue
+
+            wizard.adi_charge_to_order_domain = [
+                ("partner_id", "child_of", company.id),
+                ("state", "=", "sale"),
+                "|",
+                (
+                    "x_studio_lifecycle",
+                    "=",
+                    "Warranty",
+                ),
+                "&",
+                (
+                    "x_studio_lifecycle",
+                    "=",
+                    "In progress",
+                ),
+                (
+                    "x_studio_sales_order_type",
+                    "in",
+                    ["Maintenance", "Maintenance Plus"],
+                ),
+            ]
 
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
