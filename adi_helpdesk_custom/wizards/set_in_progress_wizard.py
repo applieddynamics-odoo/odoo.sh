@@ -533,7 +533,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     @api.depends("adi_severity")
     def _compute_adi_severity_guidance(self):
         guidance = """
-            <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
+            <div style="font-style: italic; color: #3b6ea8; line-height: 1.5;">
                 * <strong>High:</strong> Critical issue preventing operation or testing.<br/>
                 * <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
                 * <strong>Low:</strong> Minor issue or cosmetic problem.
@@ -553,13 +553,13 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
             if asset:
                 wizard.adi_customer_asset_guidance = f"""
-                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
+                    <div style="font-style: italic; color: #3b6ea8; line-height: 1.5;">
                         * The customer indicated an issue with <strong>{asset}</strong>.
                     </div>
                 """
             else:
                 wizard.adi_customer_asset_guidance = """
-                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
+                    <div style="font-style: italic; color: #3b6ea8; line-height: 1.5;">
                         * The customer did not indicate which test asset the problem relates to.
                     </div>
                 """        
