@@ -153,6 +153,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 ),
             ]
 
+
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
         readonly=True,

@@ -50,12 +50,30 @@
                             domain="adi_charge_to_order_domain"
                             context="{'adi_helpdesk_charge_to': True}"
                             options="{'no_create': True, 'no_open': True}"
-                            readonly="adi_non_contract"/>
+                            invisible="adi_non_contract"/>
 
-                        <field name="adi_non_contract"/>
-                        
-                        <field name="adi_contract_date_range"/>
-                        <field name="adi_contract_status"/>
+                        <label for="adi_non_contract"
+                            string="No Contract"
+                            class="fw-bold"
+                            invisible="adi_charge_to_order_id"/>
+
+                        <label string="* Expense to 78000 - Customer Support (non-contract)"
+                            class="fst-italic text-primary ms-4"
+                            invisible="adi_charge_to_order_id or not adi_non_contract"/>
+
+
+                        <field name="adi_non_contract"
+                            nolabel="1"
+                            invisible="adi_charge_to_order_id"/>
+
+                        <field name="adi_contract_date_range"
+                            readonly="1"
+                            invisible="not adi_charge_to_order_id"/>
+
+                        <field name="adi_contract_status"
+                            readonly="1"
+                            invisible="not adi_charge_to_order_id"/>
+
                         <field name="adi_new_contact_review_required" invisible="1"/>
                     </group>
 
