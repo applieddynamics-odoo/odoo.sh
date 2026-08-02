@@ -58,7 +58,7 @@
                             invisible="adi_charge_to_order_id"/>
 
                         <div class="o_form_label fst-italic ms-4"
-                            style="color:#3b6ea8; line-height:1.5;"
+                            style="color:#4B6B6B; line-height:1.5;"
                             invisible="adi_charge_to_order_id or not adi_non_contract">
                             * Expense to 78000 - Customer Support (non-contract)
                         </div>
