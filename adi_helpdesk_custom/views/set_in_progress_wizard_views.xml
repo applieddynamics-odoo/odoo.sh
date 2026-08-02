@@ -51,8 +51,9 @@
                             options="{'no_create': True}"/>
 
                         <div class="fst-italic"
-                            style="color:#667085; line-height:1.5;">
-                            Select the person responsible for progressing this ticket.
+                            style="color:#667085; line-height:1.5;"
+                            colspan="2">
+                            Select the person responsible for leading the investigation.
                         </div>
                     </group>
 
@@ -80,8 +81,9 @@
                             string="No Contract"
                             invisible="adi_charge_to_order_id"/>
 
-                        <div class="o_form_label fst-italic ms-4"
+                        <div class="fst-italic ms-4"
                             style="color:#667085; line-height:1.5;"
+                            colspan="2"
                             invisible="adi_charge_to_order_id or not adi_non_contract">
                             * Expense to 78000 - Customer Support (non-contract)
                         </div>
