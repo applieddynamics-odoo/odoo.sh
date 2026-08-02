@@ -9,6 +9,7 @@
                 <field name="adi_company_domain" invisible="1"/>
                 <field name="adi_domain_status" invisible="1"/>
                 <field name="adi_charge_to_order_domain" invisible="1"/>
+                <field name="ticket_id" invisible="1"/>
 
                 <div class="o_form_full_width mb-3"
                     invisible="not adi_new_contact_review_required">
@@ -39,60 +40,72 @@
 
                 </group>
 
-                <group string="Ticket Management"
-                    invisible="adi_new_contact_review_required and not matched_contact_id">
+                <group
+                    invisible="adi_new_contact_review_required and not matched_contact_id"
+                    col="2">
 
-                    <group>
-                        <field name="ticket_id"/>
-                        <field name="user_id" options="{'no_create': True}"/>
+                    <!-- Who is responsible? -->
+                    <group string="1. Assignment">
+                        <field name="user_id"
+                            string="Assigned to"
+                            options="{'no_create': True}"/>
 
+                        <div class="fst-italic"
+                            style="color:#667085; line-height:1.5;">
+                            Select the person responsible for progressing this ticket.
+                        </div>
+                    </group>
+
+                    <!-- Which customer asset is affected? -->
+                    <group string="3. Customer Asset">
+                        <field name="adi_test_asset_name"
+                            string="Test Asset"/>
+
+                        <field name="adi_customer_asset_guidance"
+                            nolabel="1"
+                            readonly="1"
+                            colspan="2"/>
+                    </group>
+
+                    <!-- Where should the work be charged? -->
+                    <group string="2. Charge Allocation">
                         <field name="adi_charge_to_order_id"
+                            string="Charge to"
                             domain="adi_charge_to_order_domain"
                             context="{'adi_helpdesk_charge_to': True}"
                             options="{'no_create': True, 'no_open': True}"
                             invisible="adi_non_contract"/>
 
-                        <label for="adi_non_contract"
+                        <field name="adi_non_contract"
                             string="No Contract"
-                            class="fw-bold"
                             invisible="adi_charge_to_order_id"/>
 
                         <div class="o_form_label fst-italic ms-4"
-                            style="color:#4B6B6B; line-height:1.5;"
+                            style="color:#667085; line-height:1.5;"
                             invisible="adi_charge_to_order_id or not adi_non_contract">
                             * Expense to 78000 - Customer Support (non-contract)
                         </div>
 
-                        <field name="adi_non_contract"
-                            nolabel="1"
-                            invisible="adi_charge_to_order_id"/>
-
                         <field name="adi_contract_date_range"
+                            string="Cover Period"
                             readonly="1"
                             invisible="not adi_charge_to_order_id"/>
 
                         <field name="adi_contract_status"
                             readonly="1"
                             invisible="not adi_charge_to_order_id"/>
-
-                        <field name="adi_new_contact_review_required" invisible="1"/>
                     </group>
 
-                    <group>
-                        <field name="adi_test_asset_name"/>
-                        <field name="adi_customer_asset_guidance" 
-                            nolabel="1"
-                            readonly="1"
-                            colspan="2"/>
+                    <!-- How urgent is it? -->
+                    <group string="4. Priority Assessment">
+                        <field name="adi_severity"
+                            string="Severity"/>
 
-                        <field name="adi_severity"/>
                         <field name="adi_severity_guidance"
                             nolabel="1"
                             readonly="1"
                             colspan="2"/>
                     </group>
-
-                    <newline/>
 
                 </group>
 

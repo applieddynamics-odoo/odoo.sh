@@ -361,7 +361,7 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Set to In Process",
+            "name": f"Set to In Process - {self.ticket_ref or self.display_name}",
             "res_model": "adi.helpdesk.set.in.progress.wizard",
             "view_mode": "form",
             "target": "new",
