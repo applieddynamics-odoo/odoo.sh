@@ -57,10 +57,10 @@
                             class="fw-bold"
                             invisible="adi_charge_to_order_id"/>
 
-                        <label string="* Expense to 78000 - Customer Support (non-contract)"
-                            class="fst-italic text-primary ms-4"
-                            invisible="adi_charge_to_order_id or not adi_non_contract"/>
-
+                        <div class="o_form_label fst-italic text-primary ms-4"
+                            invisible="adi_charge_to_order_id or not adi_non_contract">
+                            * Expense to 78000 - Customer Support (non-contract)
+                        </div>
 
                         <field name="adi_non_contract"
                             nolabel="1"
