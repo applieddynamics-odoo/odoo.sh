@@ -190,12 +190,12 @@ class HelpdeskTicket(models.Model):
 
     adi_asset_scope = fields.Selection(
         [
-            ("single", "One specific resource"),
-            ("multiple", "Multiple resources"),
-            ("software", "Software only issue"),
-            ("unknown", "Not sure"),
+            ("single", " One System"),
+            ("multiple", " Multiple Systems"),
+            ("software", " Software only"),
+            ("unknown", " Not sure / not applicable"),
         ],
-        string="Resource Impact",
+        string="Impact",
         copy=False,
     )
 
@@ -747,5 +747,5 @@ class HelpdeskTicket(models.Model):
     @api.onchange("adi_asset_scope")
     def _onchange_adi_asset_scope(self):
         for ticket in self:
-            if ticket.adi_asset_scope in ("software", "unknown"):
+            if ticket.adi_asset_scope in ("unknown"):
                 ticket.adi_test_asset_id = False            

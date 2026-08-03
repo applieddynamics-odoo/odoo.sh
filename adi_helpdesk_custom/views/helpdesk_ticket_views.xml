@@ -153,6 +153,17 @@
                                 </span>
                             </span>
 
+                            <span class="adi_card_item"
+                                invisible="adi_asset_scope not in ('single', 'multiple', 'software')">
+                                <i class="fa fa-tag adi_summary_icon"/>
+                                <span class="fw-bold">Resource:</span>
+                                <field name="adi_test_asset_id"
+                                    nolabel="1"/>
+                            </span>
+
+
+
+
                             <span class="adi_card_item">
                                 <i class="fa fa-address-card adi_summary_icon"/>
                                 <span class="fw-bold">Cust Ref:</span>
@@ -252,20 +263,14 @@
 
                                 <span class="adi_card_item adi_asset_scope_header">
                                     <i class="fa fa-crosshairs adi_summary_icon"/>
-                                    <span class="fw-bold">Resource Impact:</span>
+                                    <span class="fw-bold">Impact:</span>
                                     <field name="adi_asset_scope"
                                         nolabel="1"
                                         widget="radio"
                                         options="{'horizontal': true}"/>
                                 </span>
 
-                                <span class="adi_card_item"
-                                    invisible="adi_asset_scope not in ('single', 'multiple')">
-                                    <i class="fa fa-tag adi_summary_icon"/>
-                                    <span class="fw-bold">Resource:</span>
-                                    <field name="adi_test_asset_id"
-                                        nolabel="1"/>
-                                </span>
+
 
                                 <span class="adi_card_item"
                                     invisible="adi_non_contract">
