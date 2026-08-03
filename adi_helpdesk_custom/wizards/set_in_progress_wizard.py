@@ -1,3 +1,5 @@
+import resource
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 import difflib
@@ -84,7 +86,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         readonly=True,
     )
 
-    adi_test_asset_name = fields.Char(string="Test Asset")
+    adi_test_asset_name = fields.Char(
+        string="Confirmed Resource(s)",
+    )
 
     adi_customer_input_serial_number = fields.Char(
         related="ticket_id.adi_customer_input_serial_number",
@@ -114,7 +118,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
     adi_interested_user_ids = fields.Many2many(
         "res.users",
-        string="Interested People",
+        string="Followers",
         domain=[
             ("active", "=", True),
             ("share", "=", False),
@@ -123,11 +127,12 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
     adi_asset_scope = fields.Selection(
         [
-            ("single", "Specific Asset"),
-            ("multiple", "Multiple Assets"),
-            ("general", "General Issue"),
+            ("single", "One specific resource"),
+            ("multiple", "Multiple resources"),
+            ("software", "Software only issue"),
+            ("unknown", "Not sure"),
         ],
-        string="Asset Impact",
+        string="Resource Impact",
     )
 
 
@@ -236,6 +241,16 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         res["adi_interested_user_ids"] = [
             (6, 0, internal_followers.ids)
         ]
+
+        res["adi_asset_scope"] = (
+            ticket.adi_asset_scope
+            or ticket.adi_customer_resource_scope
+        )
+
+        res["adi_test_asset_name"] = (
+            ticket.adi_test_asset_id
+            or ticket.adi_customer_input_serial_number
+        )
 
         return res
 
@@ -584,28 +599,27 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             wizard.adi_severity_guidance = guidance
 
 
-    # Compute guidance based on whether the customer indicated an asset/serial number and what that number is
+    # Compute guidance based on whether the customer indicated a resource/serial number and what that number is
 
     @api.depends("ticket_id.adi_customer_input_serial_number")
     def _compute_adi_customer_asset_guidance(self):
         for wizard in self:
-            asset = (wizard.ticket_id.adi_customer_input_serial_number or "").strip()
+            resource = (wizard.ticket_id.adi_customer_input_serial_number or "").strip()
 
-            if asset:
+            if resource:
                 wizard.adi_customer_asset_guidance = f"""
                     <div style="font-style: italic; color: #667085; line-height: 1.5;">
-                        The customer indicated an issue with <strong>{asset}</strong>.
+                        The customer indicated an issue with <strong>{resource}</strong>.
                     </div>
                 """
             else:
                 wizard.adi_customer_asset_guidance = """
                     <div style="font-style: italic; color: #667085; line-height: 1.5;">
-                        * The customer did not indicate which test asset the problem relates to.
+                        * The customer did not indicate which resource the problem relates to.
                     </div>
                 """        
-
     @api.onchange("adi_asset_scope")
     def _onchange_adi_asset_scope(self):
         for wizard in self:
-            if wizard.adi_asset_scope == "general":
-                wizard.adi_test_asset_name = False                
+            if wizard.adi_asset_scope in ("software", "unknown"):
+                wizard.adi_test_asset_name = False         

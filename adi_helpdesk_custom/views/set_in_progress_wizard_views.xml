@@ -51,7 +51,7 @@
                             options="{'no_create': True}"/>
 
                         <field name="adi_interested_user_ids"
-                            string="Interested People"
+                            string="Followers"
                             widget="many2many_tags"
                             options="{'no_create': True, 'no_open': True}"/>
 
@@ -63,14 +63,15 @@
                         </div>
                     </group>
 
-                    <!-- Which customer asset is affected? -->
-                    <group string="Customer Asset">
+                    <!-- Which customer resource is affected? -->
+                    <group string="Customer Resource">
                         <field name="adi_asset_scope"
+                            string="Resource Impact"
                             widget="radio"
                             options="{'horizontal': true}"/>
 
                         <field name="adi_test_asset_name"
-                            string="Test Asset(s)"
+                            string="Confirmed Resource(s)"
                             invisible="adi_asset_scope not in ('single', 'multiple')"/>
 
                         <field name="adi_customer_asset_guidance"

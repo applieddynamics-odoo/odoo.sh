@@ -141,9 +141,16 @@
 
                             <span class="adi_card_item">
                                 <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Asset where found:</span>
+                                <span class="fw-bold">Customer Resource:</span>
+
                                 <field name="adi_customer_input_serial_number"
-                                       nolabel="1" readonly="1"/>
+                                    nolabel="1"
+                                    readonly="1"
+                                    invisible="not adi_customer_input_serial_number"/>
+
+                                <span invisible="adi_customer_input_serial_number">
+                                    Not declared
+                                </span>
                             </span>
 
                             <span class="adi_card_item">
@@ -228,7 +235,7 @@
 
                                 <span class="adi_card_item">
                                     <i class="fa fa-users adi_summary_icon"/>
-                                    <span class="fw-bold">Interested:</span>
+                                    <span class="fw-bold">Followers:</span>
                                     <field name="adi_interested_user_ids"
                                         nolabel="1"
                                         widget="many2many_tags"
@@ -245,7 +252,7 @@
 
                                 <span class="adi_card_item adi_asset_scope_header">
                                     <i class="fa fa-crosshairs adi_summary_icon"/>
-                                    <span class="fw-bold">Asset Impact:</span>
+                                    <span class="fw-bold">Resource Impact:</span>
                                     <field name="adi_asset_scope"
                                         nolabel="1"
                                         widget="radio"
@@ -255,7 +262,7 @@
                                 <span class="adi_card_item"
                                     invisible="adi_asset_scope not in ('single', 'multiple')">
                                     <i class="fa fa-tag adi_summary_icon"/>
-                                    <span class="fw-bold">Asset:</span>
+                                    <span class="fw-bold">Resource:</span>
                                     <field name="adi_test_asset_id"
                                         nolabel="1"/>
                                 </span>

@@ -64,9 +64,24 @@ class HelpdeskTicket(models.Model):
     )
 
     adi_customer_input_serial_number = fields.Char(
-        string="Asset / Serial No",
-        help="Customer asset identifier or serial number.",
+        string="Resource where the problem was first identified",
+        help=(
+            "The customer’s free-text description of the resource where "
+            "the problem was first identified."
+        ),
+    )
+
+    adi_customer_resource_scope = fields.Selection(
+        [
+            ("single", "One specific resource"),
+            ("multiple", "Multiple resources"),
+            ("software", "Software only issue"),
+            ("unknown", "Not sure /not applicable"),
+        ],
+        string="Customer Reported Resource Impact",
+        copy=False,
 )
+
 
     adi_customer_input_sales_or_maintenance_order = fields.Char(
         string="Sales or Maintenance Order",
@@ -124,7 +139,7 @@ class HelpdeskTicket(models.Model):
     )
 
     adi_test_asset_id = fields.Char(
-        string="Test Asset",
+        string="Confirmed Resource(s)",
     )
 
     adi_charge_to_order_id = fields.Many2one(
@@ -168,18 +183,19 @@ class HelpdeskTicket(models.Model):
 
     adi_interested_user_ids = fields.Many2many(
         "res.users",
-        string="Interested People",
+        string="Followers",
         compute="_compute_adi_interested_user_ids",
         inverse="_inverse_adi_interested_user_ids",
     )
 
     adi_asset_scope = fields.Selection(
         [
-            ("single", "Specific Asset"),
-            ("multiple", "Multiple Assets"),
-            ("general", "General Issue"),
+            ("single", "One specific resource"),
+            ("multiple", "Multiple resources"),
+            ("software", "Software only issue"),
+            ("unknown", "Not sure"),
         ],
-        string="Asset Impact",
+        string="Resource Impact",
         copy=False,
     )
 
@@ -728,9 +744,8 @@ class HelpdeskTicket(models.Model):
                     partner_ids=list(partner_ids_to_remove),
                 )             
 
-
     @api.onchange("adi_asset_scope")
     def _onchange_adi_asset_scope(self):
         for ticket in self:
-            if ticket.adi_asset_scope == "general":
-                ticket.adi_test_asset_id = False                
+            if ticket.adi_asset_scope in ("software", "unknown"):
+                ticket.adi_test_asset_id = False            
