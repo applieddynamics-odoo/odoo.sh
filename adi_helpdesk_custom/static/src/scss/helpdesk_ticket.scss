@@ -300,3 +300,15 @@
     content: none !important;
 }
 
+.adi_asset_scope_header {
+    .o_radio_item {
+        display: inline-flex;
+        margin-right: 1rem;
+    }
+
+    .o_field_radio {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+}
