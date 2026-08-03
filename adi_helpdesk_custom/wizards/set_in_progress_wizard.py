@@ -112,6 +112,25 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         compute="_compute_adi_charge_to_order_domain",
     )
 
+    adi_interested_user_ids = fields.Many2many(
+        "res.users",
+        string="Interested People",
+        domain=[
+            ("active", "=", True),
+            ("share", "=", False),
+        ],
+    )
+
+    adi_asset_scope = fields.Selection(
+        [
+            ("single", "Specific Asset"),
+            ("multiple", "Multiple Assets"),
+            ("general", "General Issue"),
+        ],
+        string="Asset Impact",
+    )
+
+
     @api.depends(
         "ticket_id.partner_id",
         "company_id",
@@ -204,6 +223,20 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 "create_contact": False,
             })
 
+
+        res["adi_asset_scope"] = ticket.adi_asset_scope
+        res["adi_test_asset_name"] = ticket.adi_test_asset_id
+
+        internal_followers = ticket.message_partner_ids.user_ids.filtered(
+            lambda user:
+                user.active
+                and not user.share
+        )
+
+        res["adi_interested_user_ids"] = [
+            (6, 0, internal_followers.ids)
+        ]
+
         return res
 
     def action_confirm(self):
@@ -230,6 +263,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "user_id": self.user_id.id,
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
+            "adi_asset_scope": self.adi_asset_scope,
             "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
             "adi_non_contract": self.adi_non_contract,
             "adi_contract_date_range": self.adi_contract_date_range,
@@ -245,6 +279,11 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             self._adi_prepare_contact_review_values(values)
 
         self.ticket_id.write(values)
+
+        if self.adi_interested_user_ids:
+            self.ticket_id.message_subscribe(
+                partner_ids=self.adi_interested_user_ids.partner_id.ids,
+            )        
 
         if self.env.context.get("adi_open_ticket_after_set_in_progress"):
             return {
@@ -534,9 +573,10 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     def _compute_adi_severity_guidance(self):
         guidance = """
             <div style="font-style: italic; color: #667085; line-height: 1.5;">
-                * <strong>High:</strong> Critical issue preventing operation or testing.<br/>
-                * <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
-                * <strong>Low:</strong> Minor issue or cosmetic problem.
+                
+                <strong>High:</strong> Critical issue preventing operation or testing.<br/>
+                <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
+                <strong>Low:</strong> Minor issue or cosmetic problem.
             </div>
         """
 
@@ -554,7 +594,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             if asset:
                 wizard.adi_customer_asset_guidance = f"""
                     <div style="font-style: italic; color: #667085; line-height: 1.5;">
-                        * The customer indicated an issue with <strong>{asset}</strong>.
+                        The customer indicated an issue with <strong>{asset}</strong>.
                     </div>
                 """
             else:
@@ -563,3 +603,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                         * The customer did not indicate which test asset the problem relates to.
                     </div>
                 """        
+
+    @api.onchange("adi_asset_scope")
+    def _onchange_adi_asset_scope(self):
+        for wizard in self:
+            if wizard.adi_asset_scope == "general":
+                wizard.adi_test_asset_name = False                

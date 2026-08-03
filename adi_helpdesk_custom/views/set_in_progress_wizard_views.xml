@@ -45,22 +45,33 @@
                     col="2">
 
                     <!-- Who is responsible? -->
-                    <group string="1. Assignment">
+                    <group string="Assignment">
                         <field name="user_id"
-                            string="Assigned to"
+                            string="Lead"
                             options="{'no_create': True}"/>
+
+                        <field name="adi_interested_user_ids"
+                            string="Interested People"
+                            widget="many2many_tags"
+                            options="{'no_create': True, 'no_open': True}"/>
 
                         <div class="fst-italic"
                             style="color:#667085; line-height:1.5;"
                             colspan="2">
                             Select the person responsible for leading the investigation.
+                            Add any other internal people who need to follow the ticket.
                         </div>
                     </group>
 
                     <!-- Which customer asset is affected? -->
-                    <group string="3. Customer Asset">
+                    <group string="Customer Asset">
+                        <field name="adi_asset_scope"
+                            widget="radio"
+                            options="{'horizontal': true}"/>
+
                         <field name="adi_test_asset_name"
-                            string="Test Asset"/>
+                            string="Test Asset(s)"
+                            invisible="adi_asset_scope not in ('single', 'multiple')"/>
 
                         <field name="adi_customer_asset_guidance"
                             nolabel="1"
@@ -69,7 +80,7 @@
                     </group>
 
                     <!-- Where should the work be charged? -->
-                    <group string="2. Charge Allocation">
+                    <group string="Charge Allocation">
                         <field name="adi_charge_to_order_id"
                             string="Charge to"
                             domain="adi_charge_to_order_domain"
@@ -99,7 +110,7 @@
                     </group>
 
                     <!-- How urgent is it? -->
-                    <group string="4. Priority Assessment">
+                    <group string="Priority">
                         <field name="adi_severity"
                             string="Severity"/>
 

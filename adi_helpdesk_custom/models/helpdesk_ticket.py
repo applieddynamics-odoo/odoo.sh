@@ -166,6 +166,23 @@ class HelpdeskTicket(models.Model):
         copy=False,
     )
 
+    adi_interested_user_ids = fields.Many2many(
+        "res.users",
+        string="Interested People",
+        compute="_compute_adi_interested_user_ids",
+        inverse="_inverse_adi_interested_user_ids",
+    )
+
+    adi_asset_scope = fields.Selection(
+        [
+            ("single", "Specific Asset"),
+            ("multiple", "Multiple Assets"),
+            ("general", "General Issue"),
+        ],
+        string="Asset Impact",
+        copy=False,
+    )
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -651,4 +668,69 @@ class HelpdeskTicket(models.Model):
                 "default_ticket_id": self.id,
             },
         }            
-             
+
+    @api.depends("message_partner_ids")
+    def _compute_adi_interested_user_ids(self):
+        internal_users = self.env["res.users"].search([
+            ("active", "=", True),
+            ("share", "=", False),
+        ])
+
+        user_by_partner = {
+            user.partner_id.id: user
+            for user in internal_users
+        }
+
+        for ticket in self:
+            ticket.adi_interested_user_ids = self.env["res.users"].browse([
+                user_by_partner[partner.id].id
+                for partner in ticket.message_partner_ids
+                if partner.id in user_by_partner
+            ])
+
+
+    def _inverse_adi_interested_user_ids(self):
+        internal_users = self.env["res.users"].search([
+            ("active", "=", True),
+            ("share", "=", False),
+        ])
+
+        internal_partner_ids = set(
+            internal_users.partner_id.ids
+        )
+
+        for ticket in self:
+            selected_partner_ids = set(
+                ticket.adi_interested_user_ids.partner_id.ids
+            )
+
+            current_internal_partner_ids = set(
+                ticket.message_partner_ids.ids
+            ) & internal_partner_ids
+
+            partner_ids_to_add = (
+                selected_partner_ids
+                - current_internal_partner_ids
+            )
+
+            partner_ids_to_remove = (
+                current_internal_partner_ids
+                - selected_partner_ids
+            )
+
+            if partner_ids_to_add:
+                ticket.message_subscribe(
+                    partner_ids=list(partner_ids_to_add),
+                )
+
+            if partner_ids_to_remove:
+                ticket.message_unsubscribe(
+                    partner_ids=list(partner_ids_to_remove),
+                )             
+
+
+    @api.onchange("adi_asset_scope")
+    def _onchange_adi_asset_scope(self):
+        for ticket in self:
+            if ticket.adi_asset_scope == "general":
+                ticket.adi_test_asset_id = False                
