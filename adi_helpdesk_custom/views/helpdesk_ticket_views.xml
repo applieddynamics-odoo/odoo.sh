@@ -61,6 +61,7 @@
                 <field name="adi_validity_check_required" invisible="1"/>
                 <field name="adi_new_contact_review_required" invisible="1"/>
                 <field name="adi_can_repeat_validity" invisible="1"/>
+                <field name="adi_charge_to_order_domain" invisible="1"/>
             </xpath>
 
             <xpath expr="//field[@name='team_id']" position="attributes">
@@ -227,50 +228,115 @@
 
                     <hr/>
 
-                    <div class="adi_management_grid">
+                    <div class="row g-4">
 
-                        <!-- Standard Odoo SLA widget moved into the ADI card. -->
-                        <span class="adi_management_kpi adi_management_sla"
-                              invisible="not sla_status_ids"
-                              groups="helpdesk.group_use_sla">
+                        <!-- Assignment -->
+                        <div class="col-lg-6">
+                            <div class="adi_management_section">
+                                <h4 class="adi_management_label mb-3">
+                                    Assignment
+                                </h4>
 
-                            <field name="sla_status_ids"
-                                   widget="helpdesk_sla_many2many_tags"
-                                   invisible="not use_sla"
-                                   options="{'color_field': 'color', 'no_edit_color': True}"
-                                   class="mb-0"
-                                   readonly="1"
-                                   groups="helpdesk.group_use_sla"/>
+                                <group col="2">
+                                    <field name="user_id"
+                                        string="Lead"
+                                        options="{
+                                            'no_create': True,
+                                            'no_create_edit': True
+                                        }"/>
 
-                            <span invisible="not sla_deadline or not use_sla"
-                                  groups="helpdesk.group_use_sla"
-                                  class="text-muted d-inline-flex align-items-center">
-
-                                <i class="fa fa-clock-o me-1"
-                                   aria-label="Sla Deadline"
-                                   title="Sla Deadline"/>
-
-                                <field name="sla_deadline"
-                                       class="mb-0"
-                                       widget="remaining_days"/>
-                            </span>
-                        </span>
-
-                        <div>
-                            <span class="adi_management_label">ADI SPR Number</span>
-                            <field name="adi_spr_number"/>
+                                    <field name="adi_interested_user_ids"
+                                        string="Interested People"
+                                        widget="many2many_tags"
+                                        options="{
+                                            'no_create': True,
+                                            'no_open': True
+                                        }"/>
+                                </group>
+                            </div>
                         </div>
 
-                        <div>
-                            <span class="adi_management_label">SIR Hardware Part Numbers</span>
-                            <field name="adi_sir_hardware_part_number_ids"
-                                   widget="many2many_tags"
-                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                        <!-- Charging -->
+                        <div class="col-lg-6">
+                            <div class="adi_management_section">
+                                <h4 class="adi_management_label mb-3">
+                                    Charging
+                                </h4>
+
+                                <group col="2">
+                                    <field name="adi_charge_to_order_id"
+                                        string="Charge to"
+                                        domain="adi_charge_to_order_domain"
+                                        context="{'adi_helpdesk_charge_to': True}"
+                                        options="{
+                                            'no_create': True,
+                                            'no_open': True
+                                        }"
+                                        invisible="adi_non_contract"/>
+
+                                    <field name="adi_non_contract"
+                                        string="No Contract"
+                                        invisible="adi_charge_to_order_id"/>
+
+                                    <div class="fst-italic"
+                                        style="color:#667085; line-height:1.5;"
+                                        colspan="2"
+                                        invisible="adi_charge_to_order_id or not adi_non_contract">
+                                        * Expense to 78000 - Customer Support (non-contract)
+                                    </div>
+
+                                    <field name="adi_contract_date_range"
+                                        string="Cover Period"
+                                        readonly="1"
+                                        invisible="not adi_charge_to_order_id"/>
+
+                                    <field name="adi_contract_status"
+                                        readonly="1"
+                                        invisible="not adi_charge_to_order_id"/>
+                                </group>
+                            </div>
                         </div>
 
-                        <div>
-                            <span class="adi_management_label">Sales or Maintenance Order</span>
-                            <field name="adi_customer_input_sales_or_maintenance_order"/>
+                        <!-- Customer Asset -->
+                        <div class="col-lg-6">
+                            <div class="adi_management_section">
+                                <h4 class="adi_management_label mb-3">
+                                    Customer Asset
+                                </h4>
+
+                                <group col="2">
+                                    <field name="adi_asset_scope"
+                                        string="Asset Impact"
+                                        widget="radio"
+                                        options="{'horizontal': true}"/>
+
+                                    <field name="adi_test_asset_id"
+                                        string="Test Asset(s)"
+                                        invisible="adi_asset_scope == 'general'"/>
+                                </group>
+                            </div>
+                        </div>
+
+                        <!-- Outputs -->
+                        <div class="col-lg-6">
+                            <div class="adi_management_section">
+                                <h4 class="adi_management_label mb-3">
+                                    Outputs
+                                </h4>
+
+                                <group col="2">
+                                    <field name="adi_spr_number"
+                                        string="ADI SPR Number"/>
+
+                                    <field name="adi_sir_hardware_part_number_ids"
+                                        string="SIR Hardware Part Numbers"
+                                        widget="many2many_tags"
+                                        options="{
+                                            'no_create': True,
+                                            'no_create_edit': True
+                                        }"/>
+                                </group>
+                            </div>
                         </div>
 
                     </div>
