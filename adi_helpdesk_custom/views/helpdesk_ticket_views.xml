@@ -206,8 +206,8 @@
                      Operational fields used once the ticket is accepted.
                      Header uses the shared adi_card_header pattern.
                      ===================================================== -->
-                <div class="adi_helpdesk_card adi_management_card"
-                    invisible="stage_id.name != 'In Progress'">
+                <div class="adi_helpdesk_card adi_management_card">
+
 
                     <div class="adi_card_header align-items-start">
 
