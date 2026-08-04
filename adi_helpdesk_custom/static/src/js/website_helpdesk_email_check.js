@@ -7,16 +7,22 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
     selector: "form",
 
     events: {
-        "change input[name='adi_submitted_email']": "_onEmailChanged",
+        "input input[name='adi_submitted_email']": "_onEmailInput",
         "blur input[name='adi_submitted_email']": "_onEmailChanged",
     },
 
     start() {
         this._super(...arguments);
 
-        this.emailInput = this.el.querySelector("input[name='adi_submitted_email']");
-        this.nameInput = this.el.querySelector("input[name='adi_submitted_contact_name']");
-        this.companyInput = this.el.querySelector("input[name='adi_submitted_company_name']");
+        this.emailInput = this.el.querySelector(
+            "input[name='adi_submitted_email']"
+        );
+        this.nameInput = this.el.querySelector(
+            "input[name='adi_submitted_contact_name']"
+        );
+        this.companyInput = this.el.querySelector(
+            "input[name='adi_submitted_company_name']"
+        );
 
         if (!this.emailInput || !this.nameInput || !this.companyInput) {
             return;
@@ -32,37 +38,129 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
             this.companyInput.closest(".form-group") ||
             this.companyInput.parentElement;
 
-        this.message = this.emailInput.parentElement.querySelector(".adi_email_check_message");
+        /*
+         * Keep one status element only. Searching the whole form catches
+         * messages created by an earlier version of this script or already
+         * present in the website template.
+         */
+        const existingMessages = [
+            ...this.el.querySelectorAll(".adi_email_check_message"),
+        ];
+
+        this.message = existingMessages.shift();
+
+        for (const duplicate of existingMessages) {
+            duplicate.remove();
+        }
 
         if (!this.message) {
             this.message = document.createElement("div");
-            this.message.className = "adi_email_check_message text-muted mt-2";
-            this.emailInput.insertAdjacentElement("afterend", this.message);
+            this.message.className =
+                "adi_email_check_message text-muted mt-2";
+            this.emailInput.insertAdjacentElement(
+                "afterend",
+                this.message
+            );
         }
 
-        this.message.textContent = "";
+        this._requestNumber = 0;
+        this._inputTimer = null;
 
+        this._clearMessage();
         this._hideExtraDetails();
     },
 
-    async _onEmailChanged() {
+    _onEmailInput() {
+        /*
+         * Invalidate any lookup already in progress. Its result will be
+         * ignored if it returns after the field has changed.
+         */
+        this._requestNumber += 1;
+
+        clearTimeout(this._inputTimer);
+
         const email = (this.emailInput.value || "").trim();
 
         if (!email || !email.includes("@")) {
             this._hideExtraDetails();
-            this.message.textContent = "";
+            this._clearMessage();
             return;
         }
 
-        const result = await jsonrpc("/adi/helpdesk/check_email", { email });
+        /*
+         * Avoid an RPC call on every keystroke, while still updating shortly
+         * after the user finishes entering the address.
+         */
+        this._inputTimer = setTimeout(
+            () => this._onEmailChanged(),
+            350
+        );
+    },
 
-        if (result.recognised) {
+    async _onEmailChanged() {
+        clearTimeout(this._inputTimer);
+
+        const email = (this.emailInput.value || "").trim();
+
+        if (!email || !email.includes("@")) {
+            this._requestNumber += 1;
             this._hideExtraDetails();
-            this.message.textContent = "Email recognised. You can continue.";
-        } else {
-            this._showExtraDetails();
-            this.message.textContent = "Please provide your contact and company details below.";
+            this._clearMessage();
+            return;
         }
+
+        const requestNumber = ++this._requestNumber;
+
+        this._clearMessage();
+
+        try {
+            const result = await jsonrpc(
+                "/adi/helpdesk/check_email",
+                { email }
+            );
+
+            /*
+             * Ignore stale responses if the user changed or cleared the
+             * address while this request was running.
+             */
+            if (
+                requestNumber !== this._requestNumber ||
+                email !== (this.emailInput.value || "").trim()
+            ) {
+                return;
+            }
+
+            if (result.recognised) {
+                this._hideExtraDetails();
+                this._setMessage(
+                    "Email recognised. You can continue."
+                );
+            } else {
+                this._showExtraDetails();
+                this._setMessage(
+                    "Please provide your contact and company details below."
+                );
+            }
+        } catch {
+            if (requestNumber !== this._requestNumber) {
+                return;
+            }
+
+            this._hideExtraDetails();
+            this._setMessage(
+                "The email address could not be checked. Please try again."
+            );
+        }
+    },
+
+    _setMessage(text) {
+        this.message.textContent = text;
+        this.message.classList.remove("d-none");
+    },
+
+    _clearMessage() {
+        this.message.textContent = "";
+        this.message.classList.add("d-none");
     },
 
     _hideExtraDetails() {
