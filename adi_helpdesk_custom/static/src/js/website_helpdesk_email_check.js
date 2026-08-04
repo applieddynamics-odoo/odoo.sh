@@ -43,31 +43,54 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
          * messages created by an earlier version of this script or already
          * present in the website template.
          */
-        const existingMessages = [
-            ...this.el.querySelectorAll(".adi_email_check_message"),
-        ];
 
-        this.message = existingMessages.shift();
+        /*
+        * Limit message cleanup to the Submitted Email field.
+        * The Website Editor may have stored old generated message divs,
+        * so remove those and retain one controlled status element.
+        */
+        this.emailGroup =
+            this.emailInput.closest(".s_website_form_field") ||
+            this.emailInput.parentElement;
 
-        for (const duplicate of existingMessages) {
-            duplicate.remove();
+        /*
+        * Remove any old generated help/status divs beneath the email input,
+        * except for the message element managed by this widget.
+        */
+        const existingControlledMessage =
+            this.emailGroup.querySelector(".adi_email_check_message");
+
+        for (const element of [
+            ...this.emailGroup.querySelectorAll(".text-muted.mt-2"),
+        ]) {
+            if (element !== existingControlledMessage) {
+                element.remove();
+            }
         }
+
+        this.message = existingControlledMessage;
 
         if (!this.message) {
             this.message = document.createElement("div");
-            this.message.className =
-                "adi_email_check_message text-muted mt-2";
             this.emailInput.insertAdjacentElement(
                 "afterend",
                 this.message
             );
         }
 
+        /*
+        * Always reset the controlled element to one known state.
+        */
+        this.message.className =
+            "adi_email_check_message text-muted mt-2 d-none";
+        this.message.textContent = "";
+
         this._requestNumber = 0;
         this._inputTimer = null;
 
-        this._clearMessage();
         this._hideExtraDetails();
+        this._clearMessage();
+
     },
 
     _onEmailInput() {
