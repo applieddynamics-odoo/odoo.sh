@@ -265,7 +265,7 @@ class CiCar(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("action_reference"):
-                vals["action_reference"] = self.env["ir.sequence"].next_by_code("car.sequence") or "CA0000"
+                vals["action_reference"] = self.env["ir.sequence"].next_by_code("adi_improvement_app.car.sequence") or "CA0000"
         return super().create(vals_list)
         
     # Related Sales Order logic 
