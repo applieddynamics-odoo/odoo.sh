@@ -40,7 +40,7 @@
                                         <!-- Email verification -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required" data-type="char" data-name="Field" data-translated-name="Your Email" id="adi_email_verification_section">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Please enter your email address
                                                 </span>
@@ -55,7 +55,7 @@
                                         <div id="adi_ticket_details_section" class="col-12 d-none"><div class="row s_col_no_bgcolor"><!-- Shown by JavaScript for an unknown email -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required d-none" data-type="char" data-name="Field" data-translated-name="Submitted Contact Name">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                                <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Your Contact Name
                                                 </span>
@@ -67,7 +67,7 @@
 
                                         <div class="s_website_form_field mb-3 col-12 d-none" data-type="char" data-name="Field" data-translated-name="Submitted Company Name">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Your Company Name
                                                 </span>
@@ -79,7 +79,7 @@
                                         <!-- Problem type -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required" data-type="many2one" data-name="Field" data-translated-name="Problem Type">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Problem Type
                                                 </span>
@@ -101,7 +101,7 @@
                                         <!-- Software version -->
                                         <div class="s_website_form_field mb-3 col-12" data-type="many2one" data-name="Field" data-translated-name="Software Version">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Software Version
                                                 </span>
@@ -122,7 +122,7 @@
                                         <!-- Where was the problem found? -->
                                         <div class="s_website_form_field mb-3 col-12" data-type="char" data-name="Field" data-translated-name="Customer Resource">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Where was the problem found?
                                                 </span>
@@ -138,7 +138,7 @@
                                         <!-- Subject -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_model_required" data-type="char" data-name="Field" data-translated-name="Subject">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Subject
                                                 </span>
@@ -151,12 +151,16 @@
                                         <!-- Description -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required" data-type="html" data-name="Field" data-translated-name="Description">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
-                                                    Please provide a description of the issue you are experiencing (Attachments can be added below).
+                                                    Please describe the problem
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
+
+                                            <div class="small text-muted mb-2">
+                                                Please explain what happened, what you expected to happen, and attach any useful files below.
+                                            </div>
 
                                             <textarea class="form-control s_website_form_input" name="description" required="1" rows="5"/>
                                         </div>
@@ -164,7 +168,7 @@
                                         <!-- Attachment -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="binary" data-name="Field" data-translated-name="Attachment">
 
-                                            <label class="s_website_form_label" style="width: 200px">
+                                            <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
                                                     Attachment
                                                 </span>
