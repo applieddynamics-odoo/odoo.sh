@@ -120,46 +120,74 @@
                                         </div>
 
                                         <!-- Where was the problem found? -->
-                                        <div class="s_website_form_field mb-3 col-12" data-type="char" data-name="Field" data-translated-name="Customer Resource">
+                                        <div class="s_website_form_field mb-3 col-12"
+                                            data-type="char"
+                                            data-name="Field"
+                                            data-translated-name="Where was the problem found?">
 
-                                            <label class="s_website_form_label d-block mb-2">
+                                            <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
                                                     Where was the problem found?
                                                 </span>
                                             </label>
 
-                                            <input class="form-control s_website_form_input" type="text" name="adi_customer_input_serial_number" required="1" maxlength="120" 
-                                                placeholder="Please enter the system name, serial number or generic hardware (i.e. laptop) as applicable."/>
+                                            <div class="adi_field_guidance">
+                                                Please enter the system name, serial number or generic hardware
+                                                (for example, a laptop) as applicable.
+                                            </div>
 
+                                            <input class="form-control s_website_form_input"
+                                                type="text"
+                                                name="adi_customer_input_serial_number"/>
                                         </div>
 
                                         <!-- Subject -->
-                                        <div class="s_website_form_field mb-3 col-12 s_website_form_model_required" data-type="char" data-name="Field" data-translated-name="Subject">
+                                        <div class="s_website_form_field mb-3 col-12 s_website_form_model_required"
+                                            data-type="char"
+                                            data-name="Field"
+                                            data-translated-name="Subject">
 
-                                            <label class="s_website_form_label d-block mb-2">
+                                            <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
                                                     Subject
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" 
-                                                placeholder="This will form the email subject line for all correspondance (120 characters max)."/>
+                                            <div class="adi_field_guidance">
+                                                This will form the email subject line for all correspondence.
+                                                Maximum 120 characters.
+                                            </div>
+
+                                            <input class="form-control s_website_form_input"
+                                                type="text"
+                                                name="name"
+                                                required="1"
+                                                maxlength="120"/>
                                         </div>
 
                                         <!-- Problem Statement -->
-                                        <div class="s_website_form_field mb-3 col-12 s_website_form_required" data-type="html" data-name="Field" data-translated-name="Description">
+                                        <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                            data-type="html"
+                                            data-name="Field"
+                                            data-translated-name="Problem Statement">
 
-                                            <label class="s_website_form_label d-block mb-2">
+                                            <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
-                                                    Problem Statement
+                                                    Problem Statement or Question
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <textarea class="form-control s_website_form_input" name="description" required="1" rows="5"
-                                                    placeholder="Please detail the problem (you can provide attachments below if needed)."/>
+                                            <div class="adi_field_guidance">
+                                                Please describe your problem or question, including any relevant details that may help us to understand the problem.
+                                                Attachments can be added below if needed.
+                                            </div>
 
+                                            <textarea class="form-control s_website_form_input"
+                                                    name="description"
+                                                    required="1"
+                                                    rows="5"/>
                                         </div>
 
                                         <!-- Attachment -->
