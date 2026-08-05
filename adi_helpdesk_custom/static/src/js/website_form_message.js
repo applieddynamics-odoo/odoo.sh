@@ -1,7 +1,5 @@
 /** @odoo-module **/
 
-console.log("ADI website form JS loaded");
-
 import publicWidget from "@web/legacy/js/public/public_widget";
 
 publicWidget.registry.AdiWebsiteFormMessage = publicWidget.Widget.extend({
@@ -9,20 +7,6 @@ publicWidget.registry.AdiWebsiteFormMessage = publicWidget.Widget.extend({
 
     events: {
         "click .s_website_form_send, click button[type='submit'], click input[type='submit']": "_onSubmitClick",
-    },
-
-    start() {
-        this._super(...arguments);
-
-        this.el
-            .querySelectorAll('.s_website_form_input[name="name"]')
-            .forEach((el) => {
-                el.setAttribute("maxlength", "120");
-                el.setAttribute(
-                    "placeholder",
-                    "Brief summary of the issue"
-                );
-            });
     },
 
     _onSubmitClick() {

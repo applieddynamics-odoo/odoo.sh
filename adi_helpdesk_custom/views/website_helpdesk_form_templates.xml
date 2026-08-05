@@ -145,11 +145,9 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <div class="small text-muted mb-2">
-                                                This will form the email subject line for all correspondance (120 characters max).
-                                            </div>
 
-                                            <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" placeholder="Email header for correspondance"/>
+                                            <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" 
+                                                placeholder="This will form the email subject line for all correspondance (120 characters max)."/>
                                         </div>
 
                                         <!-- Description -->
