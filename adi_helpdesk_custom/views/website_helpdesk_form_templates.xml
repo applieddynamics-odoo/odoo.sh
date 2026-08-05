@@ -131,7 +131,7 @@
                                             <input class="form-control s_website_form_input" type="text" name="adi_customer_input_serial_number"/>
 
                                             <div class="s_website_form_field_description small form-text text-muted">
-                                                Please enter the system name, serial number or any information that will help us resolve the problem.
+                                                Please enter the system name, serial number or generic hardware (i.e. laptop) as applicable.
                                             </div>
                                         </div>
 
