@@ -50,7 +50,20 @@
                                             <input class="form-control s_website_form_input" type="email" name="adi_submitted_email" required="1" data-fill-with="email" autocomplete="email"/>
 
                                             <div class="adi_email_check_message text-muted mt-2 d-none"/>
-                                        <div class="mt-3"><button type="button" class="btn btn-primary adi_verify_email_button">Verify Email</button></div></div>
+
+                                                <div class="mt-3 d-flex align-items-center gap-3">
+                                                    <button type="button"
+                                                            class="btn btn-primary adi_verify_email_button">
+                                                        Verify Email
+                                                    </button>
+
+                                                    <span class="adi_email_verified_badge d-none text-success fw-bold">
+                                                        <i class="fa fa-check-circle me-1"/>
+                                                        Email verified
+                                                    </span>
+                                                </div>
+                                            </div>
+
 
                                         <div id="adi_ticket_details_section" class="col-12 d-none"><div class="row s_col_no_bgcolor"><!-- Shown by JavaScript for an unknown email -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required d-none" data-type="char" data-name="Field" data-translated-name="Submitted Contact Name">
@@ -132,7 +145,7 @@
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please enter the system name or serial number or generic hardware
+                                                Enter the system name, serial number or generic hardware
                                                 (i.e. laptop) as applicable.
                                             </div>
 
@@ -180,7 +193,7 @@
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please describe your problem or question in as much detail as possible.
+                                                Describe your problem or question in as much detail as possible.
                                             </div>
 
                                             <textarea class="form-control s_website_form_input"
@@ -190,8 +203,8 @@
 
                                             <div class="adi_guidance_box mt-3">
                                                 <div><strong>Notes:</strong></div>
-                                                <div>Attachments can be added below as required.</div>
-                                                <div>If you need to return material under RMA, please list one or more items on the same ticket.</div>
+                                                <div>- Attachments can be added below as required.</div>
+                                                <div>- If you need to return material under RMA, please list one or more items on the same ticket.</div>
                                             </div>
                                         </div>
 
