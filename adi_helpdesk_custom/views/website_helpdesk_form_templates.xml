@@ -46,7 +46,7 @@
                                       class="o_mark_required adi_helpdesk_ticket_form"
                                       action="/website/form/"
                                       method="post"
-                                      enctype="multipart/form-data"
+                                      enctype="multipart/form-data"data-translated-name=
                                       data-mark="*"
                                       data-pre-fill="true"
                                       data-success-mode="redirect"
@@ -59,7 +59,7 @@
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required"
                                              data-type="char"
                                              data-name="Field"
-                                             data-translated-name="Submitted Email">
+                                             data-translated-name="Your Email">
 
                                             <label class="s_website_form_label"
                                                    style="width: 200px">
