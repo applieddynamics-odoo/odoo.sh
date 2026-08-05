@@ -149,14 +149,14 @@
 
                                             <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
-                                                    Subject Header for Ticket
+                                                    Email Header for Ticket
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                This will form the email subject line for all correspondence.
-                                                Maximum 120 characters.
+                                                This will be the email subject for all correspondence 
+                                                (Maximum 120 characters).
                                             </div>
 
                                             <input class="form-control s_website_form_input"
@@ -180,8 +180,10 @@
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please describe your problem or question, including any details that help us to understand the issue.
-                                                Attachments such as log lists and screenshots can be added below as required.
+                                                Please describe in detail your problem or question.
+                                                Attachments can be added below as required.
+                                                If you are need to return material under RMA please list one or more items on the same Ticket.
+
                                             </div>
 
                                             <textarea class="form-control s_website_form_input"
