@@ -166,30 +166,33 @@
                                                 maxlength="120"/>
                                         </div>
 
-                                        <!-- Problem Statement -->
+                                        <!-- How can we help -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required"
                                             data-type="html"
                                             data-name="Field"
-                                            data-translated-name="Problem Statement">
+                                            data-translated-name="How can we help?">
 
                                             <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
-                                                    How can we help ?  
+                                                    How can we help?
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please describe in detail your problem or question.
-                                                Attachments can be added below as required.
-                                                If you are need to return material under RMA please list one or more items on the same Ticket.
-
+                                                Please describe your problem or question in as much detail as possible.
                                             </div>
 
                                             <textarea class="form-control s_website_form_input"
                                                     name="description"
                                                     required="1"
                                                     rows="5"/>
+
+                                            <div class="adi_guidance_box mt-3">
+                                                <div><strong>Notes:</strong></div>
+                                                <div>Attachments can be added below as required.</div>
+                                                <div>If you need to return material under RMA, please list one or more items on the same ticket.</div>
+                                            </div>
                                         </div>
 
                                         <!-- Attachment -->
