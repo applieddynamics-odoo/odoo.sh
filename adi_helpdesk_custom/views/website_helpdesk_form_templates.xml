@@ -81,7 +81,7 @@
 
                                             <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
-                                                    Problem Type
+                                                    Area where help is required
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
@@ -132,8 +132,8 @@
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please enter the system name, serial number or generic hardware
-                                                (for example, a laptop) as applicable.
+                                                Please enter the system name or serial number or generic hardware
+                                                (i.e. laptop) as applicable.
                                             </div>
 
                                             <input class="form-control s_website_form_input"
@@ -149,7 +149,7 @@
 
                                             <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
-                                                    Subject
+                                                    Subject Header for Ticket
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
@@ -174,14 +174,14 @@
 
                                             <label class="s_website_form_label d-block mb-1">
                                                 <span class="s_website_form_label_content">
-                                                    Problem Statement or Question
+                                                    How can we help ?  
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
                                             <div class="adi_field_guidance">
-                                                Please describe your problem or question, including any relevant details that may help us to understand the problem.
-                                                Attachments can be added below if needed.
+                                                Please describe your problem or question, including any details that help us to understand the issue.
+                                                Attachments such as log lists and screenshots can be added below as required.
                                             </div>
 
                                             <textarea class="form-control s_website_form_input"
