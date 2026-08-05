@@ -30,7 +30,7 @@ publicWidget.registry.AdiWebsiteFormMessage = publicWidget.Widget.extend({
             this.el.querySelectorAll("span.text-danger.ml8").forEach((el) => {
                 if (el.textContent.trim() === "Please fill in the form correctly.") {
                     el.textContent =
-                        "Some required information is missing. Please check the highlighted fields and try again.";
+                        "Some information is missing. Please check the highlighted fields and try again.";
                 }
 
                 el.style.display = "block";
