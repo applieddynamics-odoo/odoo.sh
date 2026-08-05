@@ -128,11 +128,9 @@
                                                 </span>
                                             </label>
 
-                                            <input class="form-control s_website_form_input" type="text" name="adi_customer_input_serial_number"/>
+                                            <input class="form-control s_website_form_input" type="text" name="adi_customer_input_serial_number" required="1" maxlength="120" 
+                                                placeholder="Please enter the system name, serial number or generic hardware (i.e. laptop) as applicable."/>
 
-                                            <div class="s_website_form_field_description small form-text text-muted">
-                                                Please enter the system name, serial number or generic hardware (i.e. laptop) as applicable.
-                                            </div>
                                         </div>
 
                                         <!-- Subject -->
@@ -145,12 +143,11 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-
                                             <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" 
                                                 placeholder="This will form the email subject line for all correspondance (120 characters max)."/>
                                         </div>
 
-                                        <!-- Description -->
+                                        <!-- Problem Statement -->
                                         <div class="s_website_form_field mb-3 col-12 s_website_form_required" data-type="html" data-name="Field" data-translated-name="Description">
 
                                             <label class="s_website_form_label d-block mb-2">
@@ -160,11 +157,9 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <div class="small text-muted mt-2">
-                                                Please detail the problem (you can provide attachments below if needed).
-                                            </div>
+                                            <textarea class="form-control s_website_form_input" name="description" required="1" rows="5"
+                                                    placeholder="Please detail the problem (you can provide attachments below if needed)."/>
 
-                                            <textarea class="form-control s_website_form_input" name="description" required="1" rows="5"/>
                                         </div>
 
                                         <!-- Attachment -->
