@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="adi_helpdesk_ticket_submit_form"
+              name="ADI Helpdesk Ticket Submission Form"
+              inherit_id="website_helpdesk.ticket_submit_form">
+
+        <xpath expr="//form[@id='helpdesk_ticket_form']"
+               position="attributes">
+
+            <attribute name="class"
+                       add="adi_helpdesk_ticket_form"
+                       separator=" "/>
+
+        </xpath>
+
+    </template>
+
+</odoo>
