@@ -46,7 +46,7 @@
                                       class="o_mark_required adi_helpdesk_ticket_form"
                                       action="/website/form/"
                                       method="post"
-                                      enctype="multipart/form-data"data-translated-name=
+                                      enctype="multipart/form-data"
                                       data-mark="*"
                                       data-pre-fill="true"
                                       data-success-mode="redirect"
