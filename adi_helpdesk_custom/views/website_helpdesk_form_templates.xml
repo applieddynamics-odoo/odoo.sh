@@ -5,14 +5,14 @@
         ADI owns the complete public submission form for Helpdesk Team 1.
         Do not edit this form through the Website Editor after deployment.
     -->
-    <record id="website_helpdesk.team_form_1" model="ir.ui.view">
-
-        <field name="name">website_helpdesk.team_form_1</field>
+    <record id="adi_helpdesk_public_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.public.form</field>
         <field name="type">qweb</field>
+        <field name="key">adi_helpdesk_custom.adi_helpdesk_public_form</field>
 
         <field name="arch" type="xml">
-            <t name="Helpdesk: Submit a Ticket Form"
-               t-name="website_helpdesk.ticket_submit_form">
+            <t name="ADI Helpdesk Public Form"
+               t-name="adi_helpdesk_custom.adi_helpdesk_public_form">
 
                 <div class="container">
 
