@@ -42,7 +42,7 @@
 
                                             <label class="s_website_form_label" style="width: 200px">
                                                 <span class="s_website_form_label_content">
-                                                    Your Email
+                                                    Please enter your email address
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
@@ -119,19 +119,19 @@
                                             </select>
                                         </div>
 
-                                        <!-- Customer resource -->
+                                        <!-- Where was the problem found? -->
                                         <div class="s_website_form_field mb-3 col-12" data-type="char" data-name="Field" data-translated-name="Customer Resource">
 
                                             <label class="s_website_form_label" style="width: 200px">
                                                 <span class="s_website_form_label_content">
-                                                    Customer Resource
+                                                    Where was the problem found?
                                                 </span>
                                             </label>
 
                                             <input class="form-control s_website_form_input" type="text" name="adi_customer_input_serial_number"/>
 
                                             <div class="s_website_form_field_description small form-text text-muted">
-                                                Enter the resource where the problem was first identified.
+                                                Please enter the system name, serial number or any information that will help us resolve the problem.
                                             </div>
                                         </div>
 
@@ -153,7 +153,7 @@
 
                                             <label class="s_website_form_label" style="width: 200px">
                                                 <span class="s_website_form_label_content">
-                                                    Description
+                                                    Please provide a description of the issue you are experiencing (Attachments can be added below).
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
