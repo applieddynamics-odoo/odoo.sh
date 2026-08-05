@@ -9,6 +9,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
     events: {
         "input input[name='adi_submitted_email']": "_onEmailInput",
         "blur input[name='adi_submitted_email']": "_onEmailChanged",
+        "keydown input[name='adi_submitted_email']": "_onEmailKeydown",
     },
 
     start() {
@@ -86,7 +87,6 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         this.message.textContent = "";
 
         this._requestNumber = 0;
-        this._inputTimer = null;
 
         this._hideExtraDetails();
         this._clearMessage();
@@ -95,33 +95,30 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
 
     _onEmailInput() {
         /*
-         * Invalidate any lookup already in progress. Its result will be
-         * ignored if it returns after the field has changed.
-         */
+        * Invalidate any lookup already running and immediately clear stale
+        * results while the user edits the address.
+        */
         this._requestNumber += 1;
-
-        clearTimeout(this._inputTimer);
+        this._clearMessage();
 
         const email = (this.emailInput.value || "").trim();
 
-        if (!email || !email.includes("@")) {
+        if (!email) {
             this._hideExtraDetails();
-            this._clearMessage();
+        }
+    },
+
+    _onEmailKeydown(event) {
+        if (event.key !== "Enter") {
             return;
         }
 
-        /*
-         * Avoid an RPC call on every keystroke, while still updating shortly
-         * after the user finishes entering the address.
-         */
-        this._inputTimer = setTimeout(
-            () => this._onEmailChanged(),
-            350
-        );
+        event.preventDefault();
+        this._onEmailChanged();
     },
 
+
     async _onEmailChanged() {
-        clearTimeout(this._inputTimer);
 
         const email = (this.emailInput.value || "").trim();
 
