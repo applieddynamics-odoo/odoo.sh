@@ -1,0 +1,16 @@
+.adi_helpdesk_ticket_form .adi_guidance_placeholder::placeholder {
+    font-size: 0.95rem;
+    color: #6c757d;
+    opacity: 1;
+}
+
+.adi_helpdesk_ticket_form .adi_guidance_placeholder::-webkit-input-placeholder {
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+.adi_helpdesk_ticket_form .adi_guidance_placeholder::-moz-placeholder {
+    font-size: 0.95rem;
+    color: #6c757d;
+    opacity: 1;
+}
