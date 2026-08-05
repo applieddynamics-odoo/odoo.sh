@@ -145,7 +145,11 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" placeholder="Brief summary of the issue"/>
+                                            <div class="small text-muted mb-2">
+                                                This will form the email subject line for all correspondance (120 characters max).
+                                            </div>
+
+                                            <input class="form-control s_website_form_input" type="text" name="name" required="1" maxlength="120" placeholder="Email header for correspondance"/>
                                         </div>
 
                                         <!-- Description -->
@@ -153,13 +157,13 @@
 
                                             <label class="s_website_form_label d-block mb-2">
                                                 <span class="s_website_form_label_content">
-                                                    Please describe the problem
+                                                    Problem Statement
                                                 </span>
                                                 <span class="s_website_form_mark">*</span>
                                             </label>
 
-                                            <div class="small text-muted mb-2">
-                                                Please explain what happened, what you expected to happen, and attach any useful files below.
+                                            <div class="small text-muted mt-2">
+                                                Please detail the problem (you can provide attachments below if needed).
                                             </div>
 
                                             <textarea class="form-control s_website_form_input" name="description" required="1" rows="5"/>
