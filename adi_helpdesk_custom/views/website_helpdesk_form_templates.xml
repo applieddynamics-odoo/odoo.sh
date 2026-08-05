@@ -296,4 +296,10 @@
         </field>
     </record>
 
+    <record id="helpdesk.helpdesk_team1" model="helpdesk.team">
+        <field name="website_form_view_id"
+            ref="adi_helpdesk_custom.adi_helpdesk_public_form"/>
+    </record>
+
+
 </odoo>
