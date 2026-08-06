@@ -41,6 +41,11 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
             ".adi_customer_enquiry_link"
         );
 
+        this.unverifiedNotes = this.el.querySelector(
+            ".adi_unverified_notes"
+        );
+
+
         this.ticketDetailsSection = this.el.querySelector(
             "#adi_ticket_details_section"
         );
@@ -56,6 +61,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
             !this.verifyButton ||
             !this.verifiedBadge ||
             !this.customerEnquiryLink ||
+            !this.unverifiedNotes ||
             !this.ticketDetailsSection ||
             !this.message
         ) {
@@ -192,7 +198,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
                     this._hideTicketDetails();
 
                     this._setMessage(
-                        "We could not verify this email address as an existing support contact. Please check the address and try again, or contact ADI."
+                        "We could not verify this email address as an existing support contact.\nPlease check the address and try again, or contact ADI."
                     );
 
                     this._showVerifyButton();
@@ -362,10 +368,20 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
 
     _showCustomerEnquiryLink() {
         this.customerEnquiryLink.classList.remove("d-none");
+        this._showUnverifiedNotes();
     },
 
     _hideCustomerEnquiryLink() {
         this.customerEnquiryLink.classList.add("d-none");
+        this._hideUnverifiedNotes();
+    },
+
+    _showUnverifiedNotes() {
+        this.unverifiedNotes.classList.remove("d-none");
+    },
+
+    _hideUnverifiedNotes() {
+        this.unverifiedNotes.classList.add("d-none");
     },
 });
 
