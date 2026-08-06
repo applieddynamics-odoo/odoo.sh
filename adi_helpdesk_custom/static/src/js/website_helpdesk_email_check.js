@@ -37,6 +37,10 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
             ".adi_email_verified_badge"
         );
 
+        this.customerEnquiryLink = this.el.querySelector(
+            ".adi_customer_enquiry_link"
+        );
+
         this.ticketDetailsSection = this.el.querySelector(
             "#adi_ticket_details_section"
         );
@@ -51,6 +55,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
             !this.companyInput ||
             !this.verifyButton ||
             !this.verifiedBadge ||
+            !this.customerEnquiryLink ||
             !this.ticketDetailsSection ||
             !this.message
         ) {
@@ -71,6 +76,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         this._hideTicketDetails();
         this._clearMessage();
         this._showVerifyButton();
+        this._hideCustomerEnquiryLink();
 
         /*
          * The pageshow event also fires when the browser restores this page
@@ -110,6 +116,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         this._hideExtraDetails();
         this._hideTicketDetails();
         this._showVerifyButton();
+        this._hideCustomerEnquiryLink();
 
         this.verifyButton.disabled = false;
         this.emailInput.disabled = false;
@@ -178,17 +185,21 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
                 this._hideExtraDetails();
                 this._clearMessage();
                 this._showVerifiedBadge();
-            } else {
-                this._showExtraDetails();
+                this._hideCustomerEnquiryLink();
+                this._showTicketDetails();
+                } else {
+                    this._hideExtraDetails();
+                    this._hideTicketDetails();
 
-                this._setMessage(
-                    "We could not match this email. Please provide, your contact details and reason for your enquiry."
-                );
+                    this._setMessage(
+                        "We could not verify this email address as an existing support contact. Please check the address and try again, or contact ADI."
+                    );
 
-                this._showVerifyButton();
-            }
+                    this._showVerifyButton();
+                    this._showCustomerEnquiryLink();
+                }
 
-            this._showTicketDetails();
+
         } catch {
             if (requestNumber !== this._requestNumber) {
                 return;
@@ -250,6 +261,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         this._hideExtraDetails();
         this._hideTicketDetails();
         this._showVerifyButton();
+        this._hideCustomerEnquiryLink();
 
         this.verifyButton.disabled = false;
         this.emailInput.disabled = false;
@@ -339,23 +351,21 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
     },
 
     _showVerifiedBadge() {
-        this.verifyButton.classList.add(
-            "d-none"
-        );
-
-        this.verifiedBadge.classList.remove(
-            "d-none"
-        );
+        this.verifyButton.classList.add("d-none");
+        this.verifiedBadge.classList.remove("d-none");
     },
 
     _showVerifyButton() {
-        this.verifyButton.classList.remove(
-            "d-none"
-        );
+        this.verifyButton.classList.remove("d-none");
+        this.verifiedBadge.classList.add("d-none");
+    },
 
-        this.verifiedBadge.classList.add(
-            "d-none"
-        );
+    _showCustomerEnquiryLink() {
+        this.customerEnquiryLink.classList.remove("d-none");
+    },
+
+    _hideCustomerEnquiryLink() {
+        this.customerEnquiryLink.classList.add("d-none");
     },
 });
 
