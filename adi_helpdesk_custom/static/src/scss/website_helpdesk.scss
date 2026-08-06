@@ -1,3 +1,21 @@
+/* ==========================================================================
+   ADI Helpdesk Portal
+   --------------------------------------------------------------------------
+   Styling for the public Helpdesk ticket submission form.
+
+   This stylesheet intentionally contains only custom presentation rules.
+   Standard Bootstrap and Odoo styling are left unchanged wherever possible.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   Field Guidance
+   --------------------------------------------------------------------------
+   Small guidance text displayed immediately below field labels.
+   Used instead of placeholders where customers may need to refer to the
+   instructions while typing.
+   ========================================================================== */
+
 .adi_helpdesk_ticket_form .adi_field_guidance {
     margin-bottom: 0.5rem;
     color: #6c757d;
@@ -5,6 +23,13 @@
     font-style: italic;
     line-height: 1.35;
 }
+
+
+/* ==========================================================================
+   Guidance / Notes Boxes
+   --------------------------------------------------------------------------
+   Used for explanatory notes that accompany sections of the form.
+   ========================================================================== */
 
 .adi_helpdesk_ticket_form .adi_guidance_box {
     padding: 0.75rem 1rem;
@@ -16,10 +41,45 @@
     line-height: 1.5;
 }
 
+
+/* ==========================================================================
+   Email Verification
+   --------------------------------------------------------------------------
+   Preserve line breaks inserted by JavaScript when displaying verification
+   messages.
+   ========================================================================== */
+
 .adi_helpdesk_ticket_form .adi_email_check_message {
     white-space: pre-line;
 }
 
+
+/* ==========================================================================
+   Customer Enquiry Button
+   --------------------------------------------------------------------------
+   Displayed only when the submitted email address cannot be verified as an
+   authorised Helpdesk contact.
+
+   Uses the ADI teal brand colour to distinguish the enquiry route from the
+   primary Helpdesk ticket workflow.
+   ========================================================================== */
+
 .adi_helpdesk_ticket_form .adi_customer_enquiry_link {
+    background-color: #00A99D;
+    border-color: #00A99D;
+    color: #ffffff;
     font-weight: 600;
+}
+
+.adi_helpdesk_ticket_form .adi_customer_enquiry_link:hover,
+.adi_helpdesk_ticket_form .adi_customer_enquiry_link:focus {
+    background-color: #00897F;
+    border-color: #00897F;
+    color: #ffffff;
+}
+
+.adi_helpdesk_ticket_form .adi_customer_enquiry_link:active {
+    background-color: #007A71;
+    border-color: #007A71;
+    color: #ffffff;
 }

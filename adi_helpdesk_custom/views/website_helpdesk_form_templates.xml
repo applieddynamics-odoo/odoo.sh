@@ -90,7 +90,7 @@
                                                     </button>
 
                                                     <a href="https://www.adi.com/contact/"
-                                                    class="btn btn-warning adi_customer_enquiry_link d-none"
+                                                    class="btn adi_customer_enquiry_link d-none"
                                                     target="_blank"
                                                     rel="noopener noreferrer">
                                                         Contact ADI
