@@ -176,17 +176,13 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
 
             if (result.recognised) {
                 this._hideExtraDetails();
-
-                this._setMessage(
-                    "Email recognised. Please continue."
-                );
-
+                this._clearMessage();
                 this._showVerifiedBadge();
             } else {
                 this._showExtraDetails();
 
                 this._setMessage(
-                    "We could not match this email. Please provide your contact and company details."
+                    "We could not match this email. Please provide, your contact details and reason for your enquiry."
                 );
 
                 this._showVerifyButton();
