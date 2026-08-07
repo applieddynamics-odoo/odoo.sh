@@ -300,10 +300,12 @@
     content: none !important;
 }
 
+/* ---------------------------------------------------------
+   Radio field layout
+   --------------------------------------------------------- */
 
-    .o_field_radio {
-        display: inline-flex;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
+.o_field_radio {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
 }
