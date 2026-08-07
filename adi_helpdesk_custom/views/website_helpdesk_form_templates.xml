@@ -106,7 +106,7 @@
                                                     </div>
 
                                                     <div>
-                                                        • Please help us protect your information by not including confidential or sensitive material in your enquiry or attachments. If additional information is required, an ADI support representative will contact you.
+                                                        • Please help us protect your information by not including confidential or sensitive material in your enquiry or attachments.
                                                     </div>
 
                                                 </div>
@@ -184,7 +184,7 @@
                                                 </div>
 
                                                 <!-- Software version -->
-                                                <div class="s_website_form_field mb-3 col-12"
+                                                <div class="s_website_form_field mb-3 col-12 col-lg-6"
                                                      data-type="many2one"
                                                      data-name="Field"
                                                      data-translated-name="Software Version">
@@ -244,7 +244,7 @@
                                                         <span class="s_website_form_mark">*</span>
 
                                                         <span class="adi_inline_guidance">
-                                                            (used as the email subject for all correspondence, maximum 120 characters)
+                                                            (This will be the email subject for all correspondence, maximum 120 characters)
                                                         </span>
                                                     </label>
 
@@ -268,7 +268,7 @@
                                                         <span class="s_website_form_mark">*</span>
 
                                                         <span class="adi_inline_guidance">
-                                                            (describe your problem or question in as much detail as possible)
+                                                            (Describe your problem or question in as much detail as possible)
                                                         </span>
                                                     </label>
 
