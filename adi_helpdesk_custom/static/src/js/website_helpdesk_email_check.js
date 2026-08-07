@@ -226,9 +226,44 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         }
     },
 
-    _onPageShow() {
-        this._resetAfterSubmissionIfNeeded();
+    _onPageShow(event) {
+        const navigationEntry =
+            performance.getEntriesByType("navigation")[0];
+
+        const restoredFromHistory =
+            event.persisted ||
+            navigationEntry?.type === "back_forward";
+
+        if (!restoredFromHistory) {
+            return;
+        }
+
+        this._resetForm();
     },
+
+        _resetForm() {
+        /*
+        * Clear all data retained by the browser when this page is restored
+        * from the back/forward cache.
+        */
+        this.el.reset();
+
+        this._requestNumber += 1;
+
+        this._clearValidationState();
+        this._clearMessage();
+        this._hideExtraDetails();
+        this._hideTicketDetails();
+        this._showVerifyButton();
+        this._hideCustomerEnquiryLink();
+
+        this.verifyButton.disabled = false;
+        this.emailInput.disabled = false;
+    },
+
+
+
+
 
     _resetAfterSubmissionIfNeeded() {
         let shouldReset = false;
