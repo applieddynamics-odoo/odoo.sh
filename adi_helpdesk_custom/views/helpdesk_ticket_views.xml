@@ -288,7 +288,9 @@
                                     <span class="fw-bold">Contract:</span>
                                     <field name="adi_contract_status"
                                         readonly="1"
-                                        nolabel="1"/>
+                                        decoration-success="adi_contract_status == 'In Contract'"
+                                        decoration-warning="adi_contract_status == 'Contract Expiring'"
+                                        decoration-danger="adi_contract_status == 'Out of Contract'"/>
                                 </span>
 
                             </div>

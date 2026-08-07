@@ -93,7 +93,11 @@
                         <field name="adi_contract_status"
                             readonly="1"
                             force_save="1"
-                            invisible="not adi_charge_to_order_id"/>
+                            invisible="not adi_charge_to_order_id"
+                            decoration-success="adi_contract_status == 'active'"
+                            decoration-warning="adi_contract_status == 'warning'"
+                            decoration-danger="adi_contract_status == 'expired'"/>
+
                     </group>
 
                     <!-- How urgent is it? -->
