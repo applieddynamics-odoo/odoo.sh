@@ -246,14 +246,10 @@
                                             'no_open': True
                                         }"/>
                                 </span>
-
                             </div>
 
                             <!-- Line 2: Charging -->
                             <div class="adi_card_items mt-2">
-
-
-
                                 <span class="adi_card_item"
                                     invisible="adi_non_contract">
                                     <i class="fa fa-credit-card adi_summary_icon"/>
@@ -264,7 +260,10 @@
                                         context="{'adi_helpdesk_charge_to': True}"
                                         options="{
                                             'no_create': True,
-                                            'no_open': True
+                                            'no_open': True,
+                                            'no_create_edit': True,
+                                            'no_quick_create': True,
+                                            'no_search_more': True
                                         }"/>
                                 </span>
 
