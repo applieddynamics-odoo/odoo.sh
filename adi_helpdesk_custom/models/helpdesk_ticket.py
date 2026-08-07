@@ -191,6 +191,78 @@ class HelpdeskTicket(models.Model):
             ]
 
 
+    def _adi_format_contract_date(self, date_value):
+        return (
+            date_value.strftime("%d %b %Y")
+            if date_value
+            else ""
+        )
+
+
+    def _adi_update_contract_details(self):
+        for ticket in self:
+            order = ticket.adi_charge_to_order_id
+
+            if not order:
+                ticket.adi_contract_date_range = False
+                ticket.adi_contract_status = "Unknown"
+                continue
+
+            start_date = order.x_studio_mnt_start_of_cover_date
+            end_date = order.x_studio_mnt_end_of_cover_date
+            today = fields.Date.context_today(ticket)
+
+            if start_date and end_date:
+                ticket.adi_contract_date_range = (
+                    f"{ticket._adi_format_contract_date(start_date)} - "
+                    f"{ticket._adi_format_contract_date(end_date)}"
+                )
+            elif start_date:
+                ticket.adi_contract_date_range = (
+                    f"From {ticket._adi_format_contract_date(start_date)}"
+                )
+            elif end_date:
+                ticket.adi_contract_date_range = (
+                    f"Until {ticket._adi_format_contract_date(end_date)}"
+                )
+            else:
+                ticket.adi_contract_date_range = (
+                    "No cover dates recorded"
+                )
+
+            if start_date and today < start_date:
+                ticket.adi_contract_status = "Contract Expiring"
+            elif end_date and today > end_date:
+                ticket.adi_contract_status = "Out of Contract"
+            elif end_date and (end_date - today).days <= 30:
+                ticket.adi_contract_status = "Contract Expiring"
+            elif start_date or end_date:
+                ticket.adi_contract_status = "In Contract"
+            else:
+                ticket.adi_contract_status = "Unknown"
+
+
+    @api.onchange("adi_charge_to_order_id")
+    def _onchange_adi_charge_to_order_id(self):
+        self._adi_update_contract_details()
+
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        if "adi_charge_to_order_id" in vals:
+            self._adi_update_contract_details()
+
+            for ticket in self:
+                super(HelpdeskTicket, ticket).write({
+                    "adi_contract_date_range":
+                        ticket.adi_contract_date_range,
+                    "adi_contract_status":
+                        ticket.adi_contract_status,
+                })
+
+        return result
+
 
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
