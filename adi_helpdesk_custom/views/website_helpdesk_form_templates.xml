@@ -231,7 +231,8 @@
                                                     <input class="form-control s_website_form_input"
                                                         type="text"
                                                         name="adi_customer_input_serial_number"
-                                                        required="1"/>
+                                                        required="1"
+                                                        maxlength="80"/>
                                                 </div>
 
                                                 <!-- Subject -->
