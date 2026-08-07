@@ -125,16 +125,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         ],
     )
 
-    adi_asset_scope = fields.Selection(
-        [
-            ("single", "One specific resource"),
-            ("multiple", "Multiple resources"),
-            ("software", "Software only issue"),
-            ("unknown", "Not sure"),
-        ],
-        string="Resource Impact",
-    )
-
 
     @api.depends(
         "ticket_id.partner_id",
@@ -229,7 +219,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             })
 
 
-        res["adi_asset_scope"] = ticket.adi_asset_scope
+
         res["adi_test_asset_name"] = ticket.adi_test_asset_id
 
         internal_followers = ticket.message_partner_ids.user_ids.filtered(
@@ -242,10 +232,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             (6, 0, internal_followers.ids)
         ]
 
-        res["adi_asset_scope"] = (
-            ticket.adi_asset_scope
-            or ticket.adi_customer_resource_scope
-        )
 
         res["adi_test_asset_name"] = (
             ticket.adi_test_asset_id
@@ -278,7 +264,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "user_id": self.user_id.id,
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
-            "adi_asset_scope": self.adi_asset_scope,
             "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
             "adi_non_contract": self.adi_non_contract,
             "adi_contract_date_range": self.adi_contract_date_range,
@@ -618,8 +603,4 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                         * The customer did not indicate which resource the problem relates to.
                     </div>
                 """        
-    @api.onchange("adi_asset_scope")
-    def _onchange_adi_asset_scope(self):
-        for wizard in self:
-            if wizard.adi_asset_scope in ("software", "unknown"):
-                wizard.adi_test_asset_name = False         
+    

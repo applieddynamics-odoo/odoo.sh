@@ -188,17 +188,6 @@ class HelpdeskTicket(models.Model):
         inverse="_inverse_adi_interested_user_ids",
     )
 
-    adi_asset_scope = fields.Selection(
-        [
-            ("single", " One System"),
-            ("multiple", " Multiple Systems"),
-            ("software", " Software only"),
-            ("unknown", " Not sure / not applicable"),
-        ],
-        string="Impact",
-        copy=False,
-    )
-
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -744,8 +733,4 @@ class HelpdeskTicket(models.Model):
                     partner_ids=list(partner_ids_to_remove),
                 )             
 
-    @api.onchange("adi_asset_scope")
-    def _onchange_adi_asset_scope(self):
-        for ticket in self:
-            if ticket.adi_asset_scope in ("unknown"):
-                ticket.adi_test_asset_id = False            
+        

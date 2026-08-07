@@ -141,7 +141,7 @@
 
                             <span class="adi_card_item">
                                 <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Customer Resource:</span>
+                                <span class="fw-bold">Problem found:</span>
 
                                 <field name="adi_customer_input_serial_number"
                                     nolabel="1"
@@ -152,18 +152,6 @@
                                     Not declared
                                 </span>
                             </span>
-
-
-                            <span class="adi_card_item adi_asset_scope_header">
-                                <i class="fa fa-crosshairs adi_summary_icon"/>
-                                <span class="fw-bold">Impact:</span>
-                                <field name="adi_asset_scope"
-                                    nolabel="1"
-                                    widget="radio"
-                                    options="{'horizontal': true}"/>
-                            </span>
-
-
 
                             <span class="adi_card_item">
                                 <i class="fa fa-address-card adi_summary_icon"/>
@@ -260,18 +248,10 @@
 
                             </div>
 
-                            <!-- Line 2: asset and charging -->
+                            <!-- Line 2: Charging -->
                             <div class="adi_card_items mt-2">
 
 
-
-                            <span class="adi_card_item"
-                                invisible="adi_asset_scope not in ('single', 'multiple', 'software')">
-                                <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Resource:</span>
-                                <field name="adi_test_asset_id"
-                                    nolabel="1"/>
-                            </span>
 
                                 <span class="adi_card_item"
                                     invisible="adi_non_contract">
@@ -331,7 +311,7 @@
 
                                 <group col="2">
                                     <field name="adi_spr_number"
-                                        string="ADI SPR Number"/>
+                                        string="SPR Number"/>
                                 </group>
                             </div>
                         </div>
@@ -345,7 +325,7 @@
 
                                 <group col="2">
                                     <field name="adi_sir_hardware_part_number_ids"
-                                        string="SIR Hardware Part Numbers"
+                                        string="Part Numbers"
                                         widget="many2many_tags"
                                         options="{
                                             'no_create': True,
