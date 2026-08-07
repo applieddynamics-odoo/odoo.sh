@@ -40,12 +40,24 @@
 
                 </group>
 
+            <!-- =====================================================
+                 Main Set In Progress workflow
+                 Single-column layout:
+                 Assignment -> Priority -> Charge Allocation
+                 ===================================================== -->
                 <group
                     invisible="adi_new_contact_review_required and not matched_contact_id"
-                    col="2">
+                    col="1"
+                    class="o_form_full_width">
 
-                    <!-- Who is responsible? -->
-                    <group string="Assignment">
+                    <!-- =================================================
+                        ASSIGNMENT
+                        Who is responsible for the investigation?
+                        ================================================= -->
+                    <group string="Assignment"
+                        col="2"
+                        class="o_form_full_width">
+
                         <field name="user_id"
                             string="Lead"
                             options="{'no_create': True}"/>
@@ -61,11 +73,37 @@
                             Select the person responsible for leading the investigation.
                             Add any other internal people who need to follow the ticket.
                         </div>
+
                     </group>
 
 
-                    <!-- Where should the work be charged? -->
-                    <group string="Charge Allocation">
+                    <!-- =================================================
+                        PRIORITY
+                        How urgent is the ticket?
+                        ================================================= -->
+                    <group string="Priority"
+                        col="2"
+                        class="o_form_full_width">
+
+                        <field name="adi_severity"
+                            string="Severity"/>
+
+                        <field name="adi_severity_guidance"
+                            nolabel="1"
+                            readonly="1"
+                            colspan="2"/>
+
+                    </group>
+
+
+                    <!-- =================================================
+                        CHARGE ALLOCATION
+                        Where should the work be charged?
+                        ================================================= -->
+                    <group string="Charge Allocation"
+                        col="2"
+                        class="o_form_full_width">
+
                         <field name="adi_charge_to_order_id"
                             string="Charge to"
                             domain="adi_charge_to_order_domain"
@@ -98,17 +136,6 @@
                             decoration-warning="adi_contract_status == 'warning'"
                             decoration-danger="adi_contract_status == 'expired'"/>
 
-                    </group>
-
-                    <!-- How urgent is it? -->
-                    <group string="Priority">
-                        <field name="adi_severity"
-                            string="Severity"/>
-
-                        <field name="adi_severity_guidance"
-                            nolabel="1"
-                            readonly="1"
-                            colspan="2"/>
                     </group>
 
                 </group>
