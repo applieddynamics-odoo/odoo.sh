@@ -343,3 +343,25 @@
     width: 100% !important;
     max-width: none !important;
 }
+
+/* ---------------------------------------------------------
+   Status card - Followers
+   Light follower pills with ADI teal accent.
+   --------------------------------------------------------- */
+
+.adi_management_card .o_field_many2many_tags .badge {
+    background-color: #fff !important;
+    border: 1px solid #008c95 !important;
+    color: #495057 !important;
+    font-weight: 400;
+}
+
+/* Follower remove X */
+.adi_management_card .o_field_many2many_tags .badge .o_delete {
+    color: #008c95 !important;
+    opacity: 0.75;
+}
+
+.adi_management_card .o_field_many2many_tags .badge .o_delete:hover {
+    opacity: 1;
+}
