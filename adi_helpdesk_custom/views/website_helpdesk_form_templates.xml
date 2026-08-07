@@ -194,6 +194,8 @@
                                                             Software Version
                                                         </span>
                                                     </label>
+                                                    
+                                                    <span class="s_website_form_mark">*</span>
 
                                                     <select class="form-select s_website_form_input"
                                                             name="adi_software_version_id"
@@ -220,7 +222,7 @@
                                                         <span class="s_website_form_label_content">
                                                             Where was the problem found?
                                                         </span>
-
+                                                        <span class="s_website_form_mark">*</span>
                                                         <span class="adi_inline_guidance">
                                                             Enter the system name, serial number or generic hardware
                                                             (i.e. laptop).
