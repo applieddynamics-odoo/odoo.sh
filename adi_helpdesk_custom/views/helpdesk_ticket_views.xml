@@ -70,6 +70,18 @@
             </xpath>
 
             <!-- =========================================================
+                Stage control
+
+                Stage changes are controlled by the ADI workflow buttons
+                and wizards. Prevent users changing stage directly from
+                the standard Helpdesk statusbar.
+                ========================================================= -->
+            <xpath expr="//header//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+
+            <!-- =========================================================
                  Main Helpdesk layout
                  Replaces the standard sheet group with compact ADI cards.
                  ========================================================= -->
