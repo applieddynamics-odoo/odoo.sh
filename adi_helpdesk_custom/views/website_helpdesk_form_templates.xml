@@ -193,9 +193,8 @@
                                                         <span class="s_website_form_label_content">
                                                             Software Version
                                                         </span>
+                                                        <span class="s_website_form_mark">*</span>
                                                     </label>
-                                                    
-                                                    <span class="s_website_form_mark">*</span>
 
                                                     <select class="form-select s_website_form_input"
                                                             name="adi_software_version_id"
