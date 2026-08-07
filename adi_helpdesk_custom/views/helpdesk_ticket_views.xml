@@ -62,6 +62,7 @@
                 <field name="adi_new_contact_review_required" invisible="1"/>
                 <field name="adi_can_repeat_validity" invisible="1"/>
                 <field name="adi_non_contract" invisible="1"/>
+                <field name="adi_charge_to_order_domain" invisible="1"/>
             </xpath>
 
             <xpath expr="//field[@name='team_id']" position="attributes">
@@ -259,6 +260,7 @@
                                     <span class="fw-bold">Charge to:</span>
                                     <field name="adi_charge_to_order_id"
                                         nolabel="1"
+                                        domain="adi_charge_to_order_domain"
                                         context="{'adi_helpdesk_charge_to': True}"
                                         options="{
                                             'no_create': True,

@@ -147,6 +147,51 @@ class HelpdeskTicket(models.Model):
         string="Charge to",
     )
 
+    adi_charge_to_order_domain = fields.Binary(
+        compute="_compute_adi_charge_to_order_domain",
+    )
+
+    @api.depends(
+        "partner_id",
+        "adi_matched_company_id",
+    )
+    def _compute_adi_charge_to_order_domain(self):
+        for ticket in self:
+            company = (
+                ticket.adi_matched_company_id
+                or ticket.partner_id.commercial_partner_id
+            )
+
+            if not company:
+                ticket.adi_charge_to_order_domain = [
+                    ("id", "=", 0),
+                ]
+                continue
+
+            ticket.adi_charge_to_order_domain = [
+                ("partner_id", "child_of", company.id),
+                ("state", "=", "sale"),
+                "|",
+                (
+                    "x_studio_lifecycle",
+                    "=",
+                    "Warranty",
+                ),
+                "&",
+                (
+                    "x_studio_lifecycle",
+                    "=",
+                    "In progress",
+                ),
+                (
+                    "x_studio_sales_order_type",
+                    "in",
+                    ["Maintenance", "Maintenance Plus"],
+                ),
+            ]
+
+
+
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
         readonly=True,
