@@ -102,7 +102,7 @@
                                                     <div><strong>Notes:</strong></div>
 
                                                     <div>
-                                                        • If your company has a support contract and you need adding to our safe contact list, please ask a colleague with access to raise a ticket providing your full name and email address.
+                                                        • If your company has a support contract and you need adding to our safe contact list, please ask a colleague to contact us by email or ticket providing your full name and email address.
                                                     </div>
 
                                                     <div>
@@ -156,14 +156,14 @@
                                                 </div>
 
                                                 <!-- Problem type -->
-                                                <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                <div class="s_website_form_field mb-3 col-12 col-lg-6 s_website_form_required"
                                                      data-type="many2one"
                                                      data-name="Field"
                                                      data-translated-name="Problem Type">
 
                                                     <label class="s_website_form_label d-block mb-2">
                                                         <span class="s_website_form_label_content">
-                                                            Area where help is required
+                                                            Problem Type
                                                         </span>
                                                         <span class="s_website_form_mark">*</span>
                                                     </label>
@@ -215,16 +215,16 @@
                                                      data-name="Field"
                                                      data-translated-name="Where was the problem found?">
 
-                                                    <label class="s_website_form_label d-block mb-1">
+                                                    <label class="s_website_form_label d-block mb-2">
                                                         <span class="s_website_form_label_content">
                                                             Where was the problem found?
                                                         </span>
-                                                    </label>
 
-                                                    <div class="adi_field_guidance">
-                                                        Enter the system name, serial number or generic hardware
-                                                        (i.e. laptop) as applicable.
-                                                    </div>
+                                                        <span class="adi_inline_guidance">
+                                                            Enter the system name, serial number or generic hardware
+                                                            (i.e. laptop).
+                                                        </span>
+                                                    </label>
 
                                                     <input class="form-control s_website_form_input"
                                                            type="text"
@@ -237,17 +237,16 @@
                                                      data-name="Field"
                                                      data-translated-name="Subject">
 
-                                                    <label class="s_website_form_label d-block mb-1">
+                                                    <label class="s_website_form_label d-block mb-2">
                                                         <span class="s_website_form_label_content">
                                                             Email Header for Ticket
                                                         </span>
                                                         <span class="s_website_form_mark">*</span>
-                                                    </label>
 
-                                                    <div class="adi_field_guidance">
-                                                        This will be the email subject for all correspondence
-                                                        (Maximum 120 characters).
-                                                    </div>
+                                                        <span class="adi_inline_guidance">
+                                                            (used as the email subject for all correspondence, maximum 120 characters)
+                                                        </span>
+                                                    </label>
 
                                                     <input class="form-control s_website_form_input"
                                                            type="text"
@@ -262,21 +261,21 @@
                                                      data-name="Field"
                                                      data-translated-name="How can we help?">
 
-                                                    <label class="s_website_form_label d-block mb-1">
+                                                    <label class="s_website_form_label d-block mb-2">
                                                         <span class="s_website_form_label_content">
                                                             How can we help?
                                                         </span>
                                                         <span class="s_website_form_mark">*</span>
+
+                                                        <span class="adi_inline_guidance">
+                                                            (describe your problem or question in as much detail as possible)
+                                                        </span>
                                                     </label>
 
-                                                    <div class="adi_field_guidance">
-                                                        Describe your problem or question in as much detail as possible.
-                                                    </div>
-
                                                     <textarea class="form-control s_website_form_input"
-                                                              name="description"
-                                                              required="1"
-                                                              rows="5"/>
+                                                            name="description"
+                                                            required="1"
+                                                            rows="4"/>
 
                                                     <div class="adi_guidance_box mt-3">
                                                         <div>

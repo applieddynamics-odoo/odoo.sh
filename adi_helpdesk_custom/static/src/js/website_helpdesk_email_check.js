@@ -198,7 +198,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
                     this._hideTicketDetails();
 
                     this._setMessage(
-                        "We could not verify this email address as an existing support contact.\nPlease check the address and try again, or contact ADI."
+                        "We could not verify this email address as an existing support contact.\nPlease check the address and try again, or contact ADI.\n"
                     );
 
                     this._showVerifyButton();

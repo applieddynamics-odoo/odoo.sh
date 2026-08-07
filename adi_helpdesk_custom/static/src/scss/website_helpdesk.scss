@@ -83,3 +83,18 @@
     border-color: #007A71;
     color: #ffffff;
 }
+
+/* ==========================================================================
+   Inline Field Guidance
+   --------------------------------------------------------------------------
+   Short guidance displayed on the same line as a field label to reduce
+   vertical space while keeping instructions visible.
+   ========================================================================== */
+
+.adi_helpdesk_ticket_form .adi_inline_guidance {
+    margin-left: 0.5rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-style: italic;
+    font-weight: 400;
+}
