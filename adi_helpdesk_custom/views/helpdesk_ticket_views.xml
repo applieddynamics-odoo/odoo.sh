@@ -407,12 +407,11 @@
                 Developer / exploration tabs
                 ========================================================= -->
             <xpath expr="//notebook" position="replace">
-                <notebook>
+                <notebook groups="helpdesk.group_helpdesk_manager">
 
                     <!-- Temporary metrics / bridge exploration tab -->
                     <page string="Metrics"
-                        groups="helpdesk.group_helpdesk_manager"
-                        invisible="not context.get('debug')">
+                        groups="base.group_no_one">
 
                         <div class="alert alert-info">
                             <strong>Temporary metrics / Repair bridge exploration</strong><br/>
@@ -445,8 +444,7 @@
 
                     <!-- Developer-only correction tab -->
                     <page string="Debug and Corrections"
-                        groups="helpdesk.group_helpdesk_manager"
-                        invisible="not context.get('debug')">
+                        groups="base.group_no_one">
 
                         <div class="alert alert-warning">
                             <strong>Admin correction area</strong><br/>
