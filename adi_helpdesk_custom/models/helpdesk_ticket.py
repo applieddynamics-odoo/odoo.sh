@@ -145,7 +145,6 @@ class HelpdeskTicket(models.Model):
     adi_charge_to_order_id = fields.Many2one(
         "sale.order",
         string="Charge to",
-        readonly=True,
     )
 
     adi_contract_date_range = fields.Char(
