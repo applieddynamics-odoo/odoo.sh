@@ -184,7 +184,7 @@
                                                 </div>
 
                                                 <!-- Software version -->
-                                                <div class="s_website_form_field mb-3 col-12 col-lg-6"
+                                                <div class="s_website_form_field mb-3 col-12 col-lg-6 s_website_form_required"
                                                      data-type="many2one"
                                                      data-name="Field"
                                                      data-translated-name="Software Version">
@@ -196,7 +196,8 @@
                                                     </label>
 
                                                     <select class="form-select s_website_form_input"
-                                                            name="adi_software_version_id">
+                                                            name="adi_software_version_id"
+                                                            required="1">
 
                                                         <option value="" selected="selected"/>
 
@@ -210,7 +211,7 @@
                                                 </div>
 
                                                 <!-- Where was the problem found? -->
-                                                <div class="s_website_form_field mb-3 col-12"
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_required"
                                                      data-type="char"
                                                      data-name="Field"
                                                      data-translated-name="Where was the problem found?">
@@ -227,8 +228,9 @@
                                                     </label>
 
                                                     <input class="form-control s_website_form_input"
-                                                           type="text"
-                                                           name="adi_customer_input_serial_number"/>
+                                                        type="text"
+                                                        name="adi_customer_input_serial_number"
+                                                        required="1"/>
                                                 </div>
 
                                                 <!-- Subject -->
