@@ -410,7 +410,9 @@
                 <notebook>
 
                     <!-- Temporary metrics / bridge exploration tab -->
-                    <page string="Metrics" groups="base.group_no_one">
+                    <page string="Metrics"
+                        groups="helpdesk.group_helpdesk_manager"
+                        invisible="not context.get('debug')">
 
                         <div class="alert alert-info">
                             <strong>Temporary metrics / Repair bridge exploration</strong><br/>
@@ -442,7 +444,9 @@
                     </page>
 
                     <!-- Developer-only correction tab -->
-                    <page string="Debug and Corrections" groups="base.group_no_one">
+                    <page string="Debug and Corrections"
+                        groups="helpdesk.group_helpdesk_manager"
+                        invisible="not context.get('debug')">
 
                         <div class="alert alert-warning">
                             <strong>Admin correction area</strong><br/>
