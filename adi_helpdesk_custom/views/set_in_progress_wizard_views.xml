@@ -67,11 +67,16 @@
                             widget="many2many_tags"
                             options="{'no_create': True, 'no_open': True}"/>
 
-                        <div class="fst-italic"
-                            style="color:#667085; line-height:1.5;"
+                        <div class="adi_wizard_guidance o_form_full_width"
                             colspan="2">
-                            Select the person responsible for leading the investigation.
-                            Add any other internal people who need to follow the ticket.
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                Select the person responsible for leading the investigation.
+                                Add any other internal people who need to follow the ticket.
+                            </div>
+
                         </div>
 
                     </group>
@@ -88,10 +93,18 @@
                         <field name="adi_severity"
                             string="Severity"/>
 
-                        <field name="adi_severity_guidance"
-                            nolabel="1"
-                            readonly="1"
-                            colspan="2"/>
+                        <div class="adi_wizard_guidance o_form_full_width"
+                            colspan="2">
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                <strong>High:</strong> Critical issue preventing operation or testing.<br/>
+                                <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
+                                <strong>Low:</strong> Minor issue or cosmetic problem.
+                            </div>
+
+                        </div>
 
                     </group>
 
@@ -115,11 +128,16 @@
                             string="No Contract"
                             invisible="adi_charge_to_order_id"/>
 
-                        <div class="fst-italic ms-4"
-                            style="color:#667085; line-height:1.5;"
+                        <div class="adi_wizard_guidance o_form_full_width"
                             colspan="2"
                             invisible="adi_charge_to_order_id or not adi_non_contract">
-                            * Expense to 78000 - Customer Support (non-contract)
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                Expense to 78000 - Customer Support (non-contract)
+                            </div>
+
                         </div>
 
                         <field name="adi_contract_date_range"
