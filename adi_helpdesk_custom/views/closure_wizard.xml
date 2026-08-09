@@ -11,6 +11,14 @@
                         <group>
                             <field name="adi_closure_result"/>
                             <field name="adi_closure_statement"/>
+
+                            <div class="mt-3 p-3 border-start border-3 bg-light fst-italic"
+                                style="border-color:#008c95 !important; color:#5f6368;">
+                                <strong>Note:</strong>
+                                Closure information is shared with the customer in the automated closure email,
+                                therefore please write a formal closure statement.
+                            </div>
+
                         </group>
                     </sheet>
 
