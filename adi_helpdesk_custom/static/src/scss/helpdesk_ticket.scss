@@ -396,3 +396,17 @@
     color: #008c95;
     font-size: 1rem;
 }
+
+/* ---------------------------------------------------------
+   Set In Progress wizard
+   Reduce vertical spacing while retaining clear sections.
+   --------------------------------------------------------- */
+
+.adi_set_in_progress_compact > .o_inner_group {
+    margin-bottom: 0.5rem !important;
+}
+
+.adi_set_in_progress_compact .o_horizontal_separator {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}

@@ -48,7 +48,7 @@
                 <group
                     invisible="adi_new_contact_review_required and not matched_contact_id"
                     col="1"
-                    class="o_form_full_width">
+                    class="o_form_full_width adi_set_in_progress_compact">
 
                     <!-- =================================================
                         ASSIGNMENT
@@ -99,7 +99,7 @@
                             <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                             <div>
-                                Assign a severity level to indicate the urgency of the ticket. Please set based on the criteria so that all customers are treated equally.
+                                Assign a severity level based on the criteria belowso that all customers are treated equally.
                                 <strong>High:</strong> Critical issue preventing operation or testing.<br/>
                                 <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
                                 <strong>Low:</strong> Minor issue or cosmetic problem.
