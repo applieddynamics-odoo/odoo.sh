@@ -410,3 +410,24 @@
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
 }
+
+/* =========================================================
+   Wizard selection fields
+   Make required user decisions visually obvious.
+   ========================================================= */
+
+.adi_wizard_select .o_input {
+    border: 1px solid #adb5bd !important;
+    border-radius: 4px;
+    background-color: #fff;
+    min-height: 36px;
+    padding: 0.35rem 0.5rem;
+}
+
+.adi_wizard_select .o_input:hover {
+    border-color: #008c95 !important;
+}
+
+.adi_wizard_select.o_field_widget:focus-within .o_input {
+    border-color: #008c95 !important;
+}
