@@ -42,24 +42,25 @@
 
             <!-- =====================================================
                  Main Set In Progress workflow
-                 Single-column layout:
-                 Assignment -> Priority -> Charge Allocation
                  ===================================================== -->
-                <group
-                    invisible="adi_new_contact_review_required and not matched_contact_id"
-                    col="1"
-                    class="o_form_full_width adi_set_in_progress_compact">
 
-                    <!-- =================================================
-                        ASSIGNMENT
-                        Who is responsible for the investigation?
-                        ================================================= -->
-                    <group string="Assignment"
-                        col="2"
-                        class="o_form_full_width">
+            <group
+                invisible="adi_new_contact_review_required and not matched_contact_id"
+                col="1"
+                class="o_form_full_width adi_set_in_progress_compact">
+
+                <!-- =================================================
+                    TOP ROW
+                    Assignment | Priority
+                    ================================================= -->
+                <group col="2" class="o_form_full_width adi_wizard_top_row">
+
+                    <!-- Assignment - left column -->
+                    <group string="Assignment">
 
                         <field name="user_id"
                             string="Lead"
+                            class="adi_wizard_select"
                             options="{'no_create': True}"/>
 
                         <field name="adi_interested_user_ids"
@@ -82,16 +83,12 @@
                     </group>
 
 
-                    <!-- =================================================
-                        PRIORITY
-                        How urgent is the ticket?
-                        ================================================= -->
-                    <group string="Priority"
-                        col="2"
-                        class="o_form_full_width">
+                    <!-- Priority - right column -->
+                    <group string="Priority">
 
                         <field name="adi_severity"
-                            string="Severity"/>
+                            string="Severity"
+                            class="adi_wizard_select"/>
 
                         <div class="adi_wizard_guidance o_form_full_width"
                             colspan="2">
@@ -99,7 +96,7 @@
                             <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                             <div>
-                                Assign a severity level based on the criteria belowso that all customers are treated equally.
+                                Assign a severity level based on the criteria below so that all customers are treated equally.<br/>
                                 <strong>High:</strong> Critical issue preventing operation or testing.<br/>
                                 <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
                                 <strong>Low:</strong> Minor issue or cosmetic problem.
@@ -108,6 +105,8 @@
                         </div>
 
                     </group>
+
+                </group>
 
 
                     <!-- =================================================
