@@ -274,11 +274,6 @@ class HelpdeskTicket(models.Model):
         readonly=True,
     )
 
-    adi_non_contract = fields.Boolean(
-        string="Non-contract Support",
-        copy=False,
-    )
-
     adi_closure_statement = fields.Text(
         string="Closure Statement",
         copy=False,

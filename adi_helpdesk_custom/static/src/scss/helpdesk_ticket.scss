@@ -413,21 +413,26 @@
 
 /* =========================================================
    Wizard selection fields
-   Make required user decisions visually obvious.
+   Make fields requiring a user decision visually obvious.
    ========================================================= */
 
-.adi_wizard_select .o_input {
+.adi_set_in_progress_compact .adi_wizard_select.o_field_widget .o_input,
+.adi_set_in_progress_compact .adi_wizard_select .o_input,
+.adi_set_in_progress_compact .adi_wizard_select input,
+.adi_set_in_progress_compact .adi_wizard_select select,
+.adi_set_in_progress_compact .adi_wizard_select .o-autocomplete--input {
+    min-height: 36px !important;
+    width: 100% !important;
+    padding: 0.35rem 0.6rem !important;
+
+    background-color: #ffffff !important;
     border: 1px solid #adb5bd !important;
-    border-radius: 4px;
-    background-color: #fff;
-    min-height: 36px;
-    padding: 0.35rem 0.5rem;
+    border-radius: 5px !important;
 }
 
-.adi_wizard_select .o_input:hover {
+.adi_set_in_progress_compact .adi_wizard_select.o_field_widget:focus-within .o_input,
+.adi_set_in_progress_compact .adi_wizard_select:focus-within input,
+.adi_set_in_progress_compact .adi_wizard_select:focus-within select {
     border-color: #008c95 !important;
-}
-
-.adi_wizard_select.o_field_widget:focus-within .o_input {
-    border-color: #008c95 !important;
+    box-shadow: 0 0 0 1px rgba(0, 140, 149, 0.15);
 }
