@@ -99,6 +99,7 @@
                             <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                             <div>
+                                Assign a severity level to indicate the urgency of the ticket. Please set based on the criteria so that all customers are treated equally.
                                 <strong>High:</strong> Critical issue preventing operation or testing.<br/>
                                 <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
                                 <strong>Low:</strong> Minor issue or cosmetic problem.
@@ -116,6 +117,20 @@
                     <group string="Charge Allocation"
                         col="2"
                         class="o_form_full_width">
+
+                        <div class="adi_wizard_guidance o_form_full_width"
+                            colspan="2">
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                <strong>Tickets should be charged to:</strong><br/>
+                                • A support contract. If a replacement contract is imminent, book the ticket to the previous year's contract, which remains open.<br/>
+                                • An in-progress or warranty-stage Sales Order.<br/>
+                                • Expense account 78000 - Customer Support (non-contract), where no contract exists but ADI has agreed to support the customer at our expense.
+                            </div>
+
+                        </div>
 
                         <field name="adi_charge_to_order_id"
                             string="Charge to"
