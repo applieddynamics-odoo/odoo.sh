@@ -142,6 +142,12 @@ class HelpdeskTicket(models.Model):
         string="Confirmed Resource(s)",
     )
 
+    adi_non_contract = fields.Boolean(
+        string="Non-contract Support",
+        default=False,
+    )
+
+
     adi_charge_to_order_id = fields.Many2one(
         "sale.order",
         string="Charge to",
