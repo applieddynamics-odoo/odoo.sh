@@ -369,16 +369,17 @@
 
 /* =========================================================
    Wizard guidance
-   Shared informational guidance used throughout ADI Helpdesk.
+   Compact shared informational guidance.
    ========================================================= */
 
 .adi_wizard_guidance {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.65rem;
 
-    margin-top: 0.75rem;
-    padding: 0.65rem 0.85rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.25rem;
+    padding: 0.45rem 0.75rem;
 
     border-left: 3px solid #008c95;
     background: #f8f9fa;
@@ -386,13 +387,12 @@
     color: #5f6368;
     font-size: 0.875rem;
     font-style: italic;
-    line-height: 1.5;
+    line-height: 1.35;
 }
 
 .adi_wizard_guidance_icon {
     flex-shrink: 0;
-    margin-top: 0.15rem;
-
+    margin-top: 0.1rem;
     color: #008c95;
     font-size: 1rem;
 }
