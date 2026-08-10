@@ -109,7 +109,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     adi_charge_type = fields.Selection(
         [
             ("support", "Support Contract"),
-            ("warranty", "Warranty Claim"),
+            ("warranty", "Sales Order Transfer or Warranty Claim"),
             ("expense", "Expense to 78000"),
         ],
         string="Charge Method",
@@ -154,6 +154,8 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 ("state", "=", "sale"),
             ]
 
+            # Support Contract:
+            # Maintenance / Maintenance Plus orders that are In progress.
             if wizard.adi_charge_type == "support":
                 wizard.adi_charge_to_order_domain = base_domain + [
                     (
@@ -168,6 +170,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                     ),
                 ]
 
+            # Sales Order Transfer or Warranty Claim:
+            # Any non-maintenance order whose lifecycle is either
+            # In progress or Warranty.
             elif wizard.adi_charge_type == "warranty":
                 wizard.adi_charge_to_order_domain = base_domain + [
                     (
@@ -182,6 +187,8 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                     ),
                 ]
 
+            # Expense to 78000:
+            # No Sales Order is selected.
             else:
                 wizard.adi_charge_to_order_domain = [
                     ("id", "=", 0),
