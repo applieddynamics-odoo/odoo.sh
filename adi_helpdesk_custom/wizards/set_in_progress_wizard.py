@@ -459,52 +459,53 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             else ""
         )
 
-@api.onchange("adi_charge_to_order_id")
-def _onchange_adi_charge_to_order_id(self):
-    for wizard in self:
-        order = wizard.adi_charge_to_order_id
+    @api.onchange("adi_charge_to_order_id")
+    def _onchange_adi_charge_to_order_id(self):
+        for wizard in self:
+            order = wizard.adi_charge_to_order_id
 
-        if not order:
-            wizard.adi_contract_date_range = False
-            wizard.adi_contract_status = "unknown"
-            continue
+            if not order:
+                wizard.adi_contract_date_range = False
+                wizard.adi_contract_status = "unknown"
+                continue
 
-        start_date = order.x_studio_mnt_start_of_cover_date
-        end_date = order.x_studio_mnt_end_of_cover_date
-        today = fields.Date.context_today(wizard)
+            start_date = order.x_studio_mnt_start_of_cover_date
+            end_date = order.x_studio_mnt_end_of_cover_date
+            today = fields.Date.context_today(wizard)
 
-        if start_date and end_date:
-            wizard.adi_contract_date_range = (
-                f"{wizard._adi_format_date(start_date)} - "
-                f"{wizard._adi_format_date(end_date)}"
-            )
-        elif start_date:
-            wizard.adi_contract_date_range = (
-                f"From {wizard._adi_format_date(start_date)}"
-            )
-        elif end_date:
-            wizard.adi_contract_date_range = (
-                f"Until {wizard._adi_format_date(end_date)}"
-            )
-        else:
-            wizard.adi_contract_date_range = (
-                "No cover dates recorded"
-            )
+            if start_date and end_date:
+                wizard.adi_contract_date_range = (
+                    f"{wizard._adi_format_date(start_date)} - "
+                    f"{wizard._adi_format_date(end_date)}"
+                )
+            elif start_date:
+                wizard.adi_contract_date_range = (
+                    f"From {wizard._adi_format_date(start_date)}"
+                )
+            elif end_date:
+                wizard.adi_contract_date_range = (
+                    f"Until {wizard._adi_format_date(end_date)}"
+                )
+            else:
+                wizard.adi_contract_date_range = (
+                    "No cover dates recorded"
+                )
 
-        if start_date and today < start_date:
-            wizard.adi_contract_status = "warning"
-        elif end_date and today > end_date:
-            wizard.adi_contract_status = "expired"
-        elif end_date and (end_date - today).days <= 30:
-            wizard.adi_contract_status = "warning"
-        elif start_date or end_date:
-            wizard.adi_contract_status = "active"
-        else:
-            wizard.adi_contract_status = "unknown"
+            if start_date and today < start_date:
+                wizard.adi_contract_status = "warning"
+            elif end_date and today > end_date:
+                wizard.adi_contract_status = "expired"
+            elif end_date and (end_date - today).days <= 30:
+                wizard.adi_contract_status = "warning"
+            elif start_date or end_date:
+                wizard.adi_contract_status = "active"
+            else:
+                wizard.adi_contract_status = "unknown"
 
     # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify
     # the correct company to link to the ticket and ensure that customers from unapproved domains are flagged for review.
     @api.depends("contact_email")
+
     def _compute_adi_company_guidance(self):
         for wizard in self:
             email = (
