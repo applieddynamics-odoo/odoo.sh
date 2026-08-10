@@ -37,6 +37,7 @@
             "adi_helpdesk_custom/static/src/js/helpdesk_ticket_problem_toggle.js",
             "adi_helpdesk_custom/static/src/js/helpdesk_ticket_new_redirect.js",
             "adi_helpdesk_custom/static/src/xml/helpdesk_chatter_message.xml",
+            "adi_helpdesk_custom/static/src/js/helpdesk_charge_to_many2one.js",
         ],
         "web.assets_frontend": [
             "adi_helpdesk_custom/static/src/js/website_form_message.js",

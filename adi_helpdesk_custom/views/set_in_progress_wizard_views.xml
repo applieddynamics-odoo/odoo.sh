@@ -143,9 +143,8 @@
                                 'no_open': True,
                                 'no_create_edit': True,
                                 'no_quick_create': True,
-                                'no_search_more': True
-                                'search_limit': 50
                             }"
+
                             invisible="adi_charge_type == 'expense' or not adi_charge_type"/>
 
                         <field name="adi_contract_date_range"
