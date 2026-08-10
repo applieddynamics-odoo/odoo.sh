@@ -202,6 +202,26 @@ class HelpdeskTicket(models.Model):
                 ticket.adi_contract_status = "Unknown"
                 continue
 
+            order_type = (
+                order.x_studio_sales_order_type or ""
+            ).strip()
+
+            is_support_contract = order_type in (
+                "Maintenance",
+                "Maintenance Plus",
+            )
+
+            # -------------------------------------------------
+            # Normal Sales Order / Warranty allocation
+            # -------------------------------------------------
+            if not is_support_contract:
+                ticket.adi_contract_date_range = False
+                ticket.adi_contract_status = "Sales Order"
+                continue
+
+            # -------------------------------------------------
+            # Maintenance support contract
+            # -------------------------------------------------
             start_date = order.x_studio_mnt_start_of_cover_date
             end_date = order.x_studio_mnt_end_of_cover_date
             today = fields.Date.context_today(ticket)

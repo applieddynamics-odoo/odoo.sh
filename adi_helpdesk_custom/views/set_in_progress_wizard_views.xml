@@ -102,15 +102,11 @@
                                 <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
                                 <strong>Low:</strong> Minor issue or cosmetic problem.
                             </div>
-
                         </div>
-
                     </group>
-
                 </group>
 
-
-                    <!-- =================================================
+                    <!--=================================================
                         CHARGE ALLOCATION
                         Where should the work be charged?
                         ================================================= -->
@@ -126,8 +122,8 @@
                             <div>
                                 <strong>Tickets should be charged to:</strong><br/>
                                 • A support contract. If a replacement contract is imminent, book the ticket to the previous year's contract, which remains open.<br/>
-                                • An in-progress or warranty-stage Sales Order.<br/>
-                                • Expense account 78000 - Customer Support (non-contract), where no contract exists but ADI has agreed to support the customer at our expense.
+                                • An in-progress or warranty-stage Sales Order. (e.g an RMA is needed to move material or for a warranty claim) <br/>
+                                • Expense account 78000 - Customer Support (non-contract), where no contract exists but ADI has agreed to support the customer.
                             </div>
 
                         </div>
@@ -136,7 +132,6 @@
                             string="Charge Method"
                             widget="radio"
                             options="{'horizontal': true}"/>
-
 
                         <field name="adi_charge_to_order_id"
                             string="Charge to"
@@ -149,9 +144,9 @@
                                 'no_create_edit': True,
                                 'no_quick_create': True,
                                 'no_search_more': True
+                                'limit': 50
                             }"
                             invisible="adi_charge_type == 'expense' or not adi_charge_type"/>
-
 
                         <field name="adi_contract_date_range"
                             string="Cover Period"
