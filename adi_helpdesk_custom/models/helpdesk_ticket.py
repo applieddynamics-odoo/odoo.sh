@@ -174,28 +174,16 @@ class HelpdeskTicket(models.Model):
                 ]
                 continue
 
+
             ticket.adi_charge_to_order_domain = [
                 ("partner_id", "child_of", company.id),
                 ("state", "=", "sale"),
-                "|",
                 (
                     "x_studio_lifecycle",
-                    "=",
-                    "Warranty",
-                ),
-                "&",
-                (
-                    "x_studio_lifecycle",
-                    "=",
-                    "In progress",
-                ),
-                (
-                    "x_studio_sales_order_type",
                     "in",
-                    ["Maintenance", "Maintenance Plus"],
+                    ["In progress", "Warranty"],
                 ),
             ]
-
 
     def _adi_format_contract_date(self, date_value):
         return (
