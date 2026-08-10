@@ -266,8 +266,7 @@
                                             'no_open': True,
                                             'no_create_edit': True,
                                             'no_quick_create': True,
-                                            'no_search_more': True
-                                            'limit': 50
+                                            'search_limit': 50
                                         }"/>
                                 </span>
 
