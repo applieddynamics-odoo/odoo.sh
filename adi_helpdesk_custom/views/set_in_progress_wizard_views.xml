@@ -121,8 +121,8 @@
 
                             <div>
                                 <strong>Tickets should be charged to:</strong><br/>
-                                • A support contract. If a replacement contract is imminent, book the ticket to the previous year's contract, which remains open.<br/>
-                                • An in-progress or warranty-stage Sales Order. (e.g an RMA is needed to move material or for a warranty claim) <br/>
+                                • A support contract. (If a replacement contract is imminent, book the ticket to the previous year's contract, which remains open).<br/>
+                                • The Sales Order (to cover Warranty claims and in progress events - e.g to loan customer owned material) <br/>
                                 • Expense account 78000 - Customer Support (non-contract), where no contract exists but ADI has agreed to support the customer.
                             </div>
 

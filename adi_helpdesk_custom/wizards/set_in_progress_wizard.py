@@ -109,7 +109,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     adi_charge_type = fields.Selection(
         [
             ("support", "Support Contract"),
-            ("warranty", "Sales Order Transfer or Warranty Claim"),
+            ("warranty", "Sales Order /Warranty"),
             ("expense", "Expense to 78000"),
         ],
         string="Charge Method",
