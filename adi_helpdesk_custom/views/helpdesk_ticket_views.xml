@@ -62,6 +62,7 @@
                 <field name="adi_can_repeat_validity" invisible="1"/>
                 <field name="adi_non_contract" invisible="1"/>
                 <field name="adi_charge_to_order_domain" invisible="1"/>
+                <field name="adi_show_management_card" invisible="1"/>
             </xpath>
 
             <!-- =========================================================
@@ -200,7 +201,8 @@
                      Operational fields used once the ticket is accepted.
                      Header uses the shared adi_card_header pattern.
                      ===================================================== -->
-                <div class="adi_helpdesk_card adi_management_card">
+                <div class="adi_helpdesk_card adi_management_card"
+                    invisible="not adi_show_management_card">
                     <div class="adi_card_header align-items-start">
 
                         <span class="adi_card_title flex-shrink-0">
@@ -276,8 +278,8 @@
                                     <span>Expense to 78000</span>
                                 </span>
 
-                                <span class="adi_card_item"
-                                    invisible="not adi_charge_to_order_id">
+                                    <span class="adi_card_item"
+                                        invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
                                     <i class="fa fa-calendar-check-o adi_summary_icon"/>
                                     <span class="fw-bold">Cover:</span>
                                     <field name="adi_contract_date_range"

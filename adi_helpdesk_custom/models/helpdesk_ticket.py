@@ -858,4 +858,16 @@ class HelpdeskTicket(models.Model):
                     partner_ids=list(partner_ids_to_remove),
                 )             
 
-        
+    adi_show_management_card = fields.Boolean(
+        compute="_compute_adi_show_management_card",
+    )
+
+    @api.depends("stage_id")
+    def _compute_adi_show_management_card(self):
+        for ticket in self:
+            ticket.adi_show_management_card = (
+                ticket.stage_id.name not in (
+                    "Validity Check",
+                    "New",
+                )
+            )        
