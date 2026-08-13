@@ -437,60 +437,10 @@
     box-shadow: 0 0 0 1px rgba(0, 140, 149, 0.15);
 }
 
-
-.adi_status_followers_row {
-    display: flex;
-    width: 100%;
-    align-items: flex-start;
-}
-
-.adi_followers_item {
-    align-items: flex-start;
-}
-
-.adi_followers_item .o_field_many2many_tags {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.adi_followers_item .o_field_tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-}
-
-/* Separate charging information from assignment/status */
-.adi_status_charge_section {
-    width: 100%;
-    margin-top: 6px;
-    padding-top: 6px;
-    border-top: 1px solid #d8dee6;
-}
-
-.adi_charge_row {
-    display: flex;
-    width: 100%;
-}
-
-.adi_charge_item {
-    flex: 1 1 100%;
-    min-width: 0;
-}
-
-.adi_contract_row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 28px;
-    width: 100%;
-    margin-top: 4px;
-}
-
-
 /* =========================================================
-   Status card - Followers
+   Status card layout
    Followers may wrap onto any number of lines.
-   The row must grow naturally and push charging down.
+   Charging always begins below the complete follower row.
    ========================================================= */
 
 .adi_management_card .adi_status_followers_row {
@@ -518,11 +468,16 @@
     align-items: flex-start;
     gap: 4px;
     width: 100%;
-    overflow: visible !important;
     height: auto !important;
+    overflow: visible !important;
 }
 
-/* Charging always starts below the complete followers row */
+
+/* ---------------------------------------------------------
+   Charge allocation
+   Full-width section below Followers.
+   --------------------------------------------------------- */
+
 .adi_management_card .adi_status_charge_section {
     display: block;
     clear: both;
@@ -530,4 +485,25 @@
     margin-top: 0.5rem;
     padding-top: 0.45rem;
     border-top: 1px solid #d8dee6;
+}
+
+.adi_management_card .adi_charge_row {
+    display: flex;
+    width: 100%;
+}
+
+.adi_management_card .adi_charge_item {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+
+/* Cover / Allocation row */
+.adi_management_card .adi_contract_row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    width: 100%;
+    margin-top: 4px;
 }
