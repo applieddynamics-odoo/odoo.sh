@@ -211,7 +211,9 @@
 
                         <div class="flex-grow-1">
 
-                            <!-- Line 1: ownership and priority -->
+                            <!-- =================================================
+                                Line 1: ownership and priority
+                                ================================================= -->
                             <div class="adi_card_items">
 
                                 <span class="adi_card_item">
@@ -240,66 +242,96 @@
                                         }"/>
                                 </span>
 
-                                <!-- Followers row -->
-                                <div class="adi_status_row adi_status_followers_row">
-                                    <span class="adi_card_item adi_followers_item">
-                                        <i class="fa fa-users adi_summary_icon"/>
-                                        <span class="fw-bold">Followers:</span>
-                                        <field name="adi_interested_user_ids"
-                                            widget="many2many_tags"
-                                            nolabel="1"/>
+                            </div>
+
+
+                            <!-- =================================================
+                                Line 2: Followers
+                                Dedicated row so multiple followers wrap safely.
+                                ================================================= -->
+                            <div class="adi_status_row adi_status_followers_row">
+
+                                <span class="adi_card_item adi_followers_item">
+                                    <i class="fa fa-users adi_summary_icon"/>
+                                    <span class="fw-bold">Followers:</span>
+
+                                    <field name="adi_interested_user_ids"
+                                        widget="many2many_tags"
+                                        nolabel="1"
+                                        options="{
+                                            'no_create': True,
+                                            'no_open': True
+                                        }"/>
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                Charge allocation
+                                Separated visually from ownership information.
+                                ================================================= -->
+                            <div class="adi_status_charge_section">
+
+                                <!-- Charge To gets a full-width row -->
+                                <div class="adi_status_row adi_charge_row">
+
+                                    <span class="adi_card_item adi_charge_item">
+                                        <i class="fa fa-credit-card adi_summary_icon"/>
+                                        <span class="fw-bold">Charge to:</span>
+
+                                        <field name="adi_charge_to_order_id"
+                                            nolabel="1"
+                                            domain="adi_charge_to_order_domain"
+                                            context="{'adi_helpdesk_charge_to': True}"
+                                            options="{
+                                                'no_create': True,
+                                                'no_open': True,
+                                                'no_create_edit': True,
+                                                'no_quick_create': True
+                                            }"/>
                                     </span>
+
                                 </div>
 
-                                <!-- Charge allocation area -->
-                                <div class="adi_status_charge_section">
 
-                                    <!-- Charge To gets a full row -->
-                                    <div class="adi_status_row adi_charge_row">
-                                        <span class="adi_card_item adi_charge_item">
-                                            <i class="fa fa-credit-card adi_summary_icon"/>
-                                            <span class="fw-bold">Charge to:</span>
-                                            <field name="adi_charge_to_order_id"
-                                                nolabel="1"
-                                                context="{'adi_helpdesk_charge_to': True}"
-                                                options="{
-                                                    'no_create': True,
-                                                    'no_open': True,
-                                                    'no_create_edit': True,
-                                                    'no_quick_create': True
-                                                }"/>
-                                        </span>
-                                    </div>
+                                <!-- Cover / Allocation on their own row -->
+                                <div class="adi_status_row adi_contract_row">
 
-                                    <!-- Cover / Allocation row -->
-                                    <div class="adi_status_row adi_contract_row">
+                                    <span class="adi_card_item"
+                                        invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
 
-                                        <span class="adi_card_item"
-                                            invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
-                                            <i class="fa fa-calendar-check-o adi_summary_icon"/>
-                                            <span class="fw-bold">Cover:</span>
-                                            <field name="adi_contract_date_range"
-                                                readonly="1"
-                                                nolabel="1"/>
-                                        </span>
+                                        <i class="fa fa-calendar-check-o adi_summary_icon"/>
+                                        <span class="fw-bold">Cover:</span>
 
-                                        <span class="adi_card_item"
-                                            invisible="not adi_charge_to_order_id">
-                                            <i class="fa fa-info-circle adi_summary_icon"/>
-                                            <span class="fw-bold">Allocation:</span>
-                                            <field name="adi_contract_status"
-                                                readonly="1"
-                                                decoration-success="adi_contract_status == 'In Contract'"
-                                                decoration-warning="adi_contract_status == 'Contract Expiring'"
-                                                decoration-danger="adi_contract_status == 'Out of Contract'"
-                                                decoration-info="adi_contract_status == 'Sales Order'"/>
-                                        </span>
+                                        <field name="adi_contract_date_range"
+                                            readonly="1"
+                                            nolabel="1"/>
 
-                                    </div>
+                                    </span>
 
-                    </div>                    
+                                    <span class="adi_card_item"
+                                        invisible="not adi_charge_to_order_id">
 
+                                        <i class="fa fa-info-circle adi_summary_icon"/>
+                                        <span class="fw-bold">Allocation:</span>
 
+                                        <field name="adi_contract_status"
+                                            readonly="1"
+                                            decoration-success="adi_contract_status == 'In Contract'"
+                                            decoration-warning="adi_contract_status == 'Contract Expiring'"
+                                            decoration-danger="adi_contract_status == 'Out of Contract'"
+                                            decoration-info="adi_contract_status == 'Sales Order'"/>
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
                     <hr/>
 
                     <div class="row g-5">
