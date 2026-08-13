@@ -436,3 +436,52 @@
     border-color: #008c95 !important;
     box-shadow: 0 0 0 1px rgba(0, 140, 149, 0.15);
 }
+
+
+.adi_status_followers_row {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.adi_followers_item {
+    align-items: flex-start;
+}
+
+.adi_followers_item .o_field_many2many_tags {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.adi_followers_item .o_field_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* Separate charging information from assignment/status */
+.adi_status_charge_section {
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #d8dee6;
+}
+
+.adi_charge_row {
+    display: flex;
+    width: 100%;
+}
+
+.adi_charge_item {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+.adi_contract_row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    width: 100%;
+    margin-top: 4px;
+}
