@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="adi_sale_order_form_inherit_root" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.adi.salesorder.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Complete button to header (compact) -->
+            <xpath expr="//header" position="inside">
+            <button name="action_open_complete_wizard"
+                    type="object"
+                    string="Complete"
+                    class="btn-primary"
+                    invisible="state != 'sale' or x_adi_completed"/>
+            </xpath>
+
+            <xpath expr="//form/header" position="inside">
+                <field name="x_adi_completed" invisible="1"/>
+            </xpath>
+            
+
+        </field>
+    </record>
+</odoo>
+
+
+
+

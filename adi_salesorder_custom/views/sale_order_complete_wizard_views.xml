@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_sale_order_complete_wizard_form" model="ir.ui.view">
+    <field name="name">sale.order.complete.wizard.form</field>
+    <field name="model">sale.order.complete.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Mark Complete">
+        <group>
+          <field name="sale_order_id"/>
+        </group>
+
+        <group string="Current Status">
+          <field name="invoice_status"/>
+          <field name="delivery_status"/>
+        </group>
+
+        <group string="Completion Checks">
+          <field name="x_adi_check_invoicing_ok"/>
+<!--
+          <field name="x_adi_check_delivery"/>
+-->         
+          <field name="x_adi_completion_notes"/>
+        </group>
+
+        <footer>
+          <button string="Cancel" special="cancel" class="btn-secondary"/>
+          <button name="action_confirm_complete"
+                  type="object"
+                  string="Confirm Complete"
+                  class="btn-primary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>
+
+
+
+
