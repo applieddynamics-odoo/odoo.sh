@@ -446,30 +446,25 @@
                                      Charge To - Sales Order route
                                      ===================================== -->
                                 <div class="adi_status_row adi_charge_row"
-                                     invisible="adi_non_contract">
+                                    invisible="adi_non_contract">
 
-                                    <span class="adi_card_item adi_charge_item">
+                                    <i class="fa fa-credit-card adi_summary_icon"/>
 
-                                        <i class="fa fa-credit-card adi_summary_icon"/>
-
-                                        <span class="fw-bold">
-                                            Charge to:
-                                        </span>
-
-                                        <field name="adi_charge_to_order_id"
-                                               nolabel="1"
-                                               domain="adi_charge_to_order_domain"
-                                               context="{
-                                                   'adi_helpdesk_charge_to': True
-                                               }"
-                                               options="{
-                                                   'no_create': True,
-                                                   'no_open': True,
-                                                   'no_create_edit': True,
-                                                   'no_quick_create': True
-                                               }"/>
-
+                                    <span class="fw-bold">
+                                        Charge to:
                                     </span>
+
+                                    <field name="adi_charge_to_order_id"
+                                        nolabel="1"
+                                        class="adi_charge_to_field"
+                                        domain="adi_charge_to_order_domain"
+                                        context="{'adi_helpdesk_charge_to': True}"
+                                        options="{
+                                            'no_create': True,
+                                            'no_open': True,
+                                            'no_create_edit': True,
+                                            'no_quick_create': True
+                                        }"/>
 
                                 </div>
 
