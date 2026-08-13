@@ -433,50 +433,51 @@
 
                             </div>
 
-
-                            <!-- =========================================
-                                 Charge Allocation
-
-                                 Full-width section below Followers.
-                                 ========================================= -->
+                            <!-- =================================================
+                                Charge Allocation
+                                Full-width section below Followers.
+                                ================================================= -->
                             <div class="adi_status_charge_section">
 
+                                <!-- =================================================
+                                    Sales Order allocation
 
-                                <!-- =====================================
-                                     Charge To - Sales Order route
-                                     ===================================== -->
+                                    Keep the original adi_card_item structure because
+                                    this is the known-good editable Many2one layout.
+                                    ================================================= -->
                                 <div class="adi_status_row adi_charge_row"
                                     invisible="adi_non_contract">
 
-                                    <i class="fa fa-credit-card adi_summary_icon"/>
+                                    <span class="adi_card_item adi_charge_item">
 
-                                    <span class="fw-bold">
-                                        Charge to:
+                                        <i class="fa fa-credit-card adi_summary_icon"/>
+
+                                        <span class="fw-bold">
+                                            Charge to:
+                                        </span>
+
+                                        <field name="adi_charge_to_order_id"
+                                            nolabel="1"
+                                            domain="adi_charge_to_order_domain"
+                                            context="{'adi_helpdesk_charge_to': True}"
+                                            options="{
+                                                'no_create': True,
+                                                'no_open': True,
+                                                'no_create_edit': True,
+                                                'no_quick_create': True
+                                            }"/>
+
                                     </span>
-
-                                    <field name="adi_charge_to_order_id"
-                                        nolabel="1"
-                                        class="adi_charge_to_field"
-                                        domain="adi_charge_to_order_domain"
-                                        context="{'adi_helpdesk_charge_to': True}"
-                                        options="{
-                                            'no_create': True,
-                                            'no_open': True,
-                                            'no_create_edit': True,
-                                            'no_quick_create': True
-                                        }"/>
 
                                 </div>
 
 
-                                <!-- =====================================
-                                     Charge To - Expense route
-
-                                     Preserve the existing explicit
-                                     Expense to 78000 display.
-                                     ===================================== -->
+                                <!-- =================================================
+                                    Expense allocation
+                                    Preserve existing 78000 display.
+                                    ================================================= -->
                                 <div class="adi_status_row adi_charge_row"
-                                     invisible="not adi_non_contract">
+                                    invisible="not adi_non_contract">
 
                                     <span class="adi_card_item adi_charge_item">
 
@@ -495,18 +496,18 @@
                                 </div>
 
 
-                                <!-- =====================================
-                                     Cover / Allocation row
+                                <!-- =================================================
+                                    Cover / Allocation
 
-                                     Hidden entirely for Expense to 78000.
-                                     ===================================== -->
+                                    Expense tickets do not need these fields.
+                                    Normal Sales Orders show Allocation but no Cover.
+                                    Maintenance contracts show both.
+                                    ================================================= -->
                                 <div class="adi_status_row adi_contract_row"
-                                     invisible="adi_non_contract">
+                                    invisible="adi_non_contract">
 
-
-                                    <!-- Cover -->
                                     <span class="adi_card_item"
-                                          invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
+                                        invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
 
                                         <i class="fa fa-calendar-check-o adi_summary_icon"/>
 
@@ -515,15 +516,14 @@
                                         </span>
 
                                         <field name="adi_contract_date_range"
-                                               readonly="1"
-                                               nolabel="1"/>
+                                            readonly="1"
+                                            nolabel="1"/>
 
                                     </span>
 
 
-                                    <!-- Allocation -->
                                     <span class="adi_card_item"
-                                          invisible="not adi_charge_to_order_id">
+                                        invisible="not adi_charge_to_order_id">
 
                                         <i class="fa fa-info-circle adi_summary_icon"/>
 
@@ -532,22 +532,17 @@
                                         </span>
 
                                         <field name="adi_contract_status"
-                                               readonly="1"
-                                               decoration-success="adi_contract_status == 'In Contract'"
-                                               decoration-warning="adi_contract_status == 'Contract Expiring'"
-                                               decoration-danger="adi_contract_status == 'Out of Contract'"
-                                               decoration-info="adi_contract_status == 'Sales Order'"/>
+                                            readonly="1"
+                                            decoration-success="adi_contract_status == 'In Contract'"
+                                            decoration-warning="adi_contract_status == 'Contract Expiring'"
+                                            decoration-danger="adi_contract_status == 'Out of Contract'"
+                                            decoration-info="adi_contract_status == 'Sales Order'"/>
 
                                     </span>
-
 
                                 </div>
 
                             </div>
-
-                        </div>
-
-                    </div>
 
 
                     <hr/>
