@@ -485,3 +485,49 @@
     width: 100%;
     margin-top: 4px;
 }
+
+
+/* =========================================================
+   Status card - Followers
+   Followers may wrap onto any number of lines.
+   The row must grow naturally and push charging down.
+   ========================================================= */
+
+.adi_management_card .adi_status_followers_row {
+    display: block !important;
+    width: 100%;
+    margin-top: 0.35rem;
+}
+
+.adi_management_card .adi_followers_item {
+    display: flex !important;
+    align-items: flex-start !important;
+    width: 100%;
+    min-width: 0;
+}
+
+.adi_management_card .adi_followers_item .o_field_many2many_tags {
+    flex: 1 1 0;
+    width: auto !important;
+    min-width: 0;
+}
+
+.adi_management_card .adi_followers_item .o_field_tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    overflow: visible !important;
+    height: auto !important;
+}
+
+/* Charging always starts below the complete followers row */
+.adi_management_card .adi_status_charge_section {
+    display: block;
+    clear: both;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid #d8dee6;
+}
