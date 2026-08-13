@@ -9,6 +9,8 @@
                 <field name="adi_company_domain" invisible="1"/>
                 <field name="adi_domain_status" invisible="1"/>
                 <field name="adi_charge_to_order_domain" invisible="1"/>
+                <field name="adi_charge_type" invisible="1"/>
+                <field name="ticket_id" invisible="1"/>
 
                 <div class="o_form_full_width mb-3"
                     invisible="not adi_new_contact_review_required">
@@ -39,36 +41,127 @@
 
                 </group>
 
-                <group string="Ticket Management"
-                    invisible="adi_new_contact_review_required and not matched_contact_id">
+            <!-- =====================================================
+                 Main Set In Progress workflow
+                 ===================================================== -->
 
-                    <group>
-                        <field name="ticket_id"/>
-                        <field name="user_id" options="{'no_create': True}"/>
+            <group
+                invisible="adi_new_contact_review_required and not matched_contact_id"
+                col="1"
+                class="o_form_full_width adi_set_in_progress_compact">
+
+                <!-- =================================================
+                    TOP ROW
+                    Assignment | Priority
+                    ================================================= -->
+                <group col="2" class="o_form_full_width adi_wizard_top_row">
+
+                    <!-- Assignment - left column -->
+                    <group string="Assignment">
+
+                        <field name="user_id"
+                            string="Lead"
+                            class="adi_wizard_select"
+                            options="{'no_create': True}"/>
+
+                        <field name="adi_interested_user_ids"
+                            string="Followers"
+                            widget="many2many_tags"
+                            options="{'no_create': True, 'no_open': True}"/>
+
+                        <div class="adi_wizard_guidance o_form_full_width"
+                            colspan="2">
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                Select the person responsible for leading the investigation.
+                                Add any other internal people who need to follow the ticket.
+                            </div>
+
+                        </div>
+
+                    </group>
+
+
+                    <!-- Priority - right column -->
+                    <group string="Priority">
+
+                        <field name="adi_severity"
+                            string="Severity"
+                            class="adi_wizard_select"/>
+
+                        <div class="adi_wizard_guidance o_form_full_width"
+                            colspan="2">
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                Assign a severity level based on the criteria below so that all customers are treated equally.<br/>
+                                <strong>High:</strong> Critical issue preventing operation or testing.<br/>
+                                <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
+                                <strong>Low:</strong> Minor issue or cosmetic problem.
+                            </div>
+                        </div>
+                    </group>
+                </group>
+
+                    <!--=================================================
+                        CHARGE ALLOCATION
+                        Where should the work be charged?
+                        ================================================= -->
+                    <group string="Charge Allocation"
+                        col="2"
+                        class="o_form_full_width">
+
+                        <div class="adi_wizard_guidance o_form_full_width"
+                            colspan="2">
+
+                            <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                            <div>
+                                <strong>Tickets should be charged to:</strong><br/>
+                                • A support contract. (If a replacement contract is imminent, book the ticket to the previous year's contract, which remains open).<br/>
+                                • The Sales Order (to cover Warranty claims and in progress events - e.g to loan customer owned material) <br/>
+                                • Expense account 78000 - Customer Support (non-contract), where no contract exists but ADI has agreed to support the customer.
+                            </div>
+
+                        </div>
+
+                        <field name="adi_charge_type"
+                            string="Charge Method"
+                            widget="radio"
+                            options="{'horizontal': true}"/>
 
                         <field name="adi_charge_to_order_id"
+                            string="Charge to"
+                            class="adi_wizard_select"
                             domain="adi_charge_to_order_domain"
-                            options="{'no_create': True, 'no_open': True}"/>
-                        <field name="adi_contract_date_range"/>
-                        <field name="adi_contract_status"/>
-                        <field name="adi_new_contact_review_required" invisible="1"/>
-                    </group>
+                            context="{'adi_helpdesk_charge_to': True}"
+                            options="{
+                                'no_create': True,
+                                'no_open': True,
+                                'no_create_edit': True,
+                                'no_quick_create': True,
+                            }"
 
-                    <group>
-                        <field name="adi_test_asset_name"/>
-                        <field name="adi_customer_asset_guidance" 
-                            nolabel="1"
+                            invisible="adi_charge_type == 'expense' or not adi_charge_type"/>
+
+                        <field name="adi_contract_date_range"
+                            string="Cover Period"
                             readonly="1"
-                            colspan="2"/>
+                            force_save="1"
+                            invisible="not adi_charge_to_order_id"/>
 
-                        <field name="adi_severity"/>
-                        <field name="adi_severity_guidance"
-                            nolabel="1"
+                        <field name="adi_contract_status"
                             readonly="1"
-                            colspan="2"/>
-                    </group>
+                            force_save="1"
+                            invisible="not adi_charge_to_order_id"
+                            decoration-success="adi_contract_status == 'active'"
+                            decoration-warning="adi_contract_status == 'warning'"
+                            decoration-danger="adi_contract_status == 'expired'"/>
 
-                    <newline/>
+                    </group>
 
                 </group>
 

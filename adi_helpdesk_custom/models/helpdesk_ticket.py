@@ -64,9 +64,24 @@ class HelpdeskTicket(models.Model):
     )
 
     adi_customer_input_serial_number = fields.Char(
-        string="Asset / Serial No",
-        help="Customer asset identifier or serial number.",
+        string="Resource where the problem was first identified",
+        help=(
+            "The customer’s free-text description of the resource where "
+            "the problem was first identified."
+        ),
+    )
+
+    adi_customer_resource_scope = fields.Selection(
+        [
+            ("single", "One specific resource"),
+            ("multiple", "Multiple resources"),
+            ("software", "Software only issue"),
+            ("unknown", "Not sure /not applicable"),
+        ],
+        string="Customer Reported Resource Impact",
+        copy=False,
 )
+
 
     adi_customer_input_sales_or_maintenance_order = fields.Char(
         string="Sales or Maintenance Order",
@@ -124,14 +139,144 @@ class HelpdeskTicket(models.Model):
     )
 
     adi_test_asset_id = fields.Char(
-        string="Test Asset",
+        string="Confirmed Resource(s)",
     )
+
+    adi_non_contract = fields.Boolean(
+        string="Non-contract Support",
+        default=False,
+    )
+
 
     adi_charge_to_order_id = fields.Many2one(
         "sale.order",
         string="Charge to",
-        readonly=True,
     )
+
+    adi_charge_to_order_domain = fields.Binary(
+        compute="_compute_adi_charge_to_order_domain",
+    )
+
+    @api.depends(
+        "partner_id",
+        "adi_matched_company_id",
+    )
+    def _compute_adi_charge_to_order_domain(self):
+        for ticket in self:
+            company = (
+                ticket.adi_matched_company_id
+                or ticket.partner_id.commercial_partner_id
+            )
+
+            if not company:
+                ticket.adi_charge_to_order_domain = [
+                    ("id", "=", 0),
+                ]
+                continue
+
+
+            ticket.adi_charge_to_order_domain = [
+                ("partner_id", "child_of", company.id),
+                ("state", "=", "sale"),
+                (
+                    "x_studio_lifecycle",
+                    "in",
+                    ["In progress", "Warranty"],
+                ),
+            ]
+
+    def _adi_format_contract_date(self, date_value):
+        return (
+            date_value.strftime("%d %b %Y")
+            if date_value
+            else ""
+        )
+
+
+    def _adi_update_contract_details(self):
+        for ticket in self:
+            order = ticket.adi_charge_to_order_id
+
+            if not order:
+                ticket.adi_contract_date_range = False
+                ticket.adi_contract_status = "Unknown"
+                continue
+
+            order_type = (
+                order.x_studio_sales_order_type or ""
+            ).strip()
+
+            is_support_contract = order_type in (
+                "Maintenance",
+                "Maintenance Plus",
+            )
+
+            # -------------------------------------------------
+            # Normal Sales Order / Warranty allocation
+            # -------------------------------------------------
+            if not is_support_contract:
+                ticket.adi_contract_date_range = False
+                ticket.adi_contract_status = "Sales Order"
+                continue
+
+            # -------------------------------------------------
+            # Maintenance support contract
+            # -------------------------------------------------
+            start_date = order.x_studio_mnt_start_of_cover_date
+            end_date = order.x_studio_mnt_end_of_cover_date
+            today = fields.Date.context_today(ticket)
+
+            if start_date and end_date:
+                ticket.adi_contract_date_range = (
+                    f"{ticket._adi_format_contract_date(start_date)} - "
+                    f"{ticket._adi_format_contract_date(end_date)}"
+                )
+            elif start_date:
+                ticket.adi_contract_date_range = (
+                    f"From {ticket._adi_format_contract_date(start_date)}"
+                )
+            elif end_date:
+                ticket.adi_contract_date_range = (
+                    f"Until {ticket._adi_format_contract_date(end_date)}"
+                )
+            else:
+                ticket.adi_contract_date_range = (
+                    "No cover dates recorded"
+                )
+
+            if start_date and today < start_date:
+                ticket.adi_contract_status = "Contract Expiring"
+            elif end_date and today > end_date:
+                ticket.adi_contract_status = "Out of Contract"
+            elif end_date and (end_date - today).days <= 30:
+                ticket.adi_contract_status = "Contract Expiring"
+            elif start_date or end_date:
+                ticket.adi_contract_status = "In Contract"
+            else:
+                ticket.adi_contract_status = "Unknown"
+
+
+    @api.onchange("adi_charge_to_order_id")
+    def _onchange_adi_charge_to_order_id(self):
+        self._adi_update_contract_details()
+
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        if "adi_charge_to_order_id" in vals:
+            self._adi_update_contract_details()
+
+            for ticket in self:
+                super(HelpdeskTicket, ticket).write({
+                    "adi_contract_date_range":
+                        ticket.adi_contract_date_range,
+                    "adi_contract_status":
+                        ticket.adi_contract_status,
+                })
+
+        return result
+
 
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
@@ -159,6 +304,13 @@ class HelpdeskTicket(models.Model):
         ],
         string="Resolution Category",
         copy=False,
+    )
+
+    adi_interested_user_ids = fields.Many2many(
+        "res.users",
+        string="Followers",
+        compute="_compute_adi_interested_user_ids",
+        inverse="_inverse_adi_interested_user_ids",
     )
 
 
@@ -356,7 +508,7 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Set to In Process",
+            "name": f"Set to In Process - {self.ticket_ref or self.display_name}",
             "res_model": "adi.helpdesk.set.in.progress.wizard",
             "view_mode": "form",
             "target": "new",
@@ -646,4 +798,76 @@ class HelpdeskTicket(models.Model):
                 "default_ticket_id": self.id,
             },
         }            
-             
+
+    @api.depends("message_partner_ids")
+    def _compute_adi_interested_user_ids(self):
+        internal_users = self.env["res.users"].search([
+            ("active", "=", True),
+            ("share", "=", False),
+        ])
+
+        user_by_partner = {
+            user.partner_id.id: user
+            for user in internal_users
+        }
+
+        for ticket in self:
+            ticket.adi_interested_user_ids = self.env["res.users"].browse([
+                user_by_partner[partner.id].id
+                for partner in ticket.message_partner_ids
+                if partner.id in user_by_partner
+            ])
+
+
+    def _inverse_adi_interested_user_ids(self):
+        internal_users = self.env["res.users"].search([
+            ("active", "=", True),
+            ("share", "=", False),
+        ])
+
+        internal_partner_ids = set(
+            internal_users.partner_id.ids
+        )
+
+        for ticket in self:
+            selected_partner_ids = set(
+                ticket.adi_interested_user_ids.partner_id.ids
+            )
+
+            current_internal_partner_ids = set(
+                ticket.message_partner_ids.ids
+            ) & internal_partner_ids
+
+            partner_ids_to_add = (
+                selected_partner_ids
+                - current_internal_partner_ids
+            )
+
+            partner_ids_to_remove = (
+                current_internal_partner_ids
+                - selected_partner_ids
+            )
+
+            if partner_ids_to_add:
+                ticket.message_subscribe(
+                    partner_ids=list(partner_ids_to_add),
+                )
+
+            if partner_ids_to_remove:
+                ticket.message_unsubscribe(
+                    partner_ids=list(partner_ids_to_remove),
+                )             
+
+    adi_show_management_card = fields.Boolean(
+        compute="_compute_adi_show_management_card",
+    )
+
+    @api.depends("stage_id")
+    def _compute_adi_show_management_card(self):
+        for ticket in self:
+            ticket.adi_show_management_card = (
+                ticket.stage_id.name not in (
+                    "Validity Check",
+                    "New",
+                )
+            )        

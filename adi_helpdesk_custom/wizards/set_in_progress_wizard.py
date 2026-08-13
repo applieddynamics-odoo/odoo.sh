@@ -84,7 +84,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         readonly=True,
     )
 
-    adi_test_asset_name = fields.Char(string="Test Asset")
+    adi_test_asset_name = fields.Char(
+        string="Confirmed Resource(s)",
+    )
 
     adi_customer_input_serial_number = fields.Char(
         related="ticket_id.adi_customer_input_serial_number",
@@ -104,14 +106,34 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         string="Charge to",
     )
 
+    adi_charge_type = fields.Selection(
+        [
+            ("support", "Support Contract"),
+            ("warranty", "Sales Order /Warranty"),
+            ("expense", "Expense to 78000"),
+        ],
+        string="Charge Method",
+        required=True,
+    )
+
     adi_charge_to_order_domain = fields.Binary(
         compute="_compute_adi_charge_to_order_domain",
+    )
+
+    adi_interested_user_ids = fields.Many2many(
+        "res.users",
+        string="Followers",
+        domain=[
+            ("active", "=", True),
+            ("share", "=", False),
+        ],
     )
 
     @api.depends(
         "ticket_id.partner_id",
         "company_id",
         "matched_contact_id",
+        "adi_charge_type",
     )
     def _compute_adi_charge_to_order_domain(self):
         for wizard in self:
@@ -121,10 +143,52 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 or wizard.ticket_id.partner_id.commercial_partner_id
             )
 
-            if company:
+            if not company:
                 wizard.adi_charge_to_order_domain = [
-                    ("partner_id", "child_of", company.id),
+                    ("id", "=", 0),
                 ]
+                continue
+
+            base_domain = [
+                ("partner_id", "child_of", company.id),
+                ("state", "=", "sale"),
+            ]
+
+            # Support Contract:
+            # Maintenance / Maintenance Plus orders that are In progress.
+            if wizard.adi_charge_type == "support":
+                wizard.adi_charge_to_order_domain = base_domain + [
+                    (
+                        "x_studio_sales_order_type",
+                        "in",
+                        ["Maintenance", "Maintenance Plus"],
+                    ),
+                    (
+                        "x_studio_lifecycle",
+                        "=",
+                        "In progress",
+                    ),
+                ]
+
+            # Sales Order Transfer or Warranty Claim:
+            # Any non-maintenance order whose lifecycle is either
+            # In progress or Warranty.
+            elif wizard.adi_charge_type == "warranty":
+                wizard.adi_charge_to_order_domain = base_domain + [
+                    (
+                        "x_studio_sales_order_type",
+                        "not in",
+                        ["Maintenance", "Maintenance Plus"],
+                    ),
+                    (
+                        "x_studio_lifecycle",
+                        "in",
+                        ["In progress", "Warranty"],
+                    ),
+                ]
+
+            # Expense to 78000:
+            # No Sales Order is selected.
             else:
                 wizard.adi_charge_to_order_domain = [
                     ("id", "=", 0),
@@ -180,13 +244,44 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 "create_contact": False,
             })
 
+        internal_followers = ticket.message_partner_ids.user_ids.filtered(
+            lambda user:
+                user.active
+                and not user.share
+        )
+
+        res["adi_interested_user_ids"] = [
+            (6, 0, internal_followers.ids)
+        ]
+
+
+        res["adi_test_asset_name"] = (
+            ticket.adi_test_asset_id
+            or ticket.adi_customer_input_serial_number
+        )
+
         return res
 
     def action_confirm(self):
         self.ensure_one()
 
         if not self.user_id:
-            raise UserError("Please select an Assigned to user before continuing.")
+            raise UserError(
+                "Please select an Assigned to user before continuing."
+            )
+
+        if not self.adi_charge_type:
+            raise UserError(
+                "Please select how this ticket should be charged."
+            )
+
+        if (
+            self.adi_charge_type in ("support", "warranty")
+            and not self.adi_charge_to_order_id
+        ):
+            raise UserError(
+                "Please select the Sales Order this ticket should be charged to."
+            )
 
         stage = self.env["helpdesk.stage"].search(
             [("name", "=", "In Progress")],
@@ -201,12 +296,25 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "stage_id": stage.id,
             "adi_test_asset_id": self.adi_test_asset_name,
             "adi_charge_to_order_id": self.adi_charge_to_order_id.id,
+            "adi_non_contract": self.adi_charge_type == "expense",
+            "adi_contract_date_range": self.adi_contract_date_range,
+            "adi_contract_status": dict(
+                self._fields["adi_contract_status"].selection
+            ).get(
+                self.adi_contract_status,
+                "Unknown",
+            )
         }
 
         if self.ticket_id.adi_new_contact_review_required:
             self._adi_prepare_contact_review_values(values)
 
         self.ticket_id.write(values)
+
+        if self.adi_interested_user_ids:
+            self.ticket_id.message_subscribe(
+                partner_ids=self.adi_interested_user_ids.partner_id.ids,
+            )        
 
         if self.env.context.get("adi_open_ticket_after_set_in_progress"):
             return {
@@ -340,9 +448,64 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             self.company_id = contact.parent_id.id or contact.commercial_partner_id.id
             self.create_contact = False
 
+    # Compute the contract date range and status based on the selected charge-to order. 
+    # This is to help the agent quickly identify whether the customer is in contract, 
+    # out of contract, or nearing contract expiry, so they can make informed decisions about how to handle the ticket.
+
+    def _adi_format_date(self, date_value):
+        return (
+            date_value.strftime("%d %b %Y")
+            if date_value
+            else ""
+        )
+
+    @api.onchange("adi_charge_to_order_id")
+    def _onchange_adi_charge_to_order_id(self):
+        for wizard in self:
+            order = wizard.adi_charge_to_order_id
+
+            if not order:
+                wizard.adi_contract_date_range = False
+                wizard.adi_contract_status = "unknown"
+                continue
+
+            start_date = order.x_studio_mnt_start_of_cover_date
+            end_date = order.x_studio_mnt_end_of_cover_date
+            today = fields.Date.context_today(wizard)
+
+            if start_date and end_date:
+                wizard.adi_contract_date_range = (
+                    f"{wizard._adi_format_date(start_date)} - "
+                    f"{wizard._adi_format_date(end_date)}"
+                )
+            elif start_date:
+                wizard.adi_contract_date_range = (
+                    f"From {wizard._adi_format_date(start_date)}"
+                )
+            elif end_date:
+                wizard.adi_contract_date_range = (
+                    f"Until {wizard._adi_format_date(end_date)}"
+                )
+            else:
+                wizard.adi_contract_date_range = (
+                    "No cover dates recorded"
+                )
+
+            if start_date and today < start_date:
+                wizard.adi_contract_status = "warning"
+            elif end_date and today > end_date:
+                wizard.adi_contract_status = "expired"
+            elif end_date and (end_date - today).days <= 30:
+                wizard.adi_contract_status = "warning"
+            elif start_date or end_date:
+                wizard.adi_contract_status = "active"
+            else:
+                wizard.adi_contract_status = "unknown"
+
     # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify
     # the correct company to link to the ticket and ensure that customers from unapproved domains are flagged for review.
     @api.depends("contact_email")
+
     def _compute_adi_company_guidance(self):
         for wizard in self:
             email = (
@@ -419,10 +582,11 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     @api.depends("adi_severity")
     def _compute_adi_severity_guidance(self):
         guidance = """
-            <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
-                * <strong>High:</strong> Critical issue preventing operation or testing.<br/>
-                * <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
-                * <strong>Low:</strong> Minor issue or cosmetic problem.
+            <div style="font-style: italic; color: #667085; line-height: 1.5;">
+                
+                <strong>High:</strong> Critical issue preventing operation or testing.<br/>
+                <strong>Medium:</strong> Normal operational issue affecting workflow.<br/>
+                <strong>Low:</strong> Minor issue or cosmetic problem.
             </div>
         """
 
@@ -430,22 +594,30 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             wizard.adi_severity_guidance = guidance
 
 
-    # Compute guidance based on whether the customer indicated an asset/serial number and what that number is
+    # Compute guidance based on whether the customer indicated a resource/serial number and what that number is
 
     @api.depends("ticket_id.adi_customer_input_serial_number")
     def _compute_adi_customer_asset_guidance(self):
         for wizard in self:
-            asset = (wizard.ticket_id.adi_customer_input_serial_number or "").strip()
+            resource = (wizard.ticket_id.adi_customer_input_serial_number or "").strip()
 
-            if asset:
+            if resource:
                 wizard.adi_customer_asset_guidance = f"""
-                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
-                        * The customer indicated an issue with <strong>{asset}</strong>.
+                    <div style="font-style: italic; color: #667085; line-height: 1.5;">
+                        The customer indicated an issue with <strong>{resource}</strong>.
                     </div>
                 """
             else:
                 wizard.adi_customer_asset_guidance = """
-                    <div style="font-style: italic; color: #6b7280; line-height: 1.5;">
-                        * The customer did not indicate which test asset the problem relates to.
+                    <div style="font-style: italic; color: #667085; line-height: 1.5;">
+                        * The customer did not indicate which resource the problem relates to.
                     </div>
                 """        
+
+
+    @api.onchange("adi_charge_type")
+    def _onchange_adi_charge_type(self):
+        for wizard in self:
+            wizard.adi_charge_to_order_id = False
+            wizard.adi_contract_date_range = False
+            wizard.adi_contract_status = "unknown"   

@@ -19,20 +19,6 @@
     margin-bottom: 16px;
 }
 
-.o_form_view .adi_helpdesk_success_card {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 18px;
-}
-
-.o_form_view .adi_helpdesk_debug_card {
-    background: #f8fafc;
-    border: 1px dashed #94a3b8;
-    border-radius: 14px;
-    padding: 18px;
-}
 
 /* ---------------------------------------------------------
    Shared card headers: Input / Status
@@ -138,7 +124,7 @@
 
 .adi_ticket_summary_row {
     display: grid;
-    grid-template-columns: 130px 1fr;
+    grid-template-columns: 105px 1fr;
     column-gap: 10px;
     align-items: start;
 }
@@ -171,7 +157,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-width: 110px;
+    min-width: 0px;
 }
 
 .adi_problem_toggle,
@@ -193,12 +179,6 @@
 /* ---------------------------------------------------------
    Status / ticket management body
    --------------------------------------------------------- */
-
-.adi_management_grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(180px, 1fr));
-    gap: 14px 24px;
-}
 
 .adi_management_label {
     display: block;
@@ -240,12 +220,6 @@
    Responsive layout
    --------------------------------------------------------- */
 
-@media (max-width: 1100px) {
-    .adi_management_grid {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
-    }
-}
-
 @media (max-width: 768px) {
     .adi_card_header,
     .adi_ticket_summary_row,
@@ -254,9 +228,6 @@
         row-gap: 4px;
     }
 
-    .adi_management_grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ---------------------------------------------------------
@@ -300,3 +271,210 @@
     content: none !important;
 }
 
+/* ---------------------------------------------------------
+   Radio field layout
+   --------------------------------------------------------- */
+
+.o_field_radio {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+/* ---------------------------------------------------------
+   Status card - Charge To field
+   --------------------------------------------------------- */
+
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] {
+    min-width: 420px;
+    max-width: 520px;
+}
+
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] .o_input {
+    width: 100% !important;
+}
+
+/* Allow the selected Charge To description to use the available width */
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] .o-autocomplete--input,
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] input {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    text-overflow: clip !important;
+}
+
+/* Remove Odoo's compact truncation on the selected value */
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] .o_field_many2one_selection {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+.adi_card_item .o_field_widget[name="adi_charge_to_order_id"] .o-autocomplete {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* ---------------------------------------------------------
+   Status card - Followers
+   Light follower pills with ADI teal accent.
+   --------------------------------------------------------- */
+
+.adi_management_card .o_field_many2many_tags .badge {
+    background-color: #fff !important;
+    border: 1px solid #008c95 !important;
+    color: #495057 !important;
+    font-weight: 400;
+}
+
+/* Follower remove X */
+.adi_management_card .o_field_many2many_tags .badge .o_delete {
+    color: #008c95 !important;
+    opacity: 0.75;
+}
+
+.adi_management_card .o_field_many2many_tags .badge .o_delete:hover {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   Wizard guidance
+   Compact shared informational guidance.
+   ========================================================= */
+
+.adi_wizard_guidance {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+
+    margin-top: 0.35rem;
+    margin-bottom: 0.25rem;
+    padding: 0.45rem 0.75rem;
+
+    border-left: 3px solid #008c95;
+    background: #f8f9fa;
+
+    color: #5f6368;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.35;
+}
+
+.adi_wizard_guidance_icon {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    color: #008c95;
+    font-size: 1rem;
+}
+
+/* ---------------------------------------------------------
+   Set In Progress wizard
+   Reduce vertical spacing while retaining clear sections.
+   --------------------------------------------------------- */
+
+.adi_set_in_progress_compact > .o_inner_group {
+    margin-bottom: 0.5rem !important;
+}
+
+.adi_set_in_progress_compact .o_horizontal_separator {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* =========================================================
+   Wizard selection fields
+   Make fields requiring a user decision visually obvious.
+   ========================================================= */
+
+.adi_set_in_progress_compact .adi_wizard_select.o_field_widget .o_input,
+.adi_set_in_progress_compact .adi_wizard_select .o_input,
+.adi_set_in_progress_compact .adi_wizard_select input,
+.adi_set_in_progress_compact .adi_wizard_select select,
+.adi_set_in_progress_compact .adi_wizard_select .o-autocomplete--input {
+    min-height: 36px !important;
+    width: 100% !important;
+    padding: 0.35rem 0.6rem !important;
+
+    background-color: #ffffff !important;
+    border: 1px solid #adb5bd !important;
+    border-radius: 5px !important;
+}
+
+.adi_set_in_progress_compact .adi_wizard_select.o_field_widget:focus-within .o_input,
+.adi_set_in_progress_compact .adi_wizard_select:focus-within input,
+.adi_set_in_progress_compact .adi_wizard_select:focus-within select {
+    border-color: #008c95 !important;
+    box-shadow: 0 0 0 1px rgba(0, 140, 149, 0.15);
+}
+
+/* =========================================================
+   Status card layout
+   Followers may wrap onto any number of lines.
+   Charging always begins below the complete follower row.
+   ========================================================= */
+
+.adi_management_card .adi_status_followers_row {
+    display: block !important;
+    width: 100%;
+    margin-top: 0.35rem;
+}
+
+.adi_management_card .adi_followers_item {
+    display: flex !important;
+    align-items: flex-start !important;
+    width: 100%;
+    min-width: 0;
+}
+
+.adi_management_card .adi_followers_item .o_field_many2many_tags {
+    flex: 1 1 0;
+    width: auto !important;
+    min-width: 0;
+}
+
+.adi_management_card .adi_followers_item .o_field_tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+
+/* ---------------------------------------------------------
+   Charge allocation
+   Full-width section below Followers.
+   --------------------------------------------------------- */
+
+.adi_management_card .adi_status_charge_section {
+    display: block;
+    clear: both;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid #d8dee6;
+}
+
+.adi_management_card .adi_charge_row {
+    display: flex;
+    width: 100%;
+}
+
+.adi_management_card .adi_charge_item {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+
+/* Cover / Allocation row */
+.adi_management_card .adi_contract_row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    width: 100%;
+    margin-top: 4px;
+}

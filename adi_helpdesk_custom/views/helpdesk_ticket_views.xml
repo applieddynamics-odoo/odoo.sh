@@ -9,6 +9,7 @@
                  Header workflow buttons
                  ========================================================= -->
             <xpath expr="//form/header" position="inside">
+
                 <button name="action_adi_open_review_validity_wizard"
                         type="object"
                         string="Review Validity"
@@ -26,46 +27,74 @@
                         string="Repeat Validity Check"
                         class="btn-secondary"
                         invisible="not adi_can_repeat_validity"/>
+
                 <button name="action_adi_open_close_wizard"
                         type="object"
                         string="Close Ticket"
                         class="btn-primary"
                         invisible="not adi_show_close_button"/>
+
             </xpath>
 
 
-            <!-- Hide the standard large title. The breadcrumb/control panel carries the ticket reference. -->
+            <!-- =========================================================
+                 Hide standard title
+                 Breadcrumb/control panel carries the ticket reference.
+                 ========================================================= -->
             <xpath expr="//h1" position="replace">
                 <h1 class="d-none">
                     <field name="name"/>
                 </h1>
             </xpath>
 
+
             <!-- =========================================================
                  Technical / modifier support fields
-                 These fields must be present in the view because buttons,
-                 cards, or inherited Odoo widgets use them in modifiers.
+
+                 These fields must remain present because buttons, cards,
+                 and modifiers depend upon them.
                  ========================================================= -->
             <xpath expr="//field[@name='kanban_state']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
             <xpath expr="//field[@name='kanban_state']" position="after">
+
                 <field name="team_id" invisible="1"/>
                 <field name="active" invisible="1"/>
                 <field name="partner_id" invisible="1"/>
                 <field name="use_sla" invisible="1"/>
                 <field name="sla_deadline" invisible="1"/>
+
                 <field name="adi_show_set_in_progress_button" invisible="1"/>
                 <field name="adi_show_close_button" invisible="1"/>
+
                 <field name="adi_validity_check_required" invisible="1"/>
                 <field name="adi_new_contact_review_required" invisible="1"/>
                 <field name="adi_can_repeat_validity" invisible="1"/>
+
+                <field name="adi_non_contract" invisible="1"/>
+                <field name="adi_charge_to_order_domain" invisible="1"/>
+
+                <field name="adi_show_management_card" invisible="1"/>
+
             </xpath>
 
-            <xpath expr="//field[@name='team_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
+
+            <!-- =========================================================
+                 Stage control
+
+                 Stage changes are controlled by the ADI workflow buttons
+                 and wizards. Prevent direct stage changes through the
+                 standard Odoo statusbar.
+                 ========================================================= -->
+            <xpath expr="//header//field[@name='stage_id']"
+                   position="attributes">
+
+                <attribute name="readonly">1</attribute>
+
             </xpath>
+
 
             <!-- =========================================================
                  Main Helpdesk layout
@@ -73,356 +102,815 @@
                  ========================================================= -->
             <xpath expr="//sheet/group" position="replace">
 
-                <!-- Workflow warning cards -->
+
+                <!-- =====================================================
+                     Workflow warnings
+                     ===================================================== -->
                 <div class="row mb-3">
-                    <div class="col-12" invisible="not adi_validity_check_required">
+
+                    <div class="col-12"
+                         invisible="not adi_validity_check_required">
+
                         <div class="adi_helpdesk_warning_card">
                             <strong>Validity Check Required</strong>
-                            <div>Please press "Review Validity" to confirm or reject the email contact.</div>
+
+                            <div>
+                                Please press "Review Validity" to confirm
+                                or reject the email contact.
+                            </div>
                         </div>
+
                     </div>
 
-                    <div class="col-12" invisible="not adi_new_contact_review_required">
+
+                    <div class="col-12"
+                         invisible="not adi_new_contact_review_required">
+
                         <div class="adi_helpdesk_warning_card">
                             <strong>New Contact Review Required</strong>
-                            <div>This email is from a known domain. Please use "Set In Process" to confirm contact and ticket details before progressing.</div>
+
+                            <div>
+                                This email is from a known domain.
+                                Please use "Set In Process" to confirm
+                                contact and ticket details before progressing.
+                            </div>
                         </div>
+
                     </div>
+
                 </div>
+
 
                 <!-- =====================================================
                      Input card
-                     Customer identity, submitted details, subject, and problem.
-                     Header uses the shared adi_card_header pattern.
+                     Customer identity, submitted details, subject
+                     and problem.
                      ===================================================== -->
                 <div class="adi_helpdesk_card adi_subject_card">
 
                     <div class="adi_card_header">
-                        <span class="adi_card_title">Input</span>
+
+                        <span class="adi_card_title">
+                            Input
+                        </span>
 
                         <div class="adi_card_items">
 
+
+                            <!-- Company -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-building adi_summary_icon"/>
+
                                 <field name="adi_matched_company_id"
                                        readonly="1"
                                        nolabel="1"
-                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                                       options="{
+                                           'no_create': True,
+                                           'no_create_edit': True
+                                       }"/>
+
                             </span>
 
+
+                            <!-- Contact -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-user adi_summary_icon"/>
+
                                 <field name="adi_customer_contact_name"
                                        readonly="1"
                                        nolabel="1"/>
+
                             </span>
 
+
+                            <!-- Email -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-envelope adi_summary_icon"/>
+
                                 <field name="partner_email"
                                        readonly="1"
                                        nolabel="1"/>
+
                             </span>
 
+
+                            <!-- Problem type -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-wrench adi_summary_icon"/>
+
                                 <field name="ticket_type_id"
                                        widget="selection"
-                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                       options="{
+                                           'no_create': True,
+                                           'no_create_edit': True,
+                                           'no_open': True
+                                       }"/>
+
                             </span>
 
+
+                            <!-- Software version -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-code-fork adi_summary_icon"/>
+
                                 <field name="adi_software_version_id"
                                        widget="selection"
-                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                       options="{
+                                           'no_create': True,
+                                           'no_create_edit': True,
+                                           'no_open': True
+                                       }"/>
+
                             </span>
 
+
+                            <!-- Problem location / resource -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Asset where found:</span>
+
+                                <span class="fw-bold">
+                                    Problem found:
+                                </span>
+
                                 <field name="adi_customer_input_serial_number"
-                                       nolabel="1" readonly="1"/>
+                                       nolabel="1"
+                                       readonly="1"
+                                       invisible="not adi_customer_input_serial_number"/>
+
+                                <span invisible="adi_customer_input_serial_number">
+                                    Not declared
+                                </span>
+
                             </span>
 
+
+                            <!-- Customer reference -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-address-card adi_summary_icon"/>
-                                <span class="fw-bold">Cust Ref:</span>
+
+                                <span class="fw-bold">
+                                    Cust Ref:
+                                </span>
+
                                 <field name="adi_customer_reference_number"
                                        nolabel="1"/>
+
                             </span>
 
                         </div>
+
                     </div>
+
 
                     <hr/>
 
+
+                    <!-- Subject -->
                     <div class="adi_ticket_summary_row">
-                        <span class="adi_ticket_summary_label">Subject:</span>
-                        <span class="adi_ticket_summary_value">
-                            <field name="name" readonly="1" nolabel="1"/>
+
+                        <span class="adi_ticket_summary_label">
+                            Subject:
                         </span>
+
+                        <span class="adi_ticket_summary_value">
+
+                            <field name="name"
+                                   readonly="1"
+                                   nolabel="1"/>
+
+                        </span>
+
                     </div>
 
+
+                    <!-- Problem -->
                     <div class="adi_ticket_summary_row">
+
                         <div class="adi_problem_label_column">
-                            <span class="adi_ticket_summary_label">Problem:</span>
+
+                            <span class="adi_ticket_summary_label">
+                                Problem:
+                            </span>
+
                             <a href="#"
                                class="adi_problem_toggle"
                                title="Expand">
+
                                 <i class="fa fa-plus-square"/>
+
                             </a>
+
                         </div>
 
+
                         <div class="adi_ticket_summary_value adi_problem_inline">
-                            <field name="description" readonly="1" nolabel="1"/>
+
+                            <field name="description"
+                                   readonly="1"
+                                   nolabel="1"/>
+
                         </div>
+
                     </div>
 
                 </div>
+
 
                 <!-- =====================================================
                      Status / Ticket Management card
-                     Operational fields used once the ticket is accepted.
-                     Header uses the shared adi_card_header pattern.
+
+                     Only visible once the ticket has entered the normal
+                     support workflow.
                      ===================================================== -->
-                <div class="adi_helpdesk_card adi_management_card">
+                <div class="adi_helpdesk_card adi_management_card"
+                     invisible="not adi_show_management_card">
 
-                    <div class="adi_card_header">
-                        <span class="adi_card_title">Status</span>
 
-                        <div class="adi_card_items">
+                    <div class="adi_card_header align-items-start">
 
-                            <span class="adi_card_item">
-                                <i class="fa fa-calendar adi_summary_icon"/>
-                                <span class="fw-bold">Created:</span>
-                                <field name="adi_create_date_only"
-                                       readonly="1"
-                                       nolabel="1"/>
-                            </span>
 
-                            <span class="adi_card_item">
-                                <i class="fa fa-exclamation-circle adi_summary_icon"/>
-                                <span class="fw-bold">Severity:</span>
-                                <field name="adi_severity" nolabel="1"/>
-                            </span>
-
-                            <span class="adi_card_item">
-                                <i class="fa fa-tag adi_summary_icon"/>
-                                <span class="fw-bold">Asset:</span>
-                                <field name="adi_test_asset_id"
-                                       nolabel="1"/>
-                            </span>
-
-                            <span class="adi_card_item">
-                                <i class="fa fa-user adi_summary_icon"/>
-                                <span class="fw-bold">Assigned:</span>
-                                <field name="user_id"
-                                       nolabel="1"
-                                       options="{'no_create': True, 'no_create_edit': True}"/>
-                            </span>
-
-                        </div>
-                    </div>
-
-                    <hr/>
-
-                    <div class="adi_management_grid">
-
-                        <!-- Standard Odoo SLA widget moved into the ADI card. -->
-                        <span class="adi_management_kpi adi_management_sla"
-                              invisible="not sla_status_ids"
-                              groups="helpdesk.group_use_sla">
-
-                            <field name="sla_status_ids"
-                                   widget="helpdesk_sla_many2many_tags"
-                                   invisible="not use_sla"
-                                   options="{'color_field': 'color', 'no_edit_color': True}"
-                                   class="mb-0"
-                                   readonly="1"
-                                   groups="helpdesk.group_use_sla"/>
-
-                            <span invisible="not sla_deadline or not use_sla"
-                                  groups="helpdesk.group_use_sla"
-                                  class="text-muted d-inline-flex align-items-center">
-
-                                <i class="fa fa-clock-o me-1"
-                                   aria-label="Sla Deadline"
-                                   title="Sla Deadline"/>
-
-                                <field name="sla_deadline"
-                                       class="mb-0"
-                                       widget="remaining_days"/>
-                            </span>
+                        <span class="adi_card_title flex-shrink-0">
+                            Status
                         </span>
 
-                        <div>
-                            <span class="adi_management_label">ADI SPR Number</span>
-                            <field name="adi_spr_number"/>
-                        </div>
 
-                        <div>
-                            <span class="adi_management_label">SIR Hardware Part Numbers</span>
-                            <field name="adi_sir_hardware_part_number_ids"
-                                   widget="many2many_tags"
-                                   options="{'no_create': True, 'no_create_edit': True}"/>
-                        </div>
+                        <div class="flex-grow-1">
 
-                        <div>
-                            <span class="adi_management_label">Sales or Maintenance Order</span>
-                            <field name="adi_customer_input_sales_or_maintenance_order"/>
+
+                            <!-- =========================================
+                                 Line 1
+                                 Created / Severity / Lead
+                                 ========================================= -->
+                            <div class="adi_card_items">
+
+
+                                <!-- Created -->
+                                <span class="adi_card_item">
+
+                                    <i class="fa fa-calendar adi_summary_icon"/>
+
+                                    <span class="fw-bold">
+                                        Created:
+                                    </span>
+
+                                    <field name="adi_create_date_only"
+                                           readonly="1"
+                                           nolabel="1"/>
+
+                                </span>
+
+
+                                <!-- Severity -->
+                                <span class="adi_card_item">
+
+                                    <i class="fa fa-exclamation-circle adi_summary_icon"/>
+
+                                    <span class="fw-bold">
+                                        Severity:
+                                    </span>
+
+                                    <field name="adi_severity"
+                                           nolabel="1"/>
+
+                                </span>
+
+
+                                <!-- Lead -->
+                                <span class="adi_card_item">
+
+                                    <i class="fa fa-user adi_summary_icon"/>
+
+                                    <span class="fw-bold">
+                                        Lead:
+                                    </span>
+
+                                    <field name="user_id"
+                                           nolabel="1"
+                                           options="{
+                                               'no_create': True,
+                                               'no_create_edit': True
+                                           }"/>
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- =========================================
+                                 Line 2+
+                                 Followers
+
+                                 Dedicated block so follower pills may wrap
+                                 to two, three or more visual lines without
+                                 colliding with the charging section below.
+                                 ========================================= -->
+                            <div class="adi_status_row adi_status_followers_row">
+
+                                <span class="adi_card_item adi_followers_item">
+
+                                    <i class="fa fa-users adi_summary_icon"/>
+
+                                    <span class="fw-bold">
+                                        Followers:
+                                    </span>
+
+                                    <field name="adi_interested_user_ids"
+                                           nolabel="1"
+                                           widget="many2many_tags"
+                                           options="{
+                                               'no_create': True,
+                                               'no_open': True
+                                           }"/>
+
+                                </span>
+
+                            </div>
+
+                            <!-- =================================================
+                                Charge Allocation
+                                Full-width section below Followers.
+                                ================================================= -->
+                            <div class="adi_status_charge_section">
+
+                                <!-- =================================================
+                                    Sales Order allocation
+
+                                    Keep the original adi_card_item structure because
+                                    this is the known-good editable Many2one layout.
+                                    ================================================= -->
+                                <div class="adi_status_row adi_charge_row"
+                                    invisible="adi_non_contract">
+
+                                    <span class="adi_card_item adi_charge_item">
+
+                                        <i class="fa fa-credit-card adi_summary_icon"/>
+
+                                        <span class="fw-bold">
+                                            Charge to:
+                                        </span>
+
+                                        <field name="adi_charge_to_order_id"
+                                            nolabel="1"
+                                            domain="adi_charge_to_order_domain"
+                                            context="{'adi_helpdesk_charge_to': True}"
+                                            options="{
+                                                'no_create': True,
+                                                'no_open': True,
+                                                'no_create_edit': True,
+                                                'no_quick_create': True
+                                            }"/>
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                    Expense allocation
+                                    Preserve existing 78000 display.
+                                    ================================================= -->
+                                <div class="adi_status_row adi_charge_row"
+                                    invisible="not adi_non_contract">
+
+                                    <span class="adi_card_item adi_charge_item">
+
+                                        <i class="fa fa-credit-card adi_summary_icon"/>
+
+                                        <span class="fw-bold">
+                                            Charge to:
+                                        </span>
+
+                                        <span>
+                                            Expense to 78000 - Customer Support (non-contract)
+                                        </span>
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                    Cover / Allocation
+
+                                    Expense tickets do not need these fields.
+                                    Normal Sales Orders show Allocation but no Cover.
+                                    Maintenance contracts show both.
+                                    ================================================= -->
+                                <div class="adi_status_row adi_contract_row"
+                                    invisible="adi_non_contract">
+
+                                    <span class="adi_card_item"
+                                        invisible="adi_contract_status == 'Sales Order' or not adi_charge_to_order_id">
+
+                                        <i class="fa fa-calendar-check-o adi_summary_icon"/>
+
+                                        <span class="fw-bold">
+                                            Cover:
+                                        </span>
+
+                                        <field name="adi_contract_date_range"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </span>
+
+
+                                    <span class="adi_card_item"
+                                        invisible="not adi_charge_to_order_id">
+
+                                        <i class="fa fa-info-circle adi_summary_icon"/>
+
+                                        <span class="fw-bold">
+                                            Allocation:
+                                        </span>
+
+                                        <field name="adi_contract_status"
+                                            readonly="1"
+                                            decoration-success="adi_contract_status == 'In Contract'"
+                                            decoration-warning="adi_contract_status == 'Contract Expiring'"
+                                            decoration-danger="adi_contract_status == 'Out of Contract'"
+                                            decoration-info="adi_contract_status == 'Sales Order'"/>
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
                     </div>
 
                     <hr/>
 
+
+                    <!-- =================================================
+                         Software / Hardware outputs
+                         ================================================= -->
+                    <div class="row g-5">
+
+
+                        <!-- Software -->
+                        <div class="col-lg-6">
+
+                            <div class="adi_management_section">
+
+                                <h4 class="adi_management_label mb-3">
+                                    Software
+                                </h4>
+
+                                <group col="2">
+
+                                    <field name="adi_spr_number"
+                                           string="SPR Number"/>
+
+                                </group>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Hardware -->
+                        <div class="col-lg-6">
+
+                            <div class="adi_management_section">
+
+                                <h4 class="adi_management_label mb-3">
+                                    Hardware
+                                </h4>
+
+                                <group col="2">
+
+                                    <field name="adi_sir_hardware_part_number_ids"
+                                           string="Part Numbers"
+                                           widget="many2many_tags"
+                                           options="{
+                                               'no_create': True,
+                                               'no_create_edit': True
+                                           }"/>
+
+                                </group>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr/>
+
+
+                    <!-- =================================================
+                         Internal notes
+                         ================================================= -->
                     <div class="adi_management_notes_row">
+
                         <div class="adi_management_notes_label">
+
                             Internal Notes
+
                             <a href="#"
                                class="adi_management_notes_toggle"
                                title="Expand">
+
                                 <i class="fa fa-plus-square"/>
+
                             </a>
+
                         </div>
+
 
                         <div class="adi_management_notes_inline">
+
                             <field name="adi_internal_notes"
                                    nolabel="1"/>
+
                         </div>
+
                     </div>
+
                 </div>
 
+
                 <!-- =====================================================
-                    Closure card
-                    Visible only after the closure wizard has completed.
-                    ===================================================== -->
+                     Closure card
+                     Visible after the closure wizard has completed.
+                     ===================================================== -->
                 <div class="adi_helpdesk_card adi_closure_card"
-                    invisible="not adi_closure_result">
+                     invisible="not adi_closure_result">
+
 
                     <div class="adi_card_header">
-                        <span class="adi_card_title">Closure</span>
+
+                        <span class="adi_card_title">
+                            Closure
+                        </span>
+
 
                         <div class="adi_card_items">
 
+
+                            <!-- Closed date -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-calendar-check-o adi_summary_icon"/>
-                                <span class="fw-bold">Closed:</span>
+
+                                <span class="fw-bold">
+                                    Closed:
+                                </span>
+
                                 <field name="close_date"
-                                    readonly="1"
-                                    nolabel="1"/>
+                                       readonly="1"
+                                       nolabel="1"/>
+
                             </span>
 
+
+                            <!-- Result -->
                             <span class="adi_card_item">
+
                                 <i class="fa fa-check-circle adi_summary_icon"/>
-                                <span class="fw-bold">Result:</span>
+
+                                <span class="fw-bold">
+                                    Result:
+                                </span>
+
                                 <field name="adi_closure_result"
-                                    nolabel="1"
-                                    options="{'no_create': True, 'no_create_edit': True}"/>
+                                       nolabel="1"
+                                       options="{
+                                           'no_create': True,
+                                           'no_create_edit': True
+                                       }"/>
+
                             </span>
 
                         </div>
+
                     </div>
+
 
                     <hr/>
 
-                    <div class="mt-3">
-                        <strong>Closure Statement</strong>
-                        <div class="mt-2">
-                            <field name="adi_closure_statement"
-                                nolabel="1"/>
-                        </div>
-                    </div>
 
+                    <div class="mt-3">
+
+                        <strong>
+                            Closure Statement
+                        </strong>
+
+                        <div class="mt-2">
+
+                            <field name="adi_closure_statement"
+                                   nolabel="1"/>
+
+                        </div>
+
+                    </div>
                 </div>
+
+
             </xpath>
 
-            <!-- =========================================================
-                Developer / exploration tabs
-                ========================================================= -->
-            <xpath expr="//notebook" position="replace">
-                <notebook>
 
-                    <!-- Temporary metrics / bridge exploration tab -->
-                    <page string="Metrics" groups="base.group_no_one">
+            <!-- =========================================================
+                 Developer / exploration tabs
+
+                 Parent notebook restricted to Helpdesk Administrators.
+                 Individual pages remain developer-mode only.
+                 ========================================================= -->
+            <xpath expr="//notebook" position="replace">
+
+                <notebook groups="helpdesk.group_helpdesk_manager">
+
+
+                    <!-- =================================================
+                         Metrics
+                         ================================================= -->
+                    <page string="Metrics"
+                          groups="base.group_no_one">
+
 
                         <div class="alert alert-info">
-                            <strong>Temporary metrics / Repair bridge exploration</strong><br/>
-                            This tab exposes core Helpdesk fields so we can review what is already available
-                            before building the Repair integration.
+
+                            <strong>
+                                Temporary metrics / Repair bridge exploration
+                            </strong>
+
+                            <br/>
+
+                            This tab exposes core Helpdesk fields so we can
+                            review what is already available before building
+                            the Repair integration.
+
                         </div>
 
+
                         <group string="Assignment / Timing">
-                            <field name="assign_date" readonly="1"/>
-                            <field name="assign_hours" readonly="1"/>
-                            <field name="create_date" readonly="1"/>
-                            <field name="date_last_stage_update" readonly="1"/>
-                            <field name="close_date" readonly="1"/>
-                            <field name="close_hours" readonly="1"/>
-                            <field name="open_hours" readonly="1"/>
+
+                            <field name="assign_date"
+                                   readonly="1"/>
+
+                            <field name="assign_hours"
+                                   readonly="1"/>
+
+                            <field name="create_date"
+                                   readonly="1"/>
+
+                            <field name="date_last_stage_update"
+                                   readonly="1"/>
+
+                            <field name="close_date"
+                                   readonly="1"/>
+
+                            <field name="close_hours"
+                                   readonly="1"/>
+
+                            <field name="open_hours"
+                                   readonly="1"/>
+
                         </group>
+
 
                         <group string="Response Metrics">
-                            <field name="first_response_hours" readonly="1"/>
-                            <field name="avg_response_hours" readonly="1"/>
-                            <field name="total_response_hours" readonly="1"/>
-                            <field name="oldest_unanswered_customer_message_date" readonly="1"/>
+
+                            <field name="first_response_hours"
+                                   readonly="1"/>
+
+                            <field name="avg_response_hours"
+                                   readonly="1"/>
+
+                            <field name="total_response_hours"
+                                   readonly="1"/>
+
+                            <field name="oldest_unanswered_customer_message_date"
+                                   readonly="1"/>
+
                         </group>
 
+
                         <group string="Tracking">
-                            <field name="duration_tracking" readonly="1"/>
+
+                            <field name="duration_tracking"
+                                   readonly="1"/>
+
                         </group>
+
 
                     </page>
 
-                    <!-- Developer-only correction tab -->
-                    <page string="Debug and Corrections" groups="base.group_no_one">
+
+                    <!-- =================================================
+                         Debug and Corrections
+                         ================================================= -->
+                    <page string="Debug and Corrections"
+                          groups="base.group_no_one">
+
 
                         <div class="alert alert-warning">
-                            <strong>Admin correction area</strong><br/>
-                            These fields are normally controlled by the ADI Helpdesk validation workflow.
-                            Only amend them manually if a ticket has bypassed or failed the normal checks.
+
+                            <strong>
+                                Admin correction area
+                            </strong>
+
+                            <br/>
+
+                            These fields are normally controlled by the
+                            ADI Helpdesk validation workflow.
+                            Only amend them manually if a ticket has
+                            bypassed or failed the normal checks.
+
                         </div>
 
+
                         <group string="Submitted / Raw Customer Data">
-                            <field name="adi_submitted_email" readonly="1"/>
-                            <field name="adi_submitted_contact_name" readonly="1"/>
-                            <field name="adi_submitted_company_name" readonly="1"/>
+
+                            <field name="adi_submitted_email"
+                                   readonly="1"/>
+
+                            <field name="adi_submitted_contact_name"
+                                   readonly="1"/>
+
+                            <field name="adi_submitted_company_name"
+                                   readonly="1"/>
+
                         </group>
+
 
                         <group string="Validated Contact Links">
-                            <field name="partner_id" readonly="0"/>
-                            <field name="partner_email" readonly="0"/>
-                            <field name="partner_name" readonly="0"/>
-                            <field name="adi_matched_company_id" readonly="0"/>
+
+                            <field name="partner_id"
+                                   readonly="0"/>
+
+                            <field name="partner_email"
+                                   readonly="0"/>
+
+                            <field name="partner_name"
+                                   readonly="0"/>
+
+                            <field name="adi_matched_company_id"
+                                   readonly="0"/>
+
                         </group>
+
 
                         <group string="Validation Flags">
-                            <field name="adi_validity_check_required" readonly="0"/>
-                            <field name="adi_new_contact_review_required" readonly="0"/>
-                            <field name="adi_can_repeat_validity" readonly="0"/>
+
+                            <field name="adi_validity_check_required"
+                                   readonly="0"/>
+
+                            <field name="adi_new_contact_review_required"
+                                   readonly="0"/>
+
+                            <field name="adi_can_repeat_validity"
+                                   readonly="0"/>
+
                         </group>
+
 
                         <group string="Workflow / Timing">
-                            <field name="stage_id" readonly="1"/>
+
+                            <field name="stage_id"
+                                   readonly="1"/>
+
                             <field name="create_date"/>
+
                             <field name="adi_create_date_only"/>
-                            <field name="adi_stage_entered_date" readonly="1"/>
-                            <field name="close_date" readonly="1"/>
+
+                            <field name="adi_stage_entered_date"
+                                   readonly="1"/>
+
+                            <field name="close_date"
+                                   readonly="1"/>
+
                         </group>
 
+
                         <group string="Contract / Asset Data">
-                            <field name="adi_contract_date_range" readonly="1"/>
-                            <field name="adi_contract_status" readonly="1"/>
+
+                            <field name="adi_contract_date_range"
+                                   readonly="1"/>
+
+                            <field name="adi_contract_status"
+                                   readonly="1"/>
+
                         </group>
+
 
                     </page>
 
                 </notebook>
+
             </xpath>
 
         </field>
     </record>
-
 </odoo>

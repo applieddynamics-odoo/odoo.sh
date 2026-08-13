@@ -11,6 +11,18 @@
                         <group>
                             <field name="adi_closure_result"/>
                             <field name="adi_closure_statement"/>
+
+                            <div class="adi_wizard_guidance o_form_full_width"
+                                colspan="2">
+
+                                <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
+
+                                <div>
+                                Closure information is shared with the customer in the automated closure email,
+                                therefore please write a formal closure statement.
+                                </div>                           
+                            </div>
+
                         </group>
                     </sheet>
 

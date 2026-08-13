@@ -29,6 +29,7 @@
         "views/helpdesk_repair_views.xml",
         "views/mail_notification_views.xml",
         "views/helpdesk_portal_templates.xml",
+        "views/helpdesk_website_form_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -36,12 +37,14 @@
             "adi_helpdesk_custom/static/src/js/helpdesk_ticket_problem_toggle.js",
             "adi_helpdesk_custom/static/src/js/helpdesk_ticket_new_redirect.js",
             "adi_helpdesk_custom/static/src/xml/helpdesk_chatter_message.xml",
+            "adi_helpdesk_custom/static/src/js/helpdesk_charge_to_many2one.js",
         ],
         "web.assets_frontend": [
             "adi_helpdesk_custom/static/src/js/website_form_message.js",
             "adi_helpdesk_custom/static/src/js/website_helpdesk_email_check.js",
             "adi_helpdesk_custom/static/src/xml/portal_chatter_message.xml",
             "adi_helpdesk_custom/static/src/scss/portal_chatter.scss",
+            "adi_helpdesk_custom/static/src/scss/website_helpdesk.scss",
         ],
     },
     "installable": True,

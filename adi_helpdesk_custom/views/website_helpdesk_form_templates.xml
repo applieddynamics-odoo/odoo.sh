@@ -1,177 +1,371 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
 
-        <record id="adi_website_helpdesk_team_form_1" model="ir.ui.view">
-            <field name="name">adi.website.helpdesk.team.form.1</field>
-            <field name="type">qweb</field>
-            <field name="inherit_id" ref="website_helpdesk.team_form_1"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form[@id='helpdesk_ticket_form']/div[contains(@class, 's_website_form_rows')]"
-                       position="replace">
+    <!--
+        ADI owns the complete public submission form for Helpdesk Team 1.
+        Do not edit this form through the Website Editor after deployment.
+    -->
+    <record id="adi_helpdesk_public_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.public.form</field>
+        <field name="type">qweb</field>
+        <field name="key">adi_helpdesk_custom.adi_helpdesk_public_form</field>
 
-                    <div class="s_website_form_rows row s_col_no_bgcolor">
+        <field name="arch" type="xml">
+            <t name="ADI Helpdesk Public Form"
+               t-name="adi_helpdesk_custom.adi_helpdesk_public_form">
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
-                                                 data-type="char"
-                                                 data-name="Field"
-                                                 data-translated-name="Submitted Email">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Your Email</span>
-                                                    <span class="s_website_form_mark">*</span>
-                                                </label>
-                                                <input class="form-control s_website_form_input"
-                                                       type="text"
-                                                       name="adi_submitted_email"
-                                                       required="1"
-                                                       data-fill-with="email"/>
-                                            </div>
+                <div class="container">
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required d-none"
-                                                 data-type="char"
-                                                 data-name="Field"
-                                                 data-translated-name="Submitted Contact Name">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Your Contact Name</span>
-                                                    <span class="s_website_form_mark">*</span>
-                                                </label>
-                                                <input class="form-control s_website_form_input"
-                                                       type="text"
-                                                       name="adi_submitted_contact_name"
-                                                       data-fill-with="name"/>
-                                            </div>
+                    <h2 class="text-muted">
+                        Submit a Ticket
+                        <t t-if="multiple_teams">
+                            -
+                            <t t-out="team.name"/>
+                        </t>
+                    </h2>
 
-                                            <div class="s_website_form_field mb-3 col-12 d-none"
-                                                 data-type="char"
-                                                 data-name="Field"
-                                                 data-translated-name="Submitted Company Name">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Your Company Name</span>
-                                                </label>
-                                                <input class="form-control s_website_form_input"
-                                                       type="text"
-                                                       name="adi_submitted_company_name"/>
-                                            </div>
+                    <div class="oe_structure"
+                         id="oe_structure_whelpdesk_form_1"/>
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
-                                                 data-type="many2one"
-                                                 data-name="Field"
-                                                 data-translated-name="Problem Type">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Problem Type</span>
-                                                    <span class="s_website_form_mark">*</span>
-                                                </label>
-                                                <select class="form-select s_website_form_input"
-                                                        name="ticket_type_id"
-                                                        required="1">
-                                                    <option value="" selected="selected"/>
-                                                    <t t-foreach="request.env['helpdesk.ticket.type'].sudo().search([])" t-as="ticket_type">
-                                                        <option t-att-value="ticket_type.id">
-                                                            <t t-esc="ticket_type.name"/>
-                                                        </option>
-                                                    </t>
-                                                </select>
-                                            </div>
+                    <span class="hidden"
+                          data-for="helpdesk_ticket_form"
+                          t-att-data-values="{'team_id': team and team.id or ''}"/>
 
-                                            <div class="s_website_form_field mb-3 col-12"
-                                                 data-type="many2one"
-                                                 data-name="Field"
-                                                 data-translated-name="Software Version">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Software Version</span>
-                                                </label>
-                                                <select class="form-select s_website_form_input"
-                                                        name="adi_software_version_id">
-                                                    <option value="" selected="selected"/>
-                                                    <t t-foreach="request.env['adi.helpdesk.software.version'].sudo().search([])" t-as="software_version">
-                                                        <option t-att-value="software_version.id">
-                                                            <t t-esc="software_version.name"/>
-                                                        </option>
-                                                    </t>
-                                                </select>
-                                            </div>
+                    <div id="helpdesk_section">
 
-                                            <div class="s_website_form_field mb-3 col-12"
-                                                 data-type="char"
-                                                 data-name="Field"
-                                                 data-translated-name="Serial Number">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Serial Number</span>
-                                                </label>
-                                                <input class="form-control s_website_form_input"
-                                                       type="text"
-                                                       name="adi_customer_input_serial_number"/>
-                                                <div class="s_website_form_field_description small form-text text-muted">
-                                                    Example: S34123-02 or S34155-01
+                        <section class="s_website_form pt16 pb16"
+                                 data-vcss="001"
+                                 data-snippet="s_website_form"
+                                 data-name="Form">
+
+                            <div class="container">
+
+                                <form id="helpdesk_ticket_form"
+                                      class="o_mark_required adi_helpdesk_ticket_form"
+                                      action="/website/form/"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      data-mark="*"
+                                      data-pre-fill="true"
+                                      data-success-mode="redirect"
+                                      data-success-page="/your-ticket-has-been-submitted"
+                                      data-model_name="helpdesk.ticket">
+
+                                    <div class="s_website_form_rows row s_col_no_bgcolor">
+
+                                        <!-- Email verification -->
+                                        <div id="adi_email_verification_section"
+                                             class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                             data-type="char"
+                                             data-name="Field"
+                                             data-translated-name="Your Email">
+
+                                            <label class="s_website_form_label d-block mb-2">
+                                                <span class="s_website_form_label_content">
+                                                    Please enter your email address
+                                                </span>
+                                                <span class="s_website_form_mark">*</span>
+                                            </label>
+
+                                            <div class="adi_email_check_message text-muted mt-2 d-none"/>
+
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <input class="form-control s_website_form_input"
+                                                        type="email"
+                                                        name="adi_submitted_email"
+                                                        required="1"
+                                                        data-fill-with="email"
+                                                        autocomplete="email"/>
+
+                                                    <span class="adi_email_verified_badge d-none text-success fw-bold text-nowrap">
+                                                        <i class="fa fa-check-circle me-1"/>
+                                                        Email verified
+                                                    </span>
                                                 </div>
-                                            </div>
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_model_required"
-                                                 data-type="char"
-                                                 data-name="Field"
-                                                 data-translated-name="Subject">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Subject</span>
-                                                    <span class="s_website_form_mark">*</span>
-                                                </label>
-                                                <input class="form-control s_website_form_input"
-                                                       type="text"
-                                                       name="name"
-                                                       required="1"
-                                                       maxlength="120"
-                                                       placeholder="Brief summary of the issue"/>
-                                            </div>
+                                                <div class="mt-3 d-flex flex-wrap align-items-center gap-3">
+                                                    <button type="button"
+                                                            class="btn btn-primary adi_verify_email_button">
+                                                        Verify Email
+                                                    </button>
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_required"
-                                                 data-type="html"
-                                                 data-name="Field"
-                                                 data-translated-name="Description">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Description</span>
-                                                    <span class="s_website_form_mark">*</span>
-                                                </label>
-                                                <textarea class="form-control s_website_form_input"
-                                                          name="description"
-                                                          required="1"
-                                                          rows="5"></textarea>
-                                            </div>
+                                                    <a href="https://www.adi.com/contact/"
+                                                    class="btn adi_customer_enquiry_link d-none"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer">
+                                                        Contact ADI
+                                                    </a>
+                                                </div>
 
-                                            <div class="s_website_form_field mb-3 col-12 s_website_form_custom"
-                                                 data-type="binary"
-                                                 data-name="Field"
-                                                 data-translated-name="Attachment">
-                                                <label class="s_website_form_label" style="width: 200px">
-                                                    <span class="s_website_form_label_content">Attachment</span>
-                                                </label>
-                                                <input type="file"
-                                                       class="form-control s_website_form_input"
-                                                       name="Attachment"/>
-                                            </div>
+                                                <div class="adi_unverified_notes adi_guidance_box mt-3 d-none">
 
-                                            <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_dnone"
-                                                 data-name="Field">
-                                                <input type="hidden"
-                                                       class="form-control s_website_form_input"
-                                                       name="team_id"
-                                                       value="1"/>
-                                            </div>
+                                                    <div><strong>Notes:</strong></div>
 
-                                            <div class="mb-0 py-2 col-12 s_website_form_submit"
-                                                 data-name="Submit Button">
-                                                <div style="width: 200px;" class="s_website_form_label"/>
-                                                <a href="#"
-                                                   role="button"
-                                                   class="s_website_form_send btn btn-outline-custom rounded-circle btn-lg"
-                                                   style="border-width: 1px; border-style: solid; border-color: rgb(2, 162, 211); color: rgb(2, 162, 211);">
-                                                    Submit Ticket
-                                                </a>
-                                                <span id="s_website_form_result"/>
+                                                    <div>
+                                                        • If your company has a support contract and you need adding to our safe contact list, please ask a colleague to contact us by email or ticket providing your full name and email address.
+                                                    </div>
+
+                                                    <div>
+                                                        • Please help us protect your information by not including confidential or sensitive material in your enquiry or attachments.
+                                                    </div>
+
+                                                </div>
+                                        </div>
+
+                                        <!-- Hidden until email verification completes -->
+                                        <div id="adi_ticket_details_section"
+                                             class="col-12 d-none">
+
+                                            <div class="row s_col_no_bgcolor">
+
+                                                <!-- Shown by JavaScript for an unknown email -->
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_required d-none"
+                                                     data-type="char"
+                                                     data-name="Field"
+                                                     data-translated-name="Submitted Contact Name">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Your Contact Name
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+                                                    </label>
+
+                                                    <input class="form-control s_website_form_input"
+                                                           type="text"
+                                                           name="adi_submitted_contact_name"
+                                                           data-fill-with="name"
+                                                           autocomplete="name"/>
+                                                </div>
+
+                                                <div class="s_website_form_field mb-3 col-12 d-none"
+                                                     data-type="char"
+                                                     data-name="Field"
+                                                     data-translated-name="Submitted Company Name">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Your Company Name
+                                                        </span>
+                                                    </label>
+
+                                                    <input class="form-control s_website_form_input"
+                                                           type="text"
+                                                           name="adi_submitted_company_name"
+                                                           autocomplete="organization"/>
+                                                </div>
+
+                                                <!-- Problem type -->
+                                                <div class="s_website_form_field mb-3 col-12 col-lg-6 s_website_form_required"
+                                                     data-type="many2one"
+                                                     data-name="Field"
+                                                     data-translated-name="Problem Type">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Problem Type
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+                                                    </label>
+
+                                                    <select class="form-select s_website_form_input"
+                                                            name="ticket_type_id"
+                                                            required="1">
+
+                                                        <option value="" selected="selected"/>
+
+                                                        <t t-foreach="request.env['helpdesk.ticket.type'].sudo().search([])"
+                                                           t-as="ticket_type">
+                                                            <option t-att-value="ticket_type.id">
+                                                                <t t-esc="ticket_type.name"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Software version -->
+                                                <div class="s_website_form_field mb-3 col-12 col-lg-6 s_website_form_required"
+                                                     data-type="many2one"
+                                                     data-name="Field"
+                                                     data-translated-name="Software Version">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Software Version
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+                                                    </label>
+
+                                                    <select class="form-select s_website_form_input"
+                                                            name="adi_software_version_id"
+                                                            required="1">
+
+                                                        <option value="" selected="selected"/>
+
+                                                        <t t-foreach="request.env['adi.helpdesk.software.version'].sudo().search([])"
+                                                           t-as="software_version">
+                                                            <option t-att-value="software_version.id">
+                                                                <t t-esc="software_version.name"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Where was the problem found? -->
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                     data-type="char"
+                                                     data-name="Field"
+                                                     data-translated-name="Where was the problem found?">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Where was the problem found?
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+                                                        <span class="adi_inline_guidance">
+                                                            Enter the system name, serial number or generic hardware
+                                                            (i.e. laptop).
+                                                        </span>
+                                                    </label>
+
+                                                    <input class="form-control s_website_form_input"
+                                                        type="text"
+                                                        name="adi_customer_input_serial_number"
+                                                        required="1"
+                                                        maxlength="80"/>
+                                                </div>
+
+                                                <!-- Subject -->
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_model_required"
+                                                     data-type="char"
+                                                     data-name="Field"
+                                                     data-translated-name="Subject">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Email Header for Ticket
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+
+                                                        <span class="adi_inline_guidance">
+                                                            (This will be the email subject for all correspondence, maximum 120 characters)
+                                                        </span>
+                                                    </label>
+
+                                                    <input class="form-control s_website_form_input"
+                                                           type="text"
+                                                           name="name"
+                                                           required="1"
+                                                           maxlength="120"/>
+                                                </div>
+
+                                                <!-- How can we help -->
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_required"
+                                                     data-type="html"
+                                                     data-name="Field"
+                                                     data-translated-name="How can we help?">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            How can we help?
+                                                        </span>
+                                                        <span class="s_website_form_mark">*</span>
+
+                                                        <span class="adi_inline_guidance">
+                                                            (Describe your problem or question in as much detail as possible)
+                                                        </span>
+                                                    </label>
+
+                                                    <textarea class="form-control s_website_form_input"
+                                                            name="description"
+                                                            required="1"
+                                                            rows="4"/>
+
+                                                    <div class="adi_guidance_box mt-3">
+                                                        <div>
+                                                            <strong>Notes:</strong>
+                                                        </div>
+                                                        <div>
+                                                            • Attachments can be added below as required.
+                                                        </div>
+                                                        <div>
+                                                            • If you need to return material under RMA, please list one or more items on the same ticket.
+                                                        </div>
+                                                   
+                                                        <div>
+                                                            • Please help us protect your information by not including confidential or sensitive material in your ticket or attachments.
+                                                        </div>                                                   
+                                                                                                    
+                                                   
+                                                   
+                                                    </div>
+                                                </div>
+
+                                                <!-- Attachment -->
+                                                <div class="s_website_form_field mb-3 col-12 s_website_form_custom"
+                                                     data-type="binary"
+                                                     data-name="Field"
+                                                     data-translated-name="Attachment">
+
+                                                    <label class="s_website_form_label d-block mb-2">
+                                                        <span class="s_website_form_label_content">
+                                                            Attachment
+                                                        </span>
+                                                    </label>
+
+                                                    <input type="file"
+                                                           class="form-control s_website_form_input"
+                                                           name="Attachment"/>
+                                                </div>
+
+                                                <!-- Submit -->
+                                                <div class="mb-0 py-2 col-12 s_website_form_submit"
+                                                     data-name="Submit Button">
+
+                                                    <div class="s_website_form_label"
+                                                         style="width: 200px;"/>
+
+                                                    <a href="#"
+                                                       role="button"
+                                                       class="s_website_form_send btn btn-outline-custom rounded-circle btn-lg"
+                                                       style="
+                                                           border-width: 1px;
+                                                           border-style: solid;
+                                                           border-color: rgb(2, 162, 211);
+                                                           color: rgb(2, 162, 211);
+                                                       ">
+                                                        Submit Ticket
+                                                    </a>
+
+                                                    <span id="s_website_form_result"/>
+                                                </div>
+
                                             </div>
+                                        </div>
+
+                                        <!-- Team -->
+                                        <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_dnone"
+                                             data-name="Field">
+
+                                            <input type="hidden"
+                                                   class="form-control s_website_form_input"
+                                                   name="team_id"
+                                                   t-att-value="team and team.id or 1"/>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
                     </div>
+                </div>
+            </t>
+        </field>
+    </record>
 
-                </xpath>
-            </field>
-        </record>
+    <record id="helpdesk.helpdesk_team1" model="helpdesk.team">
+        <field name="website_form_view_id"
+               ref="adi_helpdesk_custom.adi_helpdesk_public_form"/>
+    </record>
 
-    </data>
 </odoo>
