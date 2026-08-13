@@ -19,20 +19,6 @@
     margin-bottom: 16px;
 }
 
-.o_form_view .adi_helpdesk_success_card {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 18px;
-}
-
-.o_form_view .adi_helpdesk_debug_card {
-    background: #f8fafc;
-    border: 1px dashed #94a3b8;
-    border-radius: 14px;
-    padding: 18px;
-}
 
 /* ---------------------------------------------------------
    Shared card headers: Input / Status
@@ -194,12 +180,6 @@
    Status / ticket management body
    --------------------------------------------------------- */
 
-.adi_management_grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(180px, 1fr));
-    gap: 14px 24px;
-}
-
 .adi_management_label {
     display: block;
     font-weight: 700;
@@ -240,12 +220,6 @@
    Responsive layout
    --------------------------------------------------------- */
 
-@media (max-width: 1100px) {
-    .adi_management_grid {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
-    }
-}
-
 @media (max-width: 768px) {
     .adi_card_header,
     .adi_ticket_summary_row,
@@ -254,9 +228,6 @@
         row-gap: 4px;
     }
 
-    .adi_management_grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ---------------------------------------------------------
