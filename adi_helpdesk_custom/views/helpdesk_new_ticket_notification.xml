@@ -1,87 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- =========================================================
+         ADI Helpdesk - New Ticket Manager Notification
+
+         Used only for the automatic internal New Ticket
+         notification sent to Helpdesk followers/managers.
+
+         The underlying chatter message remains empty/minimal.
+         Ticket information is rendered here for email only.
+         ========================================================= -->
+
     <template id="adi_helpdesk_new_ticket_notification"
-            name="ADI Helpdesk New Ticket Notification"
-            inherit_id="mail.mail_notification_layout"
-            primary="True">
+              name="ADI Helpdesk New Ticket Notification"
+              inherit_id="mail.mail_notification_layout"
+              primary="True">
 
-        <!-- Remove upper separator -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[1]/preceding-sibling::tr[1]"
-            position="replace"/>
 
-        <!-- Make the access button clearer -->
+        <!-- =====================================================
+             ACCESS BUTTON
+
+             Keep Odoo's normal access URL and surrounding button
+             container, but make the label clearer and more visible.
+             ===================================================== -->
+
         <xpath expr="//td[@t-if='has_button_access']/a"
-            position="replace">
+               position="replace">
 
             <a t-att-href="button_access['url']"
-            style="
-                font-size: 14px;
-                color: #FFFFFF;
-                display: block;
-                padding: 10px 18px;
-                text-decoration: none !important;
-                font-weight: 600;
-            ">
+               style="
+                   font-size: 14px;
+                   color: #FFFFFF;
+                   display: block;
+                   padding: 10px 18px;
+                   text-decoration: none !important;
+                   font-weight: 600;
+               ">
                 View Ticket
             </a>
 
         </xpath>
 
-        <!-- Remove separator immediately before ticket content -->
-        <xpath expr="//div[@t-out='message.body']/preceding::hr[1]"
-            position="replace"/>
 
+        <!-- =====================================================
+             EMAIL CONTENT
 
-        <!-- New Ticket email content -->
+             Replace only the standard mail.message body.
+
+             This deliberately does NOT alter message.body itself,
+             so the information below is not duplicated in chatter.
+             ===================================================== -->
+
         <xpath expr="//div[@t-out='message.body']"
-            position="replace">
+               position="replace">
 
-            <div style="font-size: 13px; line-height: 1.45;">
+            <div style="
+                font-size: 13px;
+                line-height: 1.45;
+            ">
 
+                <!-- New Ticket heading -->
                 <p style="margin: 0 0 12px 0;">
                     <strong style="font-size: 16px;">
                         NEW TICKET
                     </strong>
                 </p>
 
+
+                <!-- Ticket summary -->
                 <table role="presentation"
                        cellspacing="0"
                        cellpadding="0"
                        border="0"
-                       style="font-size: 13px; line-height: 1.45;">
+                       style="
+                           font-size: 13px;
+                           line-height: 1.45;
+                       ">
 
+                    <!-- Customer -->
                     <tr>
                         <td style="padding: 2px 14px 2px 0;">
                             <strong>Customer:</strong>
                         </td>
+
                         <td style="padding: 2px 0;">
                             <t t-out="record.adi_notification_company_name or '-'"/>
                         </td>
                     </tr>
 
+
+                    <!-- Contact -->
                     <tr>
                         <td style="padding: 2px 14px 2px 0;">
                             <strong>Contact:</strong>
                         </td>
+
                         <td style="padding: 2px 0;">
                             <t t-out="record.adi_notification_contact_name or '-'"/>
                         </td>
                     </tr>
 
+
+                    <!-- Software -->
                     <tr t-if="record.adi_software_version_id">
+
                         <td style="padding: 2px 14px 2px 0;">
                             <strong>Software:</strong>
                         </td>
+
                         <td style="padding: 2px 0;">
                             <t t-out="record.adi_software_version_id.display_name"/>
                         </td>
+
                     </tr>
 
                 </table>
 
+
+                <!-- Problem statement -->
                 <p style="margin: 14px 0 4px 0;">
-                    <strong>PROBLEM</strong>
+                    <strong>
+                        PROBLEM
+                    </strong>
                 </p>
 
                 <div t-out="record.description or '-'"/>
@@ -90,19 +130,6 @@
 
         </xpath>
 
-        <xpath expr="//td[@t-if='has_button_access']/a" position="replace">
-            <a t-att-href="button_access['url']"
-            style="
-                font-size: 14px;
-                color: #FFFFFF;
-                display: block;
-                padding: 10px 18px;
-                text-decoration: none !important;
-                font-weight: 600;
-            ">
-                View Ticket
-            </a>
-        </xpath>
 
     </template>
 
