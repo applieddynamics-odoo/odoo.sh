@@ -625,7 +625,7 @@ class HelpdeskTicket(models.Model):
 
         if is_new_ticket:
             values["subject"] = (
-                f"[New SIR Ticket] {self._adi_email_subject()}"
+                f"<<New Ticket>> {self._adi_email_subject()}"
             )
         elif is_rating_request:
             values["subject"] = self._adi_email_subject("Support Rating")
@@ -738,9 +738,16 @@ class HelpdeskTicket(models.Model):
             team = ticket.team_id
             author = team.adi_message_author_id
 
-            if author:
-                kwargs = dict(kwargs)
+            kwargs = dict(kwargs)
 
+            # Customer acknowledgement has an explicit customer recipient.
+            # Give it a dedicated hidden subtype so normal ticket followers
+            # are not also notified.
+            kwargs["subtype_id"] = self.env.ref(
+                "adi_helpdesk_custom.mt_customer_acknowledgement"
+            ).id
+
+            if author:
                 kwargs.update({
                     "author_id": author.id,
                     "email_from": (
