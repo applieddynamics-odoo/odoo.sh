@@ -570,6 +570,7 @@ class HelpdeskTicket(models.Model):
 
         return subject
 
+
     def _notify_by_email_get_base_mail_values(
         self,
         message,
@@ -588,6 +589,26 @@ class HelpdeskTicket(models.Model):
 
         message_body = str(message.body or "")
 
+        # ---------------------------------------------------------
+        # New ticket notification
+        #
+        # The automatic Helpdesk creation notification uses
+        # helpdesk.mt_ticket_new.
+        #
+        # Only this notification receives the [New SIR Ticket]
+        # prefix so managers can reliably identify / filter it.
+        # ---------------------------------------------------------
+
+        ticket_created_subtype = self.env.ref(
+            "helpdesk.mt_ticket_new",
+            raise_if_not_found=False,
+        )
+
+        is_new_ticket = bool(
+            ticket_created_subtype
+            and message.subtype_id == ticket_created_subtype
+        )
+
         # Odoo loses the rating template subject before this method is reached,
         # so identify rating requests from their unique rating content.
 
@@ -602,7 +623,11 @@ class HelpdeskTicket(models.Model):
             and "<strong>Ticket Closed" in message_body
         )
 
-        if is_rating_request:
+        if is_new_ticket:
+            values["subject"] = (
+                f"[New SIR Ticket] {self._adi_email_subject()}"
+            )
+        elif is_rating_request:
             values["subject"] = self._adi_email_subject("Support Rating")
         elif is_closure_email:
             values["subject"] = self._adi_email_subject("Closure")
@@ -650,6 +675,48 @@ class HelpdeskTicket(models.Model):
         res["stage_id"] = (template, mail_values)
 
         return res
+
+    def message_post(self, **kwargs):
+        """
+        Use the configured Helpdesk identity for the automatic
+        blank Ticket Created notification instead of OdooBot.
+
+        Genuine incoming customer messages are deliberately left alone.
+        """
+
+        ticket_created_subtype = self.env.ref(
+            "helpdesk.mt_ticket_new",
+            raise_if_not_found=False,
+        )
+
+        subtype_id = kwargs.get("subtype_id")
+        body = kwargs.get("body")
+
+        is_automatic_ticket_created = (
+            len(self) == 1
+            and ticket_created_subtype
+            and subtype_id == ticket_created_subtype.id
+            and not body
+        )
+
+        if is_automatic_ticket_created:
+            ticket = self[0]
+            team = ticket.team_id
+            author = team.adi_message_author_id
+
+            if author:
+                kwargs = dict(kwargs)
+
+                kwargs.update({
+                    "author_id": author.id,
+                    "email_from": (
+                        f"{team.name} <{team.alias_email}>"
+                        if team.alias_email
+                        else author.email_formatted
+                    ),
+                })
+
+        return super().message_post(**kwargs)
 
 
     def message_post_with_source(self, source_ref, *args, **kwargs):
