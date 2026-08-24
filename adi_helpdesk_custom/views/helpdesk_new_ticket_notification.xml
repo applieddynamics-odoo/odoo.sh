@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="adi_helpdesk_new_ticket_notification"
+              name="ADI Helpdesk New Ticket Notification"
+              inherit_id="mail.mail_notification_layout"
+              primary="True">
+
+        <xpath expr="//div[@t-out='message.body']"
+               position="replace">
+
+            <div style="font-size: 13px; line-height: 1.45;">
+
+                <p style="margin: 0 0 12px 0;">
+                    <strong style="font-size: 16px;">
+                        NEW TICKET
+                    </strong>
+                </p>
+
+                <table role="presentation"
+                       cellspacing="0"
+                       cellpadding="0"
+                       border="0"
+                       style="font-size: 13px; line-height: 1.45;">
+
+                    <tr>
+                        <td style="padding: 2px 14px 2px 0;">
+                            <strong>Customer:</strong>
+                        </td>
+                        <td style="padding: 2px 0;">
+                            <t t-out="record.adi_notification_company_name or '-'"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 2px 14px 2px 0;">
+                            <strong>Contact:</strong>
+                        </td>
+                        <td style="padding: 2px 0;">
+                            <t t-out="record.adi_notification_contact_name or '-'"/>
+                        </td>
+                    </tr>
+
+                    <tr t-if="record.adi_software_version_id">
+                        <td style="padding: 2px 14px 2px 0;">
+                            <strong>Software:</strong>
+                        </td>
+                        <td style="padding: 2px 0;">
+                            <t t-out="record.adi_software_version_id.display_name"/>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p style="margin: 14px 0 4px 0;">
+                    <strong>PROBLEM</strong>
+                </p>
+
+                <div t-out="record.description or '-'"/>
+
+            </div>
+
+        </xpath>
+
+    </template>
+
+</odoo>

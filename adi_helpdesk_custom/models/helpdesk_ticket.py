@@ -71,6 +71,16 @@ class HelpdeskTicket(models.Model):
         ),
     )
 
+    adi_notification_company_name = fields.Char(
+        compute="_compute_adi_notification_contact",
+    )
+
+    adi_notification_contact_name = fields.Char(
+        compute="_compute_adi_notification_contact",
+    )
+
+
+
     adi_customer_resource_scope = fields.Selection(
         [
             ("single", "One specific resource"),
@@ -706,92 +716,8 @@ class HelpdeskTicket(models.Model):
 
             kwargs = dict(kwargs)
 
-            # ---------------------------------------------------------
-            # Internal New Ticket notification
-            #
-            # Keep this deliberately concise. Its purpose is to give
-            # managers enough information to assess the incoming ticket
-            # before opening Odoo to allocate it.
-            # ---------------------------------------------------------
-
-            company_name = (
-                ticket.adi_submitted_company_name
-                or (
-                    ticket.partner_id.commercial_partner_id.name
-                    if ticket.partner_id
-                    else False
-                )
-                or "-"
-            )
-
-            contact_name = (
-                ticket.adi_submitted_contact_name
-                or (
-                    ticket.partner_id.name
-                    if ticket.partner_id
-                    else False
-                )
-                or "-"
-            )
-
-            contact_email = (
-                ticket.adi_submitted_email
-                or ticket.partner_email
-                or "-"
-            )
-
-            software_version = (
-                ticket.adi_software_version_id.display_name
-                if ticket.adi_software_version_id
-                else "-"
-            )
-
-            serial_number = (
-                ticket.adi_customer_input_serial_number
-                or "-"
-            )
-
-            problem = ticket.description or "-"
-
-            kwargs["body"] = Markup("""
-                <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.45;">
-
-                    <p style="margin: 0 0 12px 0;">
-                        <strong style="font-size: 16px;">NEW TICKET</strong>
-                    </p>
-
-                    <table cellpadding="0" cellspacing="0" border="0"
-                        style="font-size: 14px; line-height: 1.45;">
-                        <tr>
-                            <td style="padding: 2px 14px 2px 0;"><strong>Customer:</strong></td>
-                            <td style="padding: 2px 0;">%s</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 2px 14px 2px 0;"><strong>Contact:</strong></td>
-                            <td style="padding: 2px 0;">%s</td>
-                        </tr>
-
-                        <tr>
-                            <td style="padding: 2px 14px 2px 0;"><strong>Software:</strong></td>
-                            <td style="padding: 2px 0;">%s</td>
-                        </tr>
-
-                    </table>
-
-                    <p style="margin: 14px 0 4px 0;">
-                        <strong>PROBLEM</strong>
-                    </p>
-
-                    <div style="margin: 0;">
-                        %s
-                    </div>
-
-                </div>
-            """) % (
-                escape(company_name),
-                escape(contact_name),
-                escape(software_version),
-                problem,
+            kwargs["email_layout_xmlid"] = (
+                "adi_helpdesk_custom.adi_helpdesk_new_ticket_notification"
             )
 
             if author:
@@ -1033,3 +959,45 @@ class HelpdeskTicket(models.Model):
                     "New",
                 )
             )        
+
+    #-------------------------------------------------------------
+    # Notification Contact Name / Company Name  
+    #-------------------------------------------------------------
+
+    @api.depends(
+        "partner_id",
+        "adi_submitted_email",
+        "adi_submitted_company_name",
+        "adi_submitted_contact_name",
+    )
+    def _compute_adi_notification_contact(self):
+        Partner = self.env["res.partner"]
+
+        for ticket in self:
+            company_name = ticket.adi_submitted_company_name or False
+            contact_name = ticket.adi_submitted_contact_name or False
+
+            if ticket.partner_id:
+                contact = ticket.partner_id
+                company = contact.commercial_partner_id
+
+                contact_name = contact.name or contact_name
+
+                if company:
+                    company_name = company.name or company_name
+
+            elif ticket.adi_submitted_email:
+                contact = Partner.search([
+                    ("email", "=ilike", ticket.adi_submitted_email),
+                    ("active", "=", True),
+                ], limit=1)
+
+                if contact:
+                    contact_name = contact.name or contact_name
+
+                    company = contact.commercial_partner_id
+                    if company:
+                        company_name = company.name or company_name
+
+            ticket.adi_notification_company_name = company_name or "-"
+            ticket.adi_notification_contact_name = contact_name or "-"            
