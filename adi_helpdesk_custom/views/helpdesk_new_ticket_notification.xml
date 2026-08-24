@@ -2,12 +2,40 @@
 <odoo>
 
     <template id="adi_helpdesk_new_ticket_notification"
-              name="ADI Helpdesk New Ticket Notification"
-              inherit_id="mail.mail_notification_layout"
-              primary="True">
+            name="ADI Helpdesk New Ticket Notification"
+            inherit_id="mail.mail_notification_layout"
+            primary="True">
 
+        <!-- Remove upper separator -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[1]/preceding-sibling::tr[1]"
+            position="replace"/>
+
+        <!-- Make the access button clearer -->
+        <xpath expr="//td[@t-if='has_button_access']/a"
+            position="replace">
+
+            <a t-att-href="button_access['url']"
+            style="
+                font-size: 14px;
+                color: #FFFFFF;
+                display: block;
+                padding: 10px 18px;
+                text-decoration: none !important;
+                font-weight: 600;
+            ">
+                View Ticket
+            </a>
+
+        </xpath>
+
+        <!-- Remove separator immediately before ticket content -->
+        <xpath expr="//div[@t-out='message.body']/preceding::hr[1]"
+            position="replace"/>
+
+
+        <!-- New Ticket email content -->
         <xpath expr="//div[@t-out='message.body']"
-               position="replace">
+            position="replace">
 
             <div style="font-size: 13px; line-height: 1.45;">
 
@@ -60,6 +88,20 @@
 
             </div>
 
+        </xpath>
+
+        <xpath expr="//td[@t-if='has_button_access']/a" position="replace">
+            <a t-att-href="button_access['url']"
+            style="
+                font-size: 14px;
+                color: #FFFFFF;
+                display: block;
+                padding: 10px 18px;
+                text-decoration: none !important;
+                font-weight: 600;
+            ">
+                View Ticket
+            </a>
         </xpath>
 
     </template>
