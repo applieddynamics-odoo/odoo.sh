@@ -16,9 +16,12 @@
               inherit_id="mail.mail_notification_layout"
               primary="True">
 
-
     <!-- =====================================================
         VIEW TICKET BUTTON
+
+        Fixed width/height is deliberate.
+        Desktop Outlook uses the Word rendering engine and
+        does not reliably honour padding on email links.
         ===================================================== -->
 
     <xpath expr="//td[@t-if='has_button_access']"
@@ -31,20 +34,27 @@
                 cellpadding="0"
                 border="0">
                 <tr>
-                    <td align="center"
+
+                    <td width="140"
+                        height="40"
+                        align="center"
+                        valign="middle"
                         bgcolor="#008C95"
                         style="
+                            width: 140px;
+                            height: 40px;
                             background-color: #008C95;
-                            border-radius: 4px;
+                            text-align: center;
+                            vertical-align: middle;
                         ">
 
                         <a t-att-href="button_access['url']"
                         style="
                             display: block;
-                            padding: 10px 22px;
+                            width: 140px;
+                            line-height: 40px;
                             font-family: Verdana, Arial, sans-serif;
                             font-size: 14px;
-                            line-height: 18px;
                             font-weight: bold;
                             color: #FFFFFF;
                             text-decoration: none;
@@ -53,6 +63,7 @@
                         </a>
 
                     </td>
+
                 </tr>
             </table>
 
