@@ -271,23 +271,6 @@ class HelpdeskTicket(models.Model):
         self._adi_update_contract_details()
 
 
-    def write(self, vals):
-        result = super().write(vals)
-
-        if "adi_charge_to_order_id" in vals:
-            self._adi_update_contract_details()
-
-            for ticket in self:
-                super(HelpdeskTicket, ticket).write({
-                    "adi_contract_date_range":
-                        ticket.adi_contract_date_range,
-                    "adi_contract_status":
-                        ticket.adi_contract_status,
-                })
-
-        return result
-
-
     adi_contract_date_range = fields.Char(
         string="Contract Date Range",
         readonly=True,
@@ -500,10 +483,46 @@ class HelpdeskTicket(models.Model):
         return tickets
 
     def write(self, vals):
+        vals = dict(vals)
+
+        # Remember Lead before the write so we can detect a genuine
+        # assignment or reassignment afterwards.
+        previous_user_ids = {
+            ticket.id: ticket.user_id.id
+            for ticket in self
+        }
+
+        # Maintain the date on which the ticket entered its current stage.
         if "stage_id" in vals:
             vals["adi_stage_entered_date"] = fields.Datetime.now()
 
-        return super().write(vals)
+        result = super().write(vals)
+
+        # Maintain the displayed contract information whenever the
+        # Charge To order changes.
+        if "adi_charge_to_order_id" in vals:
+            self._adi_update_contract_details()
+
+            for ticket in self:
+                super(HelpdeskTicket, ticket).write({
+                    "adi_contract_date_range": ticket.adi_contract_date_range,
+                    "adi_contract_status": ticket.adi_contract_status,
+                })
+
+        # Detect Lead assignment/reassignment.
+        #
+        # For the moment this only establishes the correct central hook.
+        # We will add the assignment email here once we've confirmed the
+        # exact mail mechanism we want to use.
+        if "user_id" in vals:
+            for ticket in self:
+                previous_user_id = previous_user_ids.get(ticket.id)
+                new_user_id = ticket.user_id.id
+
+                if new_user_id and new_user_id != previous_user_id:
+                    pass
+
+        return result
 
     def _compute_adi_can_repeat(self):
         for rec in self:
