@@ -100,6 +100,12 @@
                     </strong>
                 </p>
 
+                <t t-if="message.subject and message.subject.startswith('&lt;&lt;Lead Assigned&gt;&gt;')">
+                    <p style="margin: 0 0 12px 0;">
+                        You have been assigned to lead this ticket.
+                    </p>
+                </t>
+
 
                 <!-- Ticket summary -->
                 <table role="presentation"

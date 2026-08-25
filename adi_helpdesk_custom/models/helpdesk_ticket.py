@@ -686,10 +686,19 @@ class HelpdeskTicket(models.Model):
             and "<strong>Ticket Closed" in message_body
         )
 
+        is_lead_assignment = (
+            message.subject
+            and message.subject.startswith("<<Lead Assigned>>")
+        )
+
+
+
         if is_new_ticket:
             values["subject"] = (
                 f"<<New Ticket>> {self._adi_email_subject()}"
             )
+        elif is_lead_assignment:
+            values["subject"] = message.subject
         elif is_rating_request:
             values["subject"] = self._adi_email_subject("Support Rating")
         elif is_closure_email:
