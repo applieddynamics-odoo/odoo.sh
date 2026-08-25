@@ -24,26 +24,37 @@
     <xpath expr="//td[@t-if='has_button_access']"
         position="replace">
 
-        <td t-if="has_button_access"
-            bgcolor="#008C95"
-            style="
-                background-color: #008C95;
-                border-radius: 5px;
-                text-align: center;
-            ">
+        <td t-if="has_button_access">
 
-            <a t-att-href="button_access['url']"
-            style="
-                display: inline-block;
-                padding: 10px 20px;
-                font-size: 14px;
-                line-height: 18px;
-                font-weight: 600;
-                color: #FFFFFF;
-                text-decoration: none;
-            ">
-                View Ticket
-            </a>
+            <table role="presentation"
+                cellspacing="0"
+                cellpadding="0"
+                border="0">
+                <tr>
+                    <td align="center"
+                        bgcolor="#008C95"
+                        style="
+                            background-color: #008C95;
+                            border-radius: 4px;
+                        ">
+
+                        <a t-att-href="button_access['url']"
+                        style="
+                            display: block;
+                            padding: 10px 22px;
+                            font-family: Verdana, Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 18px;
+                            font-weight: bold;
+                            color: #FFFFFF;
+                            text-decoration: none;
+                        ">
+                            View Ticket
+                        </a>
+
+                    </td>
+                </tr>
+            </table>
 
         </td>
 
