@@ -517,10 +517,48 @@ class HelpdeskTicket(models.Model):
         if "user_id" in vals:
             for ticket in self:
                 previous_user_id = previous_user_ids.get(ticket.id)
-                new_user_id = ticket.user_id.id
+                new_user = ticket.user_id
 
-                if new_user_id and new_user_id != previous_user_id:
-                    pass
+                if not new_user or new_user.id == previous_user_id:
+                    continue
+
+                team = ticket.team_id
+                author = team.adi_message_author_id
+
+                notify_values = {
+                    "partner_ids": [new_user.partner_id.id],
+                    "subject": (
+                        f"<Ticket Assigned> "
+                        f"{ticket._adi_email_subject()}"
+                    ),
+                    "body": (
+                        "<p>"
+                        "<strong>"
+                        "You have been assigned as Lead for this Helpdesk ticket."
+                        "</strong>"
+                        "</p>"
+                        "<p>"
+                        "Please review the ticket and take the appropriate action."
+                        "</p>"
+                    ),
+                    "email_layout_xmlid": "mail.mail_notification_layout",
+                }
+
+                if author:
+                    notify_values.update({
+                        "author_id": author.id,
+                        "email_from": (
+                            f"{team.name} <{team.alias_email}>"
+                            if team.alias_email
+                            else author.email_formatted
+                        ),
+                    })
+
+                ticket.with_context(
+                    mail_notify_author=True,
+                ).message_notify(
+                    **notify_values
+                )
 
         return result
     

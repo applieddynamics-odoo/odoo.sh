@@ -312,41 +312,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         previous_user = self.ticket_id.user_id
         self.ticket_id.write(values)
 
-        # ---------------------------------------------------------
-        # Lead assignment notification
-        #
-        # Send directly to the newly assigned Lead.
-        # This is deliberately targeted and does not notify all
-        # ticket followers.
-        # ---------------------------------------------------------
-
-        if self.user_id and self.user_id != previous_user:
-            ticket = self.ticket_id
-            team = ticket.team_id
-            author = team.adi_message_author_id
-
-            notify_values = {
-                "partner_ids": [self.user_id.partner_id.id],
-                "subject": f"<Ticket Assigned> {ticket._adi_email_subject()}",
-                "body": (
-                    "<p><strong>You have been assigned as Lead for this Helpdesk ticket.</strong></p>"
-                    "<p>Please review the ticket and take the appropriate action.</p>"
-                ),
-                "email_layout_xmlid": "mail.mail_notification_layout",
-            }
-
-            if author:
-                notify_values.update({
-                    "author_id": author.id,
-                    "email_from": (
-                        f"{team.name} <{team.alias_email}>"
-                        if team.alias_email
-                        else author.email_formatted
-                    ),
-                })
-
-            ticket.message_notify(**notify_values)
-
         if self.adi_interested_user_ids:
             self.ticket_id.message_subscribe(
                 partner_ids=self.adi_interested_user_ids.partner_id.ids,
