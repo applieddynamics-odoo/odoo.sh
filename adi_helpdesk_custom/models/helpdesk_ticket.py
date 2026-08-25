@@ -523,6 +523,7 @@ class HelpdeskTicket(models.Model):
                     pass
 
         return result
+    
 
     def _compute_adi_can_repeat(self):
         for rec in self:
