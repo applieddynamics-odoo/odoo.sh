@@ -1144,20 +1144,12 @@ class HelpdeskTicket(models.Model):
 
         return result
 
+
+
+
     def _message_parse_extract_payload_postprocess(self, message, payload_dict):
         """
-        Remove quoted email history from inbound Helpdesk replies.
-
-        Keeps the newly typed reply at the top of the email and removes
-        common Outlook quoted-history blocks such as:
-
-            From:
-            Sent:
-            To:
-            Subject:
-
-        This override is Helpdesk-only and leaves Odoo's normal parsing
-        and attachment handling intact.
+        Remove quoted Outlook email history from inbound Helpdesk replies.
         """
 
         result = super()._message_parse_extract_payload_postprocess(
@@ -1171,76 +1163,70 @@ class HelpdeskTicket(models.Model):
             return result
 
         try:
-            root = lxml.html.fromstring(body)
+            root = lxml.html.fragment_fromstring(
+                str(body),
+                create_parent="div",
+            )
         except (ValueError, etree.ParserError):
             return result
 
-        # ---------------------------------------------------------
-        # Locate the start of quoted Outlook history.
-        #
-        # Outlook commonly creates a block containing:
-        # From:
-        # Sent:
-        # To:
-        # Subject:
-        #
-        # We deliberately require several markers together to avoid
-        # stripping legitimate customer text containing the word "From".
-        # ---------------------------------------------------------
+        quote_header = None
 
-        quoted_start = None
-
-        for node in root.iter():
-            text = " ".join(node.itertext()).strip()
-
-            if not text:
-                continue
-
-            lower_text = text.lower()
+        # Outlook puts the previous email beneath a paragraph containing
+        # From / Sent / To / Subject.
+        for paragraph in root.xpath(".//p"):
+            text = " ".join(paragraph.itertext())
+            text = " ".join(text.split())
 
             if (
-                "from:" in lower_text
-                and "sent:" in lower_text
-                and "to:" in lower_text
-                and "subject:" in lower_text
+                "From:" in text
+                and "Sent:" in text
+                and "To:" in text
+                and "Subject:" in text
             ):
-                quoted_start = node
+                quote_header = paragraph
                 break
 
-        if quoted_start is None:
+        if quote_header is None:
             return result
 
-        # ---------------------------------------------------------
-        # Remove the quoted block and everything following it at the
-        # same level, preserving only the newly typed reply above.
-        # ---------------------------------------------------------
+        # The Outlook header paragraph is normally inside two DIVs.
+        # Move upwards to the outer wrapper containing the quoted email.
+        quote_start = quote_header
 
-        parent = quoted_start.getparent()
+        for _ in range(2):
+            parent = quote_start.getparent()
+
+            if parent is None or parent is root:
+                break
+
+            quote_start = parent
+
+        parent = quote_start.getparent()
 
         if parent is None:
             return result
 
-        children = list(parent)
+        # Remove the Outlook history and everything after it.
+        remove = False
 
-        try:
-            start_index = children.index(quoted_start)
-        except ValueError:
-            return result
+        for child in list(parent):
+            if child is quote_start:
+                remove = True
 
-        for child in children[start_index:]:
-            parent.remove(child)
+            if remove:
+                parent.remove(child)
 
-        cleaned_body = Markup(
+        cleaned_body = "".join(
             etree.tostring(
-                root,
-                pretty_print=False,
+                child,
                 encoding="unicode",
+                method="html",
             )
+            for child in root
         )
 
-        result["body"] = cleaned_body
+        if cleaned_body.strip():
+            result["body"] = Markup(cleaned_body)
 
         return result
-
-
-
