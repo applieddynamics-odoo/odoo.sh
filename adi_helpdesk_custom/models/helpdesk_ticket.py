@@ -1059,3 +1059,81 @@ class HelpdeskTicket(models.Model):
 
             ticket.adi_notification_company_name = company_name or "-"
             ticket.adi_notification_contact_name = contact_name or "-"            
+
+
+
+    #-------------------------------------------------------------
+    # Follower Subtype Configuration
+    #-------------------------------------------------------------
+
+    def _adi_configure_follower_subtypes(self, partner_ids=None):
+        """
+        Enforce ADI Helpdesk follower notification preferences.
+
+        - All Helpdesk followers receive Discussions.
+        - Internal @adi.com followers also receive Notes.
+        """
+
+        discussion_subtype = self.env.ref(
+            "mail.mt_comment",
+            raise_if_not_found=False,
+        )
+        note_subtype = self.env.ref(
+            "mail.mt_note",
+            raise_if_not_found=False,
+        )
+
+        if not discussion_subtype or not note_subtype:
+            return
+
+        for ticket in self:
+            followers = ticket.message_follower_ids
+
+            if partner_ids:
+                followers = followers.filtered(
+                    lambda follower:
+                        follower.partner_id.id in partner_ids
+                )
+
+            for follower in followers:
+                partner = follower.partner_id
+
+                if not partner:
+                    continue
+
+                subtype_commands = []
+
+                if discussion_subtype not in follower.subtype_ids:
+                    subtype_commands.append(
+                        (4, discussion_subtype.id)
+                    )
+
+                if (
+                    partner.email
+                    and partner.email.lower().endswith("@adi.com")
+                    and note_subtype not in follower.subtype_ids
+                ):
+                    subtype_commands.append(
+                        (4, note_subtype.id)
+                    )
+
+                if subtype_commands:
+                    follower.write({
+                        "subtype_ids": subtype_commands,
+                    })
+
+    def message_subscribe(
+        self,
+        partner_ids=None,
+        subtype_ids=None,
+    ):
+        result = super().message_subscribe(
+            partner_ids=partner_ids,
+            subtype_ids=subtype_ids,
+        )
+
+        self._adi_configure_follower_subtypes(
+            partner_ids=partner_ids,
+        )
+
+        return result
