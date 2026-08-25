@@ -2,6 +2,8 @@ from odoo import api, fields, models
 from odoo.tools import email_split
 from odoo.exceptions import ValidationError
 from markupsafe import Markup, escape
+from lxml import etree
+import lxml.html
 
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
@@ -1141,3 +1143,104 @@ class HelpdeskTicket(models.Model):
         )
 
         return result
+
+    def _message_parse_extract_payload_postprocess(self, message, payload_dict):
+        """
+        Remove quoted email history from inbound Helpdesk replies.
+
+        Keeps the newly typed reply at the top of the email and removes
+        common Outlook quoted-history blocks such as:
+
+            From:
+            Sent:
+            To:
+            Subject:
+
+        This override is Helpdesk-only and leaves Odoo's normal parsing
+        and attachment handling intact.
+        """
+
+        result = super()._message_parse_extract_payload_postprocess(
+            message,
+            payload_dict,
+        )
+
+        body = result.get("body") or ""
+
+        if not body.strip():
+            return result
+
+        try:
+            root = lxml.html.fromstring(body)
+        except (ValueError, etree.ParserError):
+            return result
+
+        # ---------------------------------------------------------
+        # Locate the start of quoted Outlook history.
+        #
+        # Outlook commonly creates a block containing:
+        # From:
+        # Sent:
+        # To:
+        # Subject:
+        #
+        # We deliberately require several markers together to avoid
+        # stripping legitimate customer text containing the word "From".
+        # ---------------------------------------------------------
+
+        quoted_start = None
+
+        for node in root.iter():
+            text = " ".join(node.itertext()).strip()
+
+            if not text:
+                continue
+
+            lower_text = text.lower()
+
+            if (
+                "from:" in lower_text
+                and "sent:" in lower_text
+                and "to:" in lower_text
+                and "subject:" in lower_text
+            ):
+                quoted_start = node
+                break
+
+        if quoted_start is None:
+            return result
+
+        # ---------------------------------------------------------
+        # Remove the quoted block and everything following it at the
+        # same level, preserving only the newly typed reply above.
+        # ---------------------------------------------------------
+
+        parent = quoted_start.getparent()
+
+        if parent is None:
+            return result
+
+        children = list(parent)
+
+        try:
+            start_index = children.index(quoted_start)
+        except ValueError:
+            return result
+
+        for child in children[start_index:]:
+            parent.remove(child)
+
+        cleaned_body = Markup(
+            etree.tostring(
+                root,
+                pretty_print=False,
+                encoding="unicode",
+            )
+        )
+
+        result["body"] = cleaned_body
+
+        return result
+
+
+
