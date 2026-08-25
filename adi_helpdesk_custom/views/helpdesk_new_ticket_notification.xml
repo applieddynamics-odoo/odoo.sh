@@ -141,17 +141,14 @@
                     </tr>
 
 
-                    <!-- Software -->
-                    <tr t-if="record.adi_software_version_id">
-
-                        <td style="padding: 2px 14px 2px 0;">
-                            <strong>Software:</strong>
+                    <!-- Ticket Type -->
+                    <tr>
+                        <td style="padding: 2px 12px 2px 0;">
+                            <strong>Ticket Type:</strong>
                         </td>
-
                         <td style="padding: 2px 0;">
-                            <t t-out="record.adi_software_version_id.display_name"/>
+                            <t t-out="record.ticket_type_id.display_name or '-'"/>
                         </td>
-
                     </tr>
 
                 </table>
