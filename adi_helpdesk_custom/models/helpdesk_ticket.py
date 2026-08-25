@@ -527,21 +527,16 @@ class HelpdeskTicket(models.Model):
 
                 notify_values = {
                     "partner_ids": [new_user.partner_id.id],
+
                     "subject": (
-                        f"<Ticket Assigned> "
+                        f"<<Lead Assigned>> "
                         f"{ticket._adi_email_subject()}"
                     ),
-                    "body": (
-                        "<p>"
-                        "<strong>"
-                        "You have been assigned as Lead for this Helpdesk ticket."
-                        "</strong>"
-                        "</p>"
-                        "<p>"
-                        "Please review the ticket and take the appropriate action."
-                        "</p>"
+                    "body": "",
+                    "email_layout_xmlid": (
+                        "adi_helpdesk_custom."
+                        "adi_helpdesk_new_ticket_notification"
                     ),
-                    "email_layout_xmlid": "mail.mail_notification_layout",
                 }
 
                 if author:

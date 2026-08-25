@@ -89,10 +89,14 @@
                 line-height: 1.45;
             ">
 
-                <!-- New Ticket heading -->
                 <p style="margin: 0 0 12px 0;">
                     <strong style="font-size: 16px;">
-                        NEW TICKET
+                        <t t-if="message.subject and message.subject.startswith('&lt;&lt;Lead Assigned&gt;&gt;')">
+                            LEAD ASSIGNED
+                        </t>
+                        <t t-else="">
+                            NEW TICKET
+                        </t>
                     </strong>
                 </p>
 
