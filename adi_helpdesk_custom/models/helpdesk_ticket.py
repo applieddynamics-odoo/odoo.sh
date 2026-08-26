@@ -1173,8 +1173,7 @@ class HelpdeskTicket(models.Model):
             else self.env["res.users"]
         )
 
-        if internal_user:
-            msg["is_internal"] = True
+        msg["is_internal"] = bool(internal_user)
 
 
         # ---------------------------------------------------------
