@@ -1193,50 +1193,36 @@ class HelpdeskTicket(models.Model):
                 changed = False
 
                 # -------------------------------------------------
-                # Case 1:
-                # Odoo has already recognised the quoted history.
+                # First choice:
+                # Find the current Outlook From / Sent / To / Subject
+                # boundary.
                 #
-                # This is what happens with the customer / Hotmail
-                # Outlook reply.
+                # This works for both the ADI internal reply and the
+                # customer-facing reply, even if older nested emails
+                # already contain Odoo quote markers.
                 # -------------------------------------------------
 
-                quoted_nodes = root.xpath(
-                    './/*[@data-o-mail-quote="1" '
-                    'and not(ancestor::*[@data-o-mail-quote="1"])]'
-                )
+                quote_start = None
 
-                if quoted_nodes:
-                    for node in quoted_nodes:
-                        parent = node.getparent()
+                for paragraph in root.xpath(".//p"):
+                    text = " ".join(paragraph.itertext())
+                    text = " ".join(text.split()).lower()
 
-                        if parent is not None:
-                            parent.remove(node)
-                            changed = True
+                    if (
+                        "from:" in text
+                        and "sent:" in text
+                        and "to:" in text
+                        and "subject:" in text
+                    ):
+                        quote_start = paragraph
 
-                # -------------------------------------------------
-                # Case 2:
-                # Outlook through ADI / Proofpoint has lost Odoo's
-                # normal quote markers.
-                #
-                # Find the From / Sent / To / Subject header and
-                # remove it and everything following it.
-                # -------------------------------------------------
-
-                else:
-                    quote_start = None
-
-                    for paragraph in root.xpath(".//p"):
-                        text = " ".join(paragraph.itertext())
-                        text = " ".join(text.split()).lower()
+                        parent = quote_start.getparent()
 
                         if (
-                            "from:" in text
-                            and "sent:" in text
-                            and "to:" in text
-                            and "subject:" in text
+                            parent is not None
+                            and parent.tag == "div"
                         ):
-                            quote_start = paragraph
-
+                            quote_start = parent
                             parent = quote_start.getparent()
 
                             if (
@@ -1244,29 +1230,41 @@ class HelpdeskTicket(models.Model):
                                 and parent.tag == "div"
                             ):
                                 quote_start = parent
-                                parent = quote_start.getparent()
 
-                                if (
-                                    parent is not None
-                                    and parent.tag == "div"
-                                ):
-                                    quote_start = parent
+                        break
 
-                            break
+                if quote_start is not None:
+                    parent = quote_start.getparent()
 
-                    if quote_start is not None:
-                        parent = quote_start.getparent()
+                    if parent is not None:
+                        children = list(parent)
+                        start_index = children.index(quote_start)
+
+                        for child in children[start_index:]:
+                            parent.remove(child)
+
+                        changed = True
+
+
+                # -------------------------------------------------
+                # Fallback:
+                # If there is no Outlook header, remove content
+                # that Odoo itself has already identified as quoted.
+                # -------------------------------------------------
+
+                if not changed:
+                    quoted_nodes = root.xpath(
+                        './/*[@data-o-mail-quote="1" '
+                        'and not(ancestor::*[@data-o-mail-quote="1"])]'
+                    )
+
+                    for node in quoted_nodes:
+                        parent = node.getparent()
 
                         if parent is not None:
-                            children = list(parent)
-                            start_index = children.index(
-                                quote_start
-                            )
-
-                            for child in children[start_index:]:
-                                parent.remove(child)
-
+                            parent.remove(node)
                             changed = True
+
 
                 # -------------------------------------------------
                 # Save cleaned body
