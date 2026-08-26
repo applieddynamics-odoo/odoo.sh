@@ -1146,30 +1146,84 @@ class HelpdeskTicket(models.Model):
 
     def message_update(self, msg, update_vals=None):
         """
-        Treat inbound email replies from internal Odoo users as
-        internal Helpdesk notes.
+        Clean quoted Outlook history from incoming Helpdesk replies.
 
-        Customer replies remain normal Discussions.
+        Odoo already determines whether the reply is internal or
+        customer-facing from the parent message. Do not alter that here.
+
+        Some Outlook replies passing through the ADI mail route lose the
+        standard Outlook quote markers, so remove the quoted history before
+        Odoo posts the message into chatter.
         """
 
-        msg = dict(msg)
+        body = msg.get("body") or ""
 
-        author = self.env["res.partner"].browse(
-            msg.get("author_id")
-        ).exists()
+        # If Odoo has already recognised the quoted section, leave it alone.
+        if body and 'data-o-mail-quote="1"' not in str(body):
+            try:
+                root = lxml.html.fragment_fromstring(
+                    str(body),
+                    create_parent="div",
+                )
 
-        internal_user = (
-            author.user_ids.filtered(
-                lambda user:
-                    user.active
-                    and not user.share
-            )
-            if author
-            else self.env["res.users"]
-        )
+                quote_start = None
 
-        if internal_user:
-            msg["is_internal"] = True
+                for paragraph in root.xpath(".//p"):
+                    text = " ".join(paragraph.itertext())
+                    text = " ".join(text.split()).lower()
+
+                    if (
+                        "from:" in text
+                        and "sent:" in text
+                        and "to:" in text
+                        and "subject:" in text
+                    ):
+                        # Outlook structure:
+                        #
+                        # <div>
+                        #   <div style="border-top:...">
+                        #       <p>From / Sent / To / Subject</p>
+                        #   </div>
+                        # </div>
+                        quote_start = paragraph
+
+                        parent = quote_start.getparent()
+                        if parent is not None and parent.tag == "div":
+                            quote_start = parent
+
+                            parent = quote_start.getparent()
+                            if parent is not None and parent.tag == "div":
+                                quote_start = parent
+
+                        break
+
+                if quote_start is not None:
+                    parent = quote_start.getparent()
+
+                    if parent is not None:
+                        children = list(parent)
+                        start_index = children.index(quote_start)
+
+                        # Remove the quoted Outlook header and everything
+                        # following it, retaining only the newly typed reply.
+                        for child in children[start_index:]:
+                            parent.remove(child)
+
+                        cleaned_body = "".join(
+                            etree.tostring(
+                                child,
+                                encoding="unicode",
+                                method="html",
+                            )
+                            for child in root
+                        )
+
+                        if cleaned_body.strip():
+                            msg["body"] = Markup(cleaned_body)
+
+            except (ValueError, etree.ParserError):
+                # If an unusual email body cannot be parsed, leave it untouched.
+                pass
 
         return super().message_update(
             msg,
@@ -1177,95 +1231,4 @@ class HelpdeskTicket(models.Model):
         )
 
 
-    def _message_parse_extract_payload_postprocess(self, message, payload_dict):
-        """
-        Extend Odoo's standard email quote detection for Outlook replies
-        passing through the ADI / Proofpoint mail route.
 
-        Proofpoint removes Outlook's usual divRplyFwdMsg / appendonsend IDs,
-        so Odoo cannot recognise the quoted history automatically.
-
-        We identify the Outlook From / Sent / To / Subject header and mark
-        that element and everything following it as quoted mail using Odoo's
-        standard data-o-mail-quote attribute.
-        """
-
-        result = super()._message_parse_extract_payload_postprocess(
-            message,
-            payload_dict,
-        )
-
-        body = result.get("body") or ""
-
-        if not body.strip():
-            return result
-
-        try:
-            root = lxml.html.fromstring(body)
-        except (ValueError, etree.ParserError):
-            return result
-
-        quote_header = None
-
-        # Find the specific Outlook reply header.
-        for paragraph in root.xpath(".//p"):
-            text = " ".join(paragraph.itertext())
-            text = " ".join(text.split())
-
-            if (
-                "From:" in text
-                and "Sent:" in text
-                and "To:" in text
-                and "Subject:" in text
-            ):
-                quote_header = paragraph
-                break
-
-        if quote_header is None:
-            return result
-
-        # Outlook / Proofpoint structure is:
-        #
-        # <div>
-        #     <div style="border-top: ...">
-        #         <p>From / Sent / To / Subject</p>
-        #     </div>
-        # </div>
-        #
-        # Move up to the outer wrapper.
-        quote_start = quote_header
-
-        for _ in range(2):
-            parent = quote_start.getparent()
-
-            if parent is None or parent is root:
-                break
-
-            quote_start = parent
-
-        parent = quote_start.getparent()
-
-        if parent is None:
-            return result
-
-        # Use Odoo's own quote convention.
-        # Mark the Outlook header and everything after it as quoted history.
-        mark_as_quote = False
-
-        for child in parent:
-            if child is quote_start:
-                mark_as_quote = True
-
-            if mark_as_quote:
-                child.set("data-o-mail-quote", "1")
-
-        result["body"] = Markup(
-            etree.tostring(
-                root,
-                pretty_print=False,
-                encoding="unicode",
-                method="html",
-            )
-        )
-
-        return result
