@@ -1175,3 +1175,97 @@ class HelpdeskTicket(models.Model):
             msg,
             update_vals=update_vals,
         )
+
+
+    def _message_parse_extract_payload_postprocess(self, message, payload_dict):
+        """
+        Extend Odoo's standard email quote detection for Outlook replies
+        passing through the ADI / Proofpoint mail route.
+
+        Proofpoint removes Outlook's usual divRplyFwdMsg / appendonsend IDs,
+        so Odoo cannot recognise the quoted history automatically.
+
+        We identify the Outlook From / Sent / To / Subject header and mark
+        that element and everything following it as quoted mail using Odoo's
+        standard data-o-mail-quote attribute.
+        """
+
+        result = super()._message_parse_extract_payload_postprocess(
+            message,
+            payload_dict,
+        )
+
+        body = result.get("body") or ""
+
+        if not body.strip():
+            return result
+
+        try:
+            root = lxml.html.fromstring(body)
+        except (ValueError, etree.ParserError):
+            return result
+
+        quote_header = None
+
+        # Find the specific Outlook reply header.
+        for paragraph in root.xpath(".//p"):
+            text = " ".join(paragraph.itertext())
+            text = " ".join(text.split())
+
+            if (
+                "From:" in text
+                and "Sent:" in text
+                and "To:" in text
+                and "Subject:" in text
+            ):
+                quote_header = paragraph
+                break
+
+        if quote_header is None:
+            return result
+
+        # Outlook / Proofpoint structure is:
+        #
+        # <div>
+        #     <div style="border-top: ...">
+        #         <p>From / Sent / To / Subject</p>
+        #     </div>
+        # </div>
+        #
+        # Move up to the outer wrapper.
+        quote_start = quote_header
+
+        for _ in range(2):
+            parent = quote_start.getparent()
+
+            if parent is None or parent is root:
+                break
+
+            quote_start = parent
+
+        parent = quote_start.getparent()
+
+        if parent is None:
+            return result
+
+        # Use Odoo's own quote convention.
+        # Mark the Outlook header and everything after it as quoted history.
+        mark_as_quote = False
+
+        for child in parent:
+            if child is quote_start:
+                mark_as_quote = True
+
+            if mark_as_quote:
+                child.set("data-o-mail-quote", "1")
+
+        result["body"] = Markup(
+            etree.tostring(
+                root,
+                pretty_print=False,
+                encoding="unicode",
+                method="html",
+            )
+        )
+
+        return result
