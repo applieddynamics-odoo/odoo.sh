@@ -1154,7 +1154,6 @@ class HelpdeskTicket(models.Model):
         into Helpdesk chatter.
         """
 
-        msg = dict(msg)
 
         # ---------------------------------------------------------
         # Internal / customer routing
