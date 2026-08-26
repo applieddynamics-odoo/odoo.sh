@@ -1146,89 +1146,157 @@ class HelpdeskTicket(models.Model):
 
     def message_update(self, msg, update_vals=None):
         """
-        Clean quoted Outlook history from incoming Helpdesk replies.
+        Process inbound Helpdesk replies.
 
-        Odoo already determines whether the reply is internal or
-        customer-facing from the parent message. Do not alter that here.
-
-        Some Outlook replies passing through the ADI mail route lose the
-        standard Outlook quote markers, so remove the quoted history before
-        Odoo posts the message into chatter.
+        - Replies from internal Odoo users are treated as internal notes.
+        - Customer replies remain normal discussions.
+        - Quoted email history is removed before the message is posted
+        into Helpdesk chatter.
         """
+
+        msg = dict(msg)
+
+        # ---------------------------------------------------------
+        # Internal / customer routing
+        # ---------------------------------------------------------
+
+        author = self.env["res.partner"].browse(
+            msg.get("author_id")
+        ).exists()
+
+        internal_user = (
+            author.user_ids.filtered(
+                lambda user:
+                    user.active
+                    and not user.share
+            )
+            if author
+            else self.env["res.users"]
+        )
+
+        if internal_user:
+            msg["is_internal"] = True
+
+
+        # ---------------------------------------------------------
+        # Remove quoted email history
+        # ---------------------------------------------------------
 
         body = msg.get("body") or ""
 
-        # If Odoo has already recognised the quoted section, leave it alone.
-        if body and 'data-o-mail-quote="1"' not in str(body):
+        if body:
             try:
                 root = lxml.html.fragment_fromstring(
                     str(body),
                     create_parent="div",
                 )
 
-                quote_start = None
+                changed = False
 
-                for paragraph in root.xpath(".//p"):
-                    text = " ".join(paragraph.itertext())
-                    text = " ".join(text.split()).lower()
+                # -------------------------------------------------
+                # Case 1:
+                # Odoo has already recognised the quoted history.
+                #
+                # This is what happens with the customer / Hotmail
+                # Outlook reply.
+                # -------------------------------------------------
 
-                    if (
-                        "from:" in text
-                        and "sent:" in text
-                        and "to:" in text
-                        and "subject:" in text
-                    ):
-                        # Outlook structure:
-                        #
-                        # <div>
-                        #   <div style="border-top:...">
-                        #       <p>From / Sent / To / Subject</p>
-                        #   </div>
-                        # </div>
-                        quote_start = paragraph
+                quoted_nodes = root.xpath(
+                    './/*[@data-o-mail-quote="1" '
+                    'and not(ancestor::*[@data-o-mail-quote="1"])]'
+                )
 
-                        parent = quote_start.getparent()
-                        if parent is not None and parent.tag == "div":
-                            quote_start = parent
+                if quoted_nodes:
+                    for node in quoted_nodes:
+                        parent = node.getparent()
+
+                        if parent is not None:
+                            parent.remove(node)
+                            changed = True
+
+                # -------------------------------------------------
+                # Case 2:
+                # Outlook through ADI / Proofpoint has lost Odoo's
+                # normal quote markers.
+                #
+                # Find the From / Sent / To / Subject header and
+                # remove it and everything following it.
+                # -------------------------------------------------
+
+                else:
+                    quote_start = None
+
+                    for paragraph in root.xpath(".//p"):
+                        text = " ".join(paragraph.itertext())
+                        text = " ".join(text.split()).lower()
+
+                        if (
+                            "from:" in text
+                            and "sent:" in text
+                            and "to:" in text
+                            and "subject:" in text
+                        ):
+                            quote_start = paragraph
 
                             parent = quote_start.getparent()
-                            if parent is not None and parent.tag == "div":
+
+                            if (
+                                parent is not None
+                                and parent.tag == "div"
+                            ):
                                 quote_start = parent
+                                parent = quote_start.getparent()
 
-                        break
+                                if (
+                                    parent is not None
+                                    and parent.tag == "div"
+                                ):
+                                    quote_start = parent
 
-                if quote_start is not None:
-                    parent = quote_start.getparent()
+                            break
 
-                    if parent is not None:
-                        children = list(parent)
-                        start_index = children.index(quote_start)
+                    if quote_start is not None:
+                        parent = quote_start.getparent()
 
-                        # Remove the quoted Outlook header and everything
-                        # following it, retaining only the newly typed reply.
-                        for child in children[start_index:]:
-                            parent.remove(child)
-
-                        cleaned_body = "".join(
-                            etree.tostring(
-                                child,
-                                encoding="unicode",
-                                method="html",
+                        if parent is not None:
+                            children = list(parent)
+                            start_index = children.index(
+                                quote_start
                             )
-                            for child in root
+
+                            for child in children[start_index:]:
+                                parent.remove(child)
+
+                            changed = True
+
+                # -------------------------------------------------
+                # Save cleaned body
+                # -------------------------------------------------
+
+                if changed:
+                    cleaned_body = "".join(
+                        etree.tostring(
+                            child,
+                            encoding="unicode",
+                            method="html",
+                        )
+                        for child in root
+                    )
+
+                    if cleaned_body.strip():
+                        msg["body"] = Markup(
+                            cleaned_body
                         )
 
-                        if cleaned_body.strip():
-                            msg["body"] = Markup(cleaned_body)
-
             except (ValueError, etree.ParserError):
-                # If an unusual email body cannot be parsed, leave it untouched.
+                # Unusual email HTML: leave it untouched rather
+                # than risk losing genuine message content.
                 pass
+
 
         return super().message_update(
             msg,
             update_vals=update_vals,
         )
-
 
 
