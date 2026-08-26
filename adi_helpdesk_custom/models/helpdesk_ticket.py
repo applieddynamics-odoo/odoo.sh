@@ -1143,3 +1143,35 @@ class HelpdeskTicket(models.Model):
         )
 
         return result
+
+    def message_update(self, msg, update_vals=None):
+        """
+        Treat inbound email replies from internal Odoo users as
+        internal Helpdesk notes.
+
+        Customer replies remain normal Discussions.
+        """
+
+        msg = dict(msg)
+
+        author = self.env["res.partner"].browse(
+            msg.get("author_id")
+        ).exists()
+
+        internal_user = (
+            author.user_ids.filtered(
+                lambda user:
+                    user.active
+                    and not user.share
+            )
+            if author
+            else self.env["res.users"]
+        )
+
+        if internal_user:
+            msg["is_internal"] = True
+
+        return super().message_update(
+            msg,
+            update_vals=update_vals,
+        )
