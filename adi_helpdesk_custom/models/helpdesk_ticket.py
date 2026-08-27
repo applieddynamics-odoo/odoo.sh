@@ -4,6 +4,8 @@ from odoo.exceptions import ValidationError
 from markupsafe import Markup, escape
 from lxml import etree
 import lxml.html
+from email.utils import parseaddr, formataddr
+
 
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
@@ -1172,6 +1174,25 @@ class HelpdeskTicket(models.Model):
             if author
             else self.env["res.users"]
         )
+
+        # ---------------------------------------------------------
+        # Normalise incoming sender display name
+        # ---------------------------------------------------------
+        #
+        # Keep the actual sender email address, but use the
+        # recognised Helpdesk contact's name as the display name.
+        # ---------------------------------------------------------
+
+        if author and msg.get("email_from"):
+            _sender_name, sender_email = parseaddr(
+                msg["email_from"]
+            )
+
+            if sender_email:
+                msg["email_from"] = formataddr(
+                    (author.name, sender_email)
+                )
+
 
         msg["is_internal"] = bool(internal_user)
 
