@@ -1296,3 +1296,70 @@ class HelpdeskTicket(models.Model):
         )
 
 
+    def _notify_get_recipients(self, message, msg_vals, **kwargs):
+        recipients = super()._notify_get_recipients(
+            message,
+            msg_vals,
+            **kwargs,
+        )
+
+        # ---------------------------------------------------------
+        # Protect internal Helpdesk email replies
+        # ---------------------------------------------------------
+        #
+        # Incoming emails from ADI users are classified in
+        # message_update() as internal Notes.
+        #
+        # Odoo's email routing can still introduce external partners
+        # as explicit recipients.  An internal Note must never be
+        # emailed to a customer / portal partner.
+        # ---------------------------------------------------------
+
+        message_type = (
+            msg_vals.get("message_type")
+            if msg_vals
+            else message.message_type
+        )
+
+        subtype_id = (
+            msg_vals.get("subtype_id")
+            if msg_vals
+            else message.subtype_id.id
+        )
+
+        author_id = (
+            msg_vals.get("author_id")
+            if msg_vals
+            else message.author_id.id
+        )
+
+        note_subtype = self.env.ref(
+            "mail.mt_note",
+            raise_if_not_found=False,
+        )
+
+        author = self.env["res.partner"].browse(author_id).exists()
+
+        internal_user = (
+            author.user_ids.filtered(
+                lambda user:
+                user.active
+                and not user.share
+            )
+            if author
+            else self.env["res.users"]
+        )
+
+        if (
+            message_type == "email"
+            and note_subtype
+            and subtype_id == note_subtype.id
+            and internal_user
+        ):
+            recipients = [
+                recipient
+                for recipient in recipients
+                if not recipient.get("share")
+            ]
+
+        return recipients
