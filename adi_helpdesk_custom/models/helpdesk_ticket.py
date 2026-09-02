@@ -650,6 +650,36 @@ class HelpdeskTicket(models.Model):
 
         self.ensure_one()
 
+        # ---------------------------------------------------------
+        # Helpdesk redistributed email identity
+        # ---------------------------------------------------------
+        #
+        # Incoming customer and internal emails are redistributed
+        # to Helpdesk followers using the notification address.
+        #
+        # Keep the real author visible, but make it clear that the
+        # message has been delivered through ADI Helpdesk.
+        # ---------------------------------------------------------
+
+        if (
+            message.message_type == "email"
+            and message.author_id
+        ):
+            sender_name = (
+                f"{message.author_id.name} via ADI Helpdesk"
+            )
+
+            _current_name, sender_email = parseaddr(
+                values.get("email_from")
+                or message.email_from
+                or ""
+            )
+
+            if sender_email:
+                values["email_from"] = formataddr(
+                    (sender_name, sender_email)
+                )
+
         template_subject = (
             (additional_values or {}).get("subject") or ""
         ).strip()
