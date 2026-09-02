@@ -1345,3 +1345,27 @@ class HelpdeskTicket(models.Model):
         )
 
 
+    #-------------------------------------------------------------
+    # Inbound Raw Email Processing
+    #-------------------------------------------------------------
+
+    @api.model
+    def message_new(self, msg, custom_values=None):
+        """
+        Process new inbound Helpdesk emails without allowing
+        Odoo to auto-create Contacts for unknown senders.
+        """
+
+        return super(
+            HelpdeskTicket,
+            self.with_context(
+                adi_helpdesk_no_partner_autocreate=True,
+            ),
+        ).message_new(
+            msg,
+            custom_values=custom_values,
+        )
+
+
+
+

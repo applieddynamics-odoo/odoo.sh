@@ -5,3 +5,4 @@ from . import helpdesk_enquiry
 from . import helpdesk_team
 from . import mail_message
 from . import sale_order
+from . import mail_thread
