@@ -392,30 +392,22 @@ class HelpdeskTicket(models.Model):
                     existing_contact = self.env["res.partner"].search([
                         ("email", "=ilike", submitted_email),
                         ("active", "=", True),
+                        ("is_company", "=", False),
+                        ("parent_id", "!=", False),
                     ], limit=1)
 
                     if existing_contact:
-                        commercial_partner = existing_contact.commercial_partner_id
-                        approved_domain = (
-                            commercial_partner.adi_approved_helpdesk_domain
-                            and commercial_partner.adi_approved_helpdesk_domain.strip().lower() == domain
-                        )
-                        commercial_partner = existing_contact.commercial_partner_id
+                        routing["trusted_contact_id"] = existing_contact.id
 
-                        approved_domain = (
-                            commercial_partner.is_company
-                            and commercial_partner.adi_approved_helpdesk_domain
-                            and commercial_partner.adi_approved_helpdesk_domain.strip().lower() == domain
-                        )
+                    if not routing["trusted_contact_id"]:
+                        matched_company = self.env["res.partner"].search([
+                            ("is_company", "=", True),
+                            ("active", "=", True),
+                            ("adi_approved_helpdesk_domain", "=ilike", domain),
+                        ], limit=1)
 
-                        trusted_contact = bool(
-                            existing_contact.parent_id
-                            and commercial_partner.is_company
-                            and approved_domain
-                        )
-
-                        if trusted_contact:
-                            routing["trusted_contact_id"] = existing_contact.id
+                        if matched_company:
+                            routing["approved_domain"] = True
 
                     if not routing["trusted_contact_id"]:
                         matched_company = self.env["res.partner"].search([

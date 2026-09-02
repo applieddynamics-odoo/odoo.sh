@@ -22,17 +22,8 @@ class AdiWebsiteHelpdesk(http.Controller):
             ("active", "=", True),
             ("is_company", "=", False),
             ("parent_id", "!=", False),
-            ("commercial_partner_id.adi_approved_helpdesk_domain", "!=", False),
         ], limit=1)
 
-        if not contact:
-            return {"recognised": False}
-
-        domain = email.split("@")[-1].strip()
-        approved_domain = (
-            contact.commercial_partner_id.adi_approved_helpdesk_domain or ""
-        ).strip().lower()
-
         return {
-            "recognised": bool(domain and approved_domain == domain),
+            "recognised": bool(contact),
         }
