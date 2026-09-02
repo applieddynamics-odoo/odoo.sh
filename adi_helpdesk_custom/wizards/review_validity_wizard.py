@@ -1,6 +1,6 @@
 from odoo import api, fields, models
-import difflib
 from odoo.exceptions import UserError
+from odoo.tools import email_split
 
 
 class AdiHelpdeskReviewValidityWizard(models.TransientModel):
@@ -40,7 +40,7 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
 
     domain_status = fields.Selection(
         [
-            ("approved", "Approved Customer Domain"),
+            ("approved", "Registered Contact Domain"),
             ("blocked", "Blocked Domain"),
             ("unknown", "Unknown Domain"),
             ("none", "No Domain"),
@@ -72,8 +72,7 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
     adi_company_domain = fields.Char(
         string="Company Domain",
         compute="_compute_adi_suggested_companies",
-    )    
-
+    )
 
     @api.model
     def default_get(self, fields_list):
@@ -84,48 +83,95 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
         )
 
         if ticket:
-            res["contact_email"] = ticket.adi_submitted_email or ticket.partner_email
+            res["contact_email"] = (
+                ticket.adi_submitted_email
+                or ticket.partner_email
+            )
 
             if ticket.adi_submitted_contact_name:
-                res["contact_name"] = ticket.adi_submitted_contact_name
+                res["contact_name"] = (
+                    ticket.adi_submitted_contact_name
+                )
             elif ticket.partner_name:
                 name = ticket.partner_name.strip()
+
                 if "@" not in name:
                     res["contact_name"] = name
 
         return res
 
+    # ---------------------------------------------------------
+    # Helper: derive companies from registered contact emails
+    # ---------------------------------------------------------
 
-    # -------------------------------------------------------------------------------------------------------------------------
-    # ACTION TO CHECK THE DOMAIN AND MOVE THE TICKET TO CONTACT REVIEW STAGE FOR MANUAL REVIEW OF THE CONTACT DETAILS
-    # -------------------------------------------------------------------------------------------------------------------------
+    def _adi_companies_from_email_domain(self, email):
+        """
+        Return companies that already have active individual
+        contacts using the same email domain.
 
+        This is guidance only.
+
+        A matching domain does not make the sender a trusted
+        Helpdesk contact. Trust is established elsewhere using
+        an exact registered contact email match.
+        """
+
+        email = (email or "").strip().lower()
+
+        if not email or "@" not in email:
+            return self.env["res.partner"]
+
+        domain = email.rsplit("@", 1)[-1].strip()
+
+        contacts = self.env["res.partner"].search([
+            ("is_company", "=", False),
+            ("active", "=", True),
+            ("parent_id", "!=", False),
+            ("email", "!=", False),
+            ("email", "ilike", f"@{domain}"),
+        ])
+
+        matching_contacts = contacts.filtered(
+            lambda contact:
+                any(
+                    address.strip().lower().endswith(
+                        f"@{domain}"
+                    )
+                    for address in email_split(
+                        contact.email or ""
+                    )
+                )
+        )
+
+        return matching_contacts.mapped(
+            "commercial_partner_id"
+        )
+
+    # ---------------------------------------------------------
+    # Accept validity check and move to contact review
+    # ---------------------------------------------------------
 
     def action_accept(self):
         self.ensure_one()
 
-        contact_email = (self.contact_email or "").strip().lower()
+        contact_email = (
+            self.contact_email or ""
+        ).strip().lower()
 
         if not contact_email or "@" not in contact_email:
-            raise UserError("Please enter a valid contact email address before moving to contact review.")
-
-        domain = contact_email.split("@")[-1].strip()
-
-        approved_domain = self.env["res.partner"].search([
-            ("is_company", "=", True),
-            ("active", "=", True),
-            ("adi_approved_helpdesk_domain", "=ilike", domain),
-        ], limit=1)
-
-        if not approved_domain:
-            raise UserError("This domain is still not approved. Correct the email domain or mark the ticket as spam.")
+            raise UserError(
+                "Please enter a valid contact email address "
+                "before moving to contact review."
+            )
 
         new_stage = self.env["helpdesk.stage"].search([
-            ("name", "=", "New")
+            ("name", "=", "New"),
         ], limit=1)
 
         if not new_stage:
-            raise UserError("Could not find a Helpdesk stage called 'New'.")
+            raise UserError(
+                "Could not find a Helpdesk stage called 'New'."
+            )
 
         self.ticket_id.write({
             "stage_id": new_stage.id,
@@ -138,10 +184,13 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             "adi_matched_company_id": False,
         })
 
-        return {"type": "ir.actions.act_window_close"}
-    # -------------------------------------------------------------------------------------------------------------------------
+        return {
+            "type": "ir.actions.act_window_close",
+        }
 
-    # -------------------------------------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------
+    # Mark ticket / sender as spam
+    # ---------------------------------------------------------
 
     def action_mark_spam(self):
         self.ensure_one()
@@ -150,7 +199,9 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             return {
                 "type": "ir.actions.act_window",
                 "name": "Confirm Email Block",
-                "res_model": "adi.helpdesk.confirm.email.block.wizard",
+                "res_model": (
+                    "adi.helpdesk.confirm.email.block.wizard"
+                ),
                 "view_mode": "form",
                 "target": "new",
                 "context": {
@@ -163,13 +214,31 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
     def action_mark_spam_confirmed(self):
         self.ensure_one()
 
-        Blocklist = self.env["adi.helpdesk.blocklist"].with_context(active_test=False)
+        Blocklist = self.env[
+            "adi.helpdesk.blocklist"
+        ].with_context(active_test=False)
 
-        email = self.contact_email or self.ticket_id.adi_submitted_email or self.ticket_id.partner_email
-        email = email.strip().lower() if email else False
-        domain = email.split("@")[-1].strip() if email and "@" in email else False
+        email = (
+            self.contact_email
+            or self.ticket_id.adi_submitted_email
+            or self.ticket_id.partner_email
+        )
 
-        reason = "Marked as spam from Helpdesk validity review."
+        email = (
+            email.strip().lower()
+            if email
+            else False
+        )
+
+        domain = (
+            email.split("@")[-1].strip()
+            if email and "@" in email
+            else False
+        )
+
+        reason = (
+            "Marked as spam from Helpdesk validity review."
+        )
 
         if self.block_email and email:
             existing_email_block = Blocklist.search([
@@ -189,7 +258,13 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
                     "reason": reason,
                 })
 
-        if self.block_domain and domain and self.domain_status != "approved":
+        # A domain already used by registered customer contacts
+        # must not be blocked from this wizard.
+        if (
+            self.block_domain
+            and domain
+            and self.domain_status != "approved"
+        ):
             existing_domain_block = Blocklist.search([
                 ("block_type", "=", "domain"),
                 ("value", "=", domain),
@@ -214,26 +289,37 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             "active": False,
         })
 
-        return {"type": "ir.actions.act_window_close"}
+        return {
+            "type": "ir.actions.act_window_close",
+        }
 
-    # -------------------------------------------------------------------------------------------------------------------------
-    # COMPUTE THE DOMAIN STATUS OF THE SUBMITTED EMAIL TO DETERMINE WHETHER IT IS APPROVED, BLOCKED, UNKNOWN, OR NONE
-    # -------------------------------------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------
+    # Compute domain status
+    # ---------------------------------------------------------
 
     @api.depends("contact_email")
     def _compute_domain_status(self):
         for wizard in self:
-            email = wizard.contact_email or wizard.ticket_id.adi_submitted_email or wizard.ticket_id.partner_email
+            email = (
+                wizard.contact_email
+                or wizard.ticket_id.adi_submitted_email
+                or wizard.ticket_id.partner_email
+            )
 
             wizard.domain_status = "none"
-            wizard.domain_status_message = "No email/domain available."
+            wizard.domain_status_message = (
+                "No email/domain available."
+            )
 
             if not email or "@" not in email:
                 continue
 
-            domain = email.strip().lower().split("@")[-1]
+            email = email.strip().lower()
+            domain = email.rsplit("@", 1)[-1].strip()
 
-            blocked_domain = wizard.env["adi.helpdesk.blocklist"].search([
+            blocked_domain = wizard.env[
+                "adi.helpdesk.blocklist"
+            ].search([
                 ("block_type", "=", "domain"),
                 ("value", "=", domain),
                 ("active", "=", True),
@@ -242,56 +328,34 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             if blocked_domain:
                 wizard.domain_status = "blocked"
                 wizard.domain_status_message = (
-                    f"<strong>{domain}</strong> is already blocked."
+                    f"<strong>{domain}</strong> "
+                    "is already blocked."
                 )
                 continue
 
-            approved_domain = wizard.env["res.partner"].search([
-                ("is_company", "=", True),
-                ("active", "=", True),
-                ("adi_approved_helpdesk_domain", "=ilike", domain),
-            ], limit=1)
-
-            if approved_domain:
-                wizard.domain_status = "approved"
-                wizard.domain_status_message = (
-                    f"<strong>{domain}</strong> is an approved customer domain."
+            companies = (
+                wizard._adi_companies_from_email_domain(
+                    email
                 )
-                continue
-
-            approved_domains = wizard.env["res.partner"].search([
-                ("is_company", "=", True),
-                ("active", "=", True),
-                ("adi_approved_helpdesk_domain", "!=", False),
-            ]).mapped("adi_approved_helpdesk_domain")
-
-            approved_domains = [
-                approved_domain.strip().lower()
-                for approved_domain in approved_domains
-                if approved_domain
-            ]
-
-            closest_matches = difflib.get_close_matches(
-                domain,
-                approved_domains,
-                n=1,
-                cutoff=0.8,
             )
 
-            wizard.domain_status = "unknown"
+            if companies:
+                wizard.domain_status = "approved"
+                wizard.domain_status_message = (
+                    f"<strong>{domain}</strong> is used by "
+                    "registered customer contacts."
+                )
+                continue
 
-            if closest_matches:
-                wizard.domain_status_message = (
-                    f"<strong>{domain}</strong> is not listed as an approved customer domain. "
-                    f"Did you mean <strong>{closest_matches[0]}</strong>?"
-                )
-            else:
-                wizard.domain_status_message = (
-                    f"<strong>{domain}</strong> is not listed as an approved customer domain."
-                )
-    # -------------------------------------------------------------------------------------------------------------------------
-    # COMPUTE SUGGESTED COMPANIES BASED ON THE SUBMITTED EMAIL DOMAIN
-    # -------------------------------------------------------------------------------------------------------------------------
+            wizard.domain_status = "unknown"
+            wizard.domain_status_message = (
+                f"<strong>{domain}</strong> is not currently "
+                "used by any registered customer contact."
+            )
+
+    # ---------------------------------------------------------
+    # Suggested companies based on registered contact domains
+    # ---------------------------------------------------------
 
     @api.depends("contact_email")
     def _compute_adi_suggested_companies(self):
@@ -302,38 +366,47 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
                 ("id", "=", 0),
             ])
 
-            email = wizard.contact_email or wizard.ticket_id.adi_submitted_email
+            email = (
+                wizard.contact_email
+                or wizard.ticket_id.adi_submitted_email
+            )
 
             if not email or "@" not in email:
                 continue
 
-            domain = email.strip().lower().split("@")[-1]
-
-            companies = wizard.env["res.partner"].search([
-                ("is_company", "=", True),
-                ("active", "=", True),
-                ("adi_approved_helpdesk_domain", "=ilike", domain),
-            ])
+            companies = (
+                wizard._adi_companies_from_email_domain(
+                    email
+                )
+            )
 
             if companies:
-                wizard.adi_suggested_company_ids = companies
-                wizard.adi_suggested_company_names = "\n\n".join(
-                    companies.mapped("display_name")
+                wizard.adi_suggested_company_ids = (
+                    companies
                 )
+
+                wizard.adi_suggested_company_names = (
+                    "\n\n".join(
+                        companies.mapped("display_name")
+                    )
+                )
+
                 wizard.adi_company_domain = str([
                     ("id", "in", companies.ids),
                     ("is_company", "=", True),
                     ("active", "=", True),
                 ])
 
-    # -------------------------------------------------------------------------------------------------------------------------
-    # COMPUTE WHETHER DOMAIN BLOCKING IS ALLOWED BASED ON THE DOMAIN STATUS 
-    # -------------------------------------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------
+    # Compute whether whole-domain blocking is permitted
+    # ---------------------------------------------------------
 
     @api.depends("domain_status")
     def _compute_adi_block_domain_allowed(self):
         for wizard in self:
-            wizard.adi_block_domain_allowed = wizard.domain_status != "approved"
+            wizard.adi_block_domain_allowed = (
+                wizard.domain_status != "approved"
+            )
 
     def action_recheck_domain(self):
         self.ensure_one()
@@ -345,4 +418,4 @@ class AdiHelpdeskReviewValidityWizard(models.TransientModel):
             "view_mode": "form",
             "res_id": self.id,
             "target": "new",
-        }            
+        }
