@@ -8,8 +8,6 @@
             <tree>
                 <field name="create_date"/>
                 <field name="name"/>
-                <field name="company_name"/>
-                <field name="contact_name"/>
                 <field name="email"/>
                 <field name="state"/>
             </tree>
@@ -27,7 +25,7 @@
                 <header>
 
                     <button
-                        name="action_complete"
+                        name="action_open_complete_wizard"
                         type="object"
                         string="Completed"
                         class="btn-primary"
@@ -52,16 +50,44 @@
 
                 <sheet>
 
+                    <!--
+                        User guidance.
+
+                        Uses the standard Odoo information presentation
+                        and teal/info icon already familiar elsewhere
+                        in the Helpdesk interface.
+                    -->
+                    <div
+                        class="alert alert-info d-flex align-items-start mb-3"
+                        role="alert"
+                        invisible="state != 'new'"
+                    >
+                        <i
+                            class="fa fa-info-circle text-info me-2 mt-1"
+                            aria-label="Information"
+                            title="Information"
+                        />
+
+                        <div>
+                            <strong>Customer Enquiry Review</strong>
+                            <br/>
+                            This email was received from a sender who could not
+                            be matched to an approved Helpdesk contact.
+                            Please review the information before taking any
+                            further action.
+                        </div>
+                    </div>
+
                     <group>
                         <field name="name"/>
                         <field name="email"/>
-                        <field name="contact_name"/>
-                        <field name="company_name"/>
-                        <field name="phone"/>
                     </group>
 
-                    <group>
-                        <field name="message"/>
+                    <group string="Message">
+                        <field
+                            name="message"
+                            nolabel="1"
+                        />
                     </group>
 
                     <group invisible="state != 'closed'">

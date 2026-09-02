@@ -32,6 +32,7 @@
         "views/helpdesk_new_ticket_notification.xml",
         "views/helpdesk_portal_templates.xml",
         "views/helpdesk_website_form_templates.xml",
+        "views/enquiry_complete_wizard_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

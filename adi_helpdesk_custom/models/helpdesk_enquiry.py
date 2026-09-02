@@ -13,22 +13,10 @@ class AdiHelpdeskEnquiry(models.Model):
         tracking=True,
     )
 
-    contact_name = fields.Char(
-        string="Contact Name",
-    )
-
-    company_name = fields.Char(
-        string="Company Name",
-    )
-
     email = fields.Char(
         string="Email",
         required=True,
         tracking=True,
-    )
-
-    phone = fields.Char(
-        string="Phone",
     )
 
     message = fields.Text(
@@ -58,11 +46,28 @@ class AdiHelpdeskEnquiry(models.Model):
         tracking=True,
     )
 
-    def action_complete(self):
+    # ---------------------------------------------------------
+    # Complete enquiry
+    # ---------------------------------------------------------
+
+    def action_open_complete_wizard(self):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Complete Customer Enquiry",
+            "res_model": "adi.helpdesk.enquiry.complete.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_enquiry_id": self.id,
+            },
+        }
+
+    def action_complete_confirmed(self):
         """
-        Close an enquiry after the manager has completed any
-        required manual actions, such as creating the Contact
-        and raising a Helpdesk ticket.
+        Close the enquiry after the manager confirms that any
+        required manual actions have been completed.
         """
 
         for enquiry in self:
@@ -73,7 +78,7 @@ class AdiHelpdeskEnquiry(models.Model):
 
             enquiry.message_post(
                 body=(
-                    f"Customer enquiry completed manually by "
+                    "Customer enquiry completed manually by "
                     f"{self.env.user.display_name}."
                 ),
                 subtype_xmlid="mail.mt_note",
@@ -81,12 +86,16 @@ class AdiHelpdeskEnquiry(models.Model):
 
         return True
 
+    # ---------------------------------------------------------
+    # Block sender email
+    # ---------------------------------------------------------
+
     def action_block_email(self):
         """
-        Block the sender's email address and close the enquiry.
+        Add the individual sender email to the existing Helpdesk
+        blocklist and close the enquiry.
 
-        Only the individual email address is blocked here.
-        Whole-domain blocking remains a separate deliberate action.
+        Whole-domain blocking is deliberately not performed here.
         """
 
         Blocklist = self.env[
@@ -104,9 +113,7 @@ class AdiHelpdeskEnquiry(models.Model):
                 ("value", "=", email),
             ], limit=1)
 
-            reason = (
-                "Blocked from Customer Enquiry review."
-            )
+            reason = "Blocked from Customer Enquiry review."
 
             if existing_block:
                 existing_block.write({
