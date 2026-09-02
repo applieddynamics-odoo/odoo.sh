@@ -651,19 +651,25 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
 
         # ---------------------------------------------------------
-        # Helpdesk redistributed email identity
+        # Helpdesk redistributed message identity
         # ---------------------------------------------------------
         #
-        # Incoming customer and internal emails are redistributed
-        # to Helpdesk followers using the notification address.
+        # Human-authored Helpdesk messages may originate from:
+        # - incoming email
+        # - internal chatter
+        # - customer portal
         #
-        # Keep the real author visible, but make it clear that the
-        # message has been delivered through ADI Helpdesk.
+        # When Odoo redistributes those messages by email, retain
+        # the real author name but make it clear that delivery was
+        # through ADI Helpdesk.
         # ---------------------------------------------------------
 
+        helpdesk_author = self.team_id.adi_message_author_id
+
         if (
-            message.message_type == "email"
+            message.message_type in ("email", "comment")
             and message.author_id
+            and message.author_id != helpdesk_author
         ):
             sender_name = (
                 f"{message.author_id.name} via ADI Helpdesk"
