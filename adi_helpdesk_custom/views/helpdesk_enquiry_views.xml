@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="view_adi_helpdesk_enquiry_tree" model="ir.ui.view">
         <field name="name">adi.helpdesk.enquiry.tree</field>
         <field name="model">adi.helpdesk.enquiry</field>
@@ -15,15 +16,41 @@
         </field>
     </record>
 
+
     <record id="view_adi_helpdesk_enquiry_form" model="ir.ui.view">
         <field name="name">adi.helpdesk.enquiry.form</field>
         <field name="model">adi.helpdesk.enquiry</field>
         <field name="arch" type="xml">
+
             <form string="Customer Enquiry">
+
+                <header>
+
+                    <button
+                        name="action_complete"
+                        type="object"
+                        string="Completed"
+                        class="btn-primary"
+                        invisible="state != 'new'"
+                    />
+
+                    <button
+                        name="action_block_email"
+                        type="object"
+                        string="Block Email"
+                        class="btn-secondary"
+                        invisible="state != 'new'"
+                    />
+
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="new,closed"
+                    />
+
+                </header>
+
                 <sheet>
-                    <group>
-                        <field name="state" widget="statusbar"/>
-                    </group>
 
                     <group>
                         <field name="name"/>
@@ -36,12 +63,20 @@
                     <group>
                         <field name="message"/>
                     </group>
+
+                    <group invisible="state != 'closed'">
+                        <field name="closure_reason"/>
+                    </group>
+
                 </sheet>
 
                 <chatter/>
+
             </form>
+
         </field>
     </record>
+
 
     <record id="action_adi_helpdesk_enquiry" model="ir.actions.act_window">
         <field name="name">Customer Enquiries</field>
@@ -49,9 +84,13 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_adi_helpdesk_enquiry"
-              name="Customer Enquiries"
-              parent="helpdesk.menu_helpdesk_root"
-              action="action_adi_helpdesk_enquiry"
-              sequence="20"/>
+
+    <menuitem
+        id="menu_adi_helpdesk_enquiry"
+        name="Customer Enquiries"
+        parent="helpdesk.menu_helpdesk_root"
+        action="action_adi_helpdesk_enquiry"
+        sequence="20"
+    />
+
 </odoo>
