@@ -1,36 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record
-        id="view_adi_helpdesk_enquiry_complete_wizard_form"
-        model="ir.ui.view"
-    >
-        <field name="name">
-            adi.helpdesk.enquiry.complete.wizard.form
-        </field>
-
-        <field name="model">
-            adi.helpdesk.enquiry.complete.wizard
-        </field>
-
+    <record id="view_adi_helpdesk_enquiry_complete_wizard_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.enquiry.complete.wizard.form</field>
+        <field name="model">adi.helpdesk.enquiry.complete.wizard</field>
         <field name="arch" type="xml">
-
             <form string="Complete Customer Enquiry">
 
-                <field
-                    name="enquiry_id"
-                    invisible="1"
-                />
+                <field name="enquiry_id" invisible="1"/>
 
-                <div
-                    class="alert alert-info d-flex align-items-start"
-                    role="alert"
-                >
-                    <i
-                        class="fa fa-info-circle text-info me-2 mt-1"
-                        aria-label="Information"
-                        title="Information"
-                    />
+                <div class="alert alert-info d-flex align-items-start" role="alert">
+                    <i class="fa fa-info-circle text-info me-2 mt-1"
+                       aria-label="Information"
+                       title="Information"/>
 
                     <div>
                         <strong>Please confirm before closing this enquiry.</strong>
@@ -56,24 +38,17 @@
                 </div>
 
                 <footer>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm Completed"
+                            class="btn-primary"/>
 
-                    <button
-                        name="action_confirm"
-                        type="object"
-                        string="Confirm Completed"
-                        class="btn-primary"
-                    />
-
-                    <button
-                        string="Cancel"
-                        special="cancel"
-                        class="btn-secondary"
-                    />
-
+                    <button string="Cancel"
+                            special="cancel"
+                            class="btn-secondary"/>
                 </footer>
 
             </form>
-
         </field>
     </record>
 
