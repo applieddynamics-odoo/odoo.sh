@@ -10,17 +10,18 @@ class AdiHelpdeskEnquiry(models.Model):
     name = fields.Char(
         string="Subject",
         required=True,
-        tracking=True,
+        readonly=True,
     )
 
     email = fields.Char(
         string="Email",
         required=True,
-        tracking=True,
+        readonly=True,
     )
 
     message = fields.Text(
         string="Message",
+        readonly=True,
     )
 
     state = fields.Selection(
@@ -31,19 +32,31 @@ class AdiHelpdeskEnquiry(models.Model):
         string="Status",
         default="new",
         required=True,
-        tracking=True,
+        readonly=True,
         copy=False,
     )
 
     closure_reason = fields.Selection(
         [
             ("completed", "Completed"),
-            ("blocked", "Blocked"),
+            ("blocked", "Email Blocked"),
         ],
         string="Closure Reason",
         readonly=True,
         copy=False,
-        tracking=True,
+    )
+
+    closed_by_id = fields.Many2one(
+        "res.users",
+        string="Closed By",
+        readonly=True,
+        copy=False,
+    )
+
+    closed_at = fields.Datetime(
+        string="Closed",
+        readonly=True,
+        copy=False,
     )
 
     # ---------------------------------------------------------
@@ -74,15 +87,9 @@ class AdiHelpdeskEnquiry(models.Model):
             enquiry.write({
                 "state": "closed",
                 "closure_reason": "completed",
+                "closed_by_id": self.env.user.id,
+                "closed_at": fields.Datetime.now(),
             })
-
-            enquiry.message_post(
-                body=(
-                    "Customer enquiry completed manually by "
-                    f"{self.env.user.display_name}."
-                ),
-                subtype_xmlid="mail.mt_note",
-            )
 
         return True
 
@@ -130,14 +137,8 @@ class AdiHelpdeskEnquiry(models.Model):
             enquiry.write({
                 "state": "closed",
                 "closure_reason": "blocked",
+                "closed_by_id": self.env.user.id,
+                "closed_at": fields.Datetime.now(),
             })
-
-            enquiry.message_post(
-                body=(
-                    f"Email address {email} blocked and enquiry "
-                    f"closed by {self.env.user.display_name}."
-                ),
-                subtype_xmlid="mail.mt_note",
-            )
 
         return True

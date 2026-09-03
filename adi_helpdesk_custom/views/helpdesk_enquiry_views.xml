@@ -5,12 +5,17 @@
         <field name="name">adi.helpdesk.enquiry.tree</field>
         <field name="model">adi.helpdesk.enquiry</field>
         <field name="arch" type="xml">
-            <tree>
+
+            <tree create="false">
                 <field name="create_date"/>
                 <field name="name"/>
                 <field name="email"/>
                 <field name="state"/>
+                <field name="closure_reason"/>
+                <field name="closed_by_id"/>
+                <field name="closed_at"/>
             </tree>
+
         </field>
     </record>
 
@@ -20,7 +25,8 @@
         <field name="model">adi.helpdesk.enquiry</field>
         <field name="arch" type="xml">
 
-            <form string="Customer Enquiry">
+            <form string="Customer Enquiry"
+                  create="false">
 
                 <header>
 
@@ -50,46 +56,44 @@
 
                 <sheet>
 
-                    <!--
-                        User guidance.
-
-                        Uses the standard Odoo information presentation
-                        and teal/info icon already familiar elsewhere
-                        in the Helpdesk interface.
-                    -->
                     <div class="adi_wizard_guidance o_form_full_width"
-                        colspan="2"
-                        invisible="state != 'new'">
+                         colspan="2"
+                         invisible="state != 'new'">
 
                         <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                         <div>
-                            This email was received from a sender who could not be matched
-                            to a trusted Helpdesk contact. Please review the information
-                            below before taking any further action.
+                            This email was received from a sender who could not
+                            be matched to a trusted Helpdesk contact.
+                            Please review the information below and either deal
+                            with the enquiry manually or block the sender.
                         </div>
 
                     </div>
 
                     <group>
-                        <field name="name"/>
-                        <field name="email"/>
+                        <field name="name" readonly="1"/>
+                        <field name="email" readonly="1"/>
                     </group>
 
                     <group string="Message">
                         <field
                             name="message"
+                            readonly="1"
                             nolabel="1"
                         />
                     </group>
 
-                    <group invisible="state != 'closed'">
+                    <group
+                        string="Closure"
+                        invisible="state != 'closed'"
+                    >
                         <field name="closure_reason"/>
+                        <field name="closed_by_id"/>
+                        <field name="closed_at"/>
                     </group>
 
                 </sheet>
-
-                <chatter/>
 
             </form>
 
