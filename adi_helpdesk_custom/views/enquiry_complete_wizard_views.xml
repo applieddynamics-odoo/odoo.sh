@@ -9,32 +9,19 @@
 
                 <field name="enquiry_id" invisible="1"/>
 
-                <div class="alert alert-info d-flex align-items-start" role="alert">
-                    <i class="fa fa-info-circle text-info me-2 mt-1"
-                       aria-label="Information"
-                       title="Information"/>
+                <div class="adi_wizard_guidance o_form_full_width"
+                    colspan="2">
+
+                    <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                     <div>
-                        <strong>Please confirm before closing this enquiry.</strong>
-
-                        <br/><br/>
-
-                        Where applicable, please confirm that you have:
-
-                        <ul class="mb-0 mt-2">
-                            <li>
-                                added the sender as a trusted Contact; and
-                            </li>
-                            <li>
-                                manually created the required Helpdesk ticket.
-                            </li>
-                        </ul>
-
-                        <br/>
-
-                        If no Helpdesk ticket is required, confirm that the
-                        enquiry has otherwise been dealt with before closing it.
+                        <strong>Please confirm before closing this enquiry.</strong><br/>
+                        Where applicable, please confirm that you have added the sender
+                        as a trusted Contact and manually created the required Helpdesk ticket.<br/><br/>
+                        If no Helpdesk ticket is required, confirm that the enquiry has
+                        otherwise been dealt with before closing it.
                     </div>
+
                 </div>
 
                 <footer>
