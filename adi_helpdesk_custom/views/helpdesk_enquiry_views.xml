@@ -79,8 +79,8 @@
                     <group string="Message">
                         <field
                             name="message"
+                            string="Details"
                             readonly="1"
-                            nolabel="1"
                         />
                     </group>
 
