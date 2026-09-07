@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="adi_helpdesk_enquiry_notification"
+              name="ADI Helpdesk Customer Enquiry Notification"
+              inherit_id="mail.mail_notification_layout"
+              primary="True">
+
+        <!-- =====================================================
+             VIEW ENQUIRY BUTTON
+             ===================================================== -->
+
+        <xpath expr="//td[@t-if='has_button_access']"
+               position="replace">
+
+            <td t-if="has_button_access">
+
+                <table role="presentation"
+                       cellspacing="0"
+                       cellpadding="0"
+                       border="0">
+                    <tr>
+
+                        <td width="140"
+                            height="40"
+                            align="center"
+                            valign="middle"
+                            bgcolor="#008C95"
+                            style="
+                                width: 140px;
+                                height: 40px;
+                                background-color: #008C95;
+                                text-align: center;
+                                vertical-align: middle;
+                            ">
+
+                            <a t-att-href="button_access['url']"
+                               style="
+                                   display: block;
+                                   width: 140px;
+                                   line-height: 40px;
+                                   font-family: Verdana, Arial, sans-serif;
+                                   font-size: 14px;
+                                   font-weight: bold;
+                                   color: #FFFFFF;
+                                   text-decoration: none;
+                               ">
+                                View Enquiry
+                            </a>
+
+                        </td>
+
+                    </tr>
+                </table>
+
+            </td>
+
+        </xpath>
+
+        <!-- =====================================================
+             EMAIL CONTENT
+             ===================================================== -->
+
+        <xpath expr="//div[@t-out='message.body']"
+               position="replace">
+
+            <div style="
+                font-size: 13px;
+                line-height: 1.45;
+            ">
+
+                <p style="margin: 0 0 12px 0;">
+                    <strong style="font-size: 16px;">
+                        CUSTOMER ENQUIRY
+                    </strong>
+                </p>
+
+                <p style="margin: 0 0 12px 0;">
+                    An email has been received from a sender who could
+                    not be matched to a trusted Helpdesk contact.
+                </p>
+
+                <table role="presentation"
+                       cellspacing="0"
+                       cellpadding="0"
+                       border="0"
+                       style="
+                           font-size: 13px;
+                           line-height: 1.45;
+                       ">
+
+                    <tr>
+                        <td style="padding: 2px 14px 2px 0;">
+                            <strong>From:</strong>
+                        </td>
+
+                        <td style="padding: 2px 0;">
+                            <t t-out="record.email or '-'"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 2px 14px 2px 0;">
+                            <strong>Subject:</strong>
+                        </td>
+
+                        <td style="padding: 2px 0;">
+                            <t t-out="record.name or '-'"/>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p style="margin: 14px 0 4px 0;">
+                    <strong>
+                        MESSAGE
+                    </strong>
+                </p>
+
+                <div style="white-space: pre-wrap;">
+                    <t t-out="record.message or '-'"/>
+                </div>
+
+                <p style="margin: 14px 0 0 0;">
+                    Please review the Customer Enquiry in Helpdesk.
+                </p>
+
+            </div>
+
+        </xpath>
+
+    </template>
+
+</odoo>

@@ -129,23 +129,44 @@ class AdiHelpdeskEnquiry(models.Model):
             )
 
             if manager_partners:
-                enquiry.message_notify(
-                    partner_ids=manager_partners.ids,
-                    subject=f"<<Customer Enquiry>> {subject}",
-                    body=(
-                        "<p>"
-                        "An email has been received at ADI Helpdesk "
-                        "from a sender who is not a registered "
-                        "Helpdesk contact."
-                        "</p>"
-                        f"<p><strong>From:</strong> "
-                        f"{sender_email}</p>"
-                        "<p>Please review the Customer Enquiry "
-                        "record in Helpdesk.</p>"
-                    ),
+                helpdesk_team = self.env[
+                    "helpdesk.team"
+                ].search([], limit=1)
+
+                author = (
+                    helpdesk_team.adi_message_author_id
+                    if helpdesk_team
+                    else False
                 )
 
-        return enquiry
+                notify_values = {
+                    "partner_ids": manager_partners.ids,
+                    "subject": (
+                        f"<<Customer Enquiry>> {subject}"
+                    ),
+                    "body": "",
+                    "email_layout_xmlid": (
+                        "adi_helpdesk_custom."
+                        "adi_helpdesk_enquiry_notification"
+                    ),
+                }
+
+                if author:
+                    notify_values.update({
+                        "author_id": author.id,
+                        "email_from": (
+                            f"{helpdesk_team.name} "
+                            f"<{helpdesk_team.alias_email}>"
+                            if helpdesk_team.alias_email
+                            else author.email_formatted
+                        ),
+                    })
+
+                enquiry.with_context(
+                    mail_notify_author=True,
+                ).message_notify(
+                    **notify_values
+                )
 
     def message_post(self, **kwargs):
         """
