@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models, tools
 
 
 class AdiHelpdeskEnquiry(models.Model):
@@ -60,6 +60,111 @@ class AdiHelpdeskEnquiry(models.Model):
     )
 
     # ---------------------------------------------------------
+    # Incoming unknown Helpdesk email
+    # ---------------------------------------------------------
+
+    @api.model
+    def message_new(self, msg, custom_values=None):
+        """
+        Create a Customer Enquiry from an unknown NEW inbound
+        Helpdesk email.
+
+        Only the minimum information required for manager review
+        is retained:
+
+        - subject
+        - sender email
+        - body text
+
+        Attachments are deliberately not retained.
+        No Contact is created.
+        """
+
+        sender_addresses = tools.email_split(
+            msg.get("email_from")
+            or msg.get("from")
+            or ""
+        )
+
+        sender_email = (
+            sender_addresses[0].strip().lower()
+            if sender_addresses
+            else "unknown"
+        )
+
+        subject = (
+            (msg.get("subject") or "").strip()
+            or "Customer Enquiry"
+        )
+
+        body = msg.get("body") or ""
+
+        message_text = (
+            tools.html2plaintext(str(body)).strip()
+            if body
+            else ""
+        )
+
+        enquiry = self.create({
+            "name": subject,
+            "email": sender_email,
+            "message": message_text,
+            "state": "new",
+        })
+
+        # -----------------------------------------------------
+        # Notify active Helpdesk Managers.
+        # -----------------------------------------------------
+
+        manager_group = self.env.ref(
+            "helpdesk.group_helpdesk_manager",
+            raise_if_not_found=False,
+        )
+
+        if manager_group:
+            manager_partners = (
+                manager_group.users.filtered(
+                    lambda user: user.active
+                ).partner_id
+            )
+
+            if manager_partners:
+                enquiry.message_notify(
+                    partner_ids=manager_partners.ids,
+                    subject=f"<<Customer Enquiry>> {subject}",
+                    body=(
+                        "<p>"
+                        "An email has been received at ADI Helpdesk "
+                        "from a sender who is not a registered "
+                        "Helpdesk contact."
+                        "</p>"
+                        f"<p><strong>From:</strong> "
+                        f"{sender_email}</p>"
+                        "<p>Please review the Customer Enquiry "
+                        "record in Helpdesk.</p>"
+                    ),
+                )
+
+        return enquiry
+
+    def message_post(self, **kwargs):
+        """
+        Do not retain attachments arriving with unknown Helpdesk
+        email.
+
+        Odoo's mail router posts the incoming email to the newly
+        created thread after message_new(). Strip attachment data
+        before that happens.
+        """
+
+        if self.env.context.get("from_alias"):
+            kwargs = dict(kwargs)
+            kwargs.pop("attachments", None)
+            kwargs.pop("attachment_ids", None)
+
+        return super().message_post(**kwargs)
+
+    # ---------------------------------------------------------
     # Complete enquiry
     # ---------------------------------------------------------
 
@@ -99,8 +204,8 @@ class AdiHelpdeskEnquiry(models.Model):
 
     def action_block_email(self):
         """
-        Add the individual sender email to the existing Helpdesk
-        blocklist and close the enquiry.
+        Add the individual sender email to the Helpdesk blocklist
+        and close the enquiry.
 
         Whole-domain blocking is deliberately not performed here.
         """
