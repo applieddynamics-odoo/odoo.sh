@@ -4,6 +4,7 @@
     <!-- ================================================================
          TABLE-BASED LIGHT NOTIFICATION LAYOUT
          ================================================================ -->
+
     <template id="adi_mail_notification_light_footer"
               inherit_id="mail.mail_notification_light">
 
@@ -13,86 +14,109 @@
 
             <tr>
                 <td align="center"
-                    style="min-width: 590px;
-                           padding: 0 8px 0 8px;
-                           font-size: 11px;">
+                    style="
+                        min-width: 590px;
+                        padding: 0 8px 0 8px;
+                        font-size: 11px;
+                    ">
 
                     <hr width="100%"
-                        style="background-color:rgb(204,204,204);
-                               border:medium none;
-                               clear:both;
-                               display:block;
-                               font-size:0px;
-                               min-height:1px;
-                               line-height:0;
-                               margin:16px 0 10px 0;"/>
+                        style="
+                            background-color:rgb(204,204,204);
+                            border:medium none;
+                            clear:both;
+                            display:block;
+                            font-size:0px;
+                            min-height:1px;
+                            line-height:0;
+                            margin:16px 0 10px 0;
+                        "/>
 
-                        <t t-if="
-                            message.model == 'helpdesk.ticket'
-                            and (
-                                (
-                                    message.author_id.user_ids
-                                    and False in message.author_id.user_ids.mapped('share')
-                                )
-                                or message.author_id.email == 'helpdesk@support.adi.com'
+                    <!-- ADI-authored Helpdesk email -->
+                    <t t-if="
+                        message.model == 'helpdesk.ticket'
+                        and (
+                            (
+                                message.author_id.user_ids
+                                and False in message.author_id.user_ids.mapped('share')
                             )
-                        ">
+                            or message.author_id.email == 'helpdesk@support.adi.com'
+                        )
+                    ">
 
                         <table role="presentation"
                                cellspacing="0"
                                cellpadding="0"
                                border="0"
                                align="center"
-                               style="border-collapse:collapse;
-                                      margin:0 auto;">
+                               style="
+                                   border-collapse:collapse;
+                                   margin:0 auto;
+                               ">
 
                             <tbody>
                                 <tr>
+
                                     <td valign="middle"
-                                        style="padding:0 14px 0 0;
-                                               vertical-align:middle;">
+                                        style="
+                                            padding:0 14px 0 0;
+                                            vertical-align:middle;
+                                        ">
 
                                         <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
                                              alt="Applied Dynamics International"
                                              width="105"
-                                             style="display:block;
-                                                    border:0;
-                                                    width:105px;
-                                                    height:auto;
-                                                    max-height:55px;"/>
+                                             style="
+                                                 display:block;
+                                                 border:0;
+                                                 width:105px;
+                                                 height:auto;
+                                                 max-height:55px;
+                                             "/>
 
                                     </td>
 
                                     <td valign="middle"
                                         align="left"
-                                        style="padding:0;
-                                               vertical-align:middle;
-                                               text-align:left;
-                                               font-family:Verdana, Arial, sans-serif;
-                                               line-height:1.45;">
+                                        style="
+                                            padding:0;
+                                            vertical-align:middle;
+                                            text-align:left;
+                                            font-family:Verdana, Arial, sans-serif;
+                                            line-height:1.45;
+                                        ">
 
-                                        <div style="font-size:11px;
-                                                    font-weight:bold;
-                                                    color:#454748;">
+                                        <div style="
+                                            font-size:11px;
+                                            font-weight:bold;
+                                            color:#454748;
+                                        ">
                                             <t t-out="message.author_id.name"/>
                                         </div>
 
-                                        <div style="font-size:11px;
-                                                    font-weight:bold;
-                                                    color:#454748;">
+                                        <div style="
+                                            font-size:11px;
+                                            font-weight:bold;
+                                            color:#454748;
+                                        ">
                                             Applied Dynamics International
                                         </div>
 
-                                        <div style="font-size:11px;
-                                                    color:#999999;">
+                                        <div style="
+                                            font-size:11px;
+                                            color:#999999;
+                                        ">
                                             <a href="https://www.adi.com/"
-                                               style="text-decoration:none;
-                                                      color:#999999;">
+                                               style="
+                                                   text-decoration:none;
+                                                   color:#999999;
+                                               ">
                                                 www.adi.com
                                             </a>
                                         </div>
 
                                     </td>
+
                                 </tr>
                             </tbody>
 
@@ -100,10 +124,18 @@
 
                     </t>
 
-                    <!-- Customer-authored Helpdesk message: no ADI footer -->
-                    <t t-elif="message.model == 'helpdesk.ticket'"/>
+                    <!--
+                        Customer-authored Helpdesk messages and
+                        Customer Enquiries do not receive an ADI footer.
+                    -->
+                    <t t-elif="
+                        message.model in (
+                            'helpdesk.ticket',
+                            'adi.helpdesk.enquiry'
+                        )
+                    "/>
 
-                    <!-- Standard footer for all non-Helpdesk applications -->
+                    <!-- Standard footer for all other applications -->
                     <t t-else="">
 
                         <b t-out="company.name"/>
@@ -119,19 +151,25 @@
 
                             <a t-if="company.email"
                                t-att-href="'mailto:%s' % company.email"
-                               style="text-decoration:none;
-                                      color:#999999;"
+                               style="
+                                   text-decoration:none;
+                                   color:#999999;
+                               "
                                t-out="company.email"/>
 
-                            <t t-if="company.website
-                                    and (company.phone or company.email)">
+                            <t t-if="
+                                company.website
+                                and (company.phone or company.email)
+                            ">
                                 |
                             </t>
 
                             <a t-if="company.website"
                                t-att-href="'%s' % company.website"
-                               style="text-decoration:none;
-                                      color:#999999;"
+                               style="
+                                   text-decoration:none;
+                                   color:#999999;
+                               "
                                t-out="company.website"/>
 
                         </div>
@@ -153,60 +191,135 @@
     <!-- ================================================================
          DIV-BASED STANDARD NOTIFICATION LAYOUT
          ================================================================ -->
+
     <template id="adi_mail_notification_layout_footer"
               inherit_id="mail.mail_notification_layout">
 
-        <!-- Suppress personal user signatures on Helpdesk emails -->
+        <!--
+            Suppress signatures on Helpdesk and Customer Enquiry emails.
+        -->
         <xpath expr="//t[@class='o_signature']"
                position="attributes">
 
             <attribute name="t-if">
-                message.model != 'helpdesk.ticket'
+                message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
             </attribute>
 
         </xpath>
 
 
         <!-- ============================================================
-             CUSTOMER-FACING HELPDESK HEADER
+             HELPDESK / CUSTOMER ENQUIRY BUTTON
              ============================================================ -->
 
-        <!-- Change "View Helpdesk Ticket" to "View Ticket" -->
-        <xpath expr="//t[@t-out=&quot;button_access['title']&quot;]"
+        <xpath expr="//td[@t-if='has_button_access']"
                position="replace">
 
-            <t t-if="message.model == 'helpdesk.ticket'">
-                View Ticket
+            <!-- Customer Enquiry -->
+            <t t-if="message.model == 'adi.helpdesk.enquiry'">
+
+                <td width="140"
+                    height="40"
+                    align="center"
+                    valign="middle"
+                    bgcolor="#008C95"
+                    style="
+                        width:140px;
+                        height:40px;
+                        background-color:#008C95;
+                        text-align:center;
+                        vertical-align:middle;
+                    ">
+
+                    <a t-att-href="button_access['url']"
+                       style="
+                           display:block;
+                           width:140px;
+                           line-height:40px;
+                           font-family:Verdana, Arial, sans-serif;
+                           font-size:14px;
+                           font-weight:bold;
+                           color:#FFFFFF;
+                           text-decoration:none;
+                       ">
+                        View Enquiry
+                    </a>
+
+                </td>
+
             </t>
 
-            <t t-else=""
-            t-out="button_access['title']"/>
+            <!-- All other notifications -->
+            <t t-else="">
+
+                <td t-if="has_button_access"
+                    t-att-style="
+                        'border-radius: 3px; '
+                        'text-align: center; '
+                        'background: '
+                        + (company.email_secondary_color or '#875A7B')
+                        + ';'
+                    ">
+
+                    <a t-att-href="button_access['url']"
+                       style="
+                           font-size:12px;
+                           color:#FFFFFF;
+                           display:block;
+                           padding:8px 12px 11px;
+                           text-decoration:none !important;
+                           font-weight:400;
+                       ">
+
+                        <t t-if="message.model == 'helpdesk.ticket'">
+                            View Ticket
+                        </t>
+
+                        <t t-else=""
+                           t-out="button_access['title']"/>
+
+                    </a>
+
+                </td>
+
+            </t>
 
         </xpath>
 
 
         <!--
-            Hide the duplicate ticket reference shown beside the button
-            when subtitles are present.
+            Hide the duplicate record/subtitle information beside
+            Helpdesk and Customer Enquiry buttons.
         -->
         <xpath expr="//td[@t-if='subtitles']"
                position="attributes">
 
             <attribute name="t-if">
-                subtitles and message.model != 'helpdesk.ticket'
+                subtitles
+                and message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
             </attribute>
 
         </xpath>
 
 
         <!--
-            Hide the fallback record name beside the button when there
-            are no subtitles.
+            Hide the fallback record name beside the button.
         -->
         <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
                position="replace">
 
-            <td t-if="message.model != 'helpdesk.ticket'">
+            <td t-if="
+                message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
+            ">
 
                 <span style="font-weight:bold;"
                       t-out="record_name"/>
@@ -217,18 +330,29 @@
         </xpath>
 
 
-        <!-- Hide the horizontal separator immediately above the button -->
+        <!--
+            Hide the separator ABOVE the button for both Helpdesk
+            tickets and Customer Enquiries.
+        -->
         <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/preceding-sibling::tr[1]"
                position="attributes">
 
-                <attribute name="t-if">
-                    message.model != 'helpdesk.ticket'
-                </attribute>
+            <attribute name="t-if">
+                message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
+            </attribute>
 
         </xpath>
 
 
-        <!-- Hide the horizontal separator immediately below the button -->
+        <!--
+            Helpdesk ticket layouts manage their own lower separator.
+
+            Customer Enquiry retains one standard separator after
+            the View Enquiry button.
+        -->
         <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]"
                position="attributes">
 
@@ -239,27 +363,44 @@
         </xpath>
 
 
+        <!--
+            Customer Enquiries are internal review notifications,
+            but the standard pink "Internal communication" warning
+            is unnecessary and misleading here.
+        -->
+        <xpath expr="//p[@t-if='subtype_internal']"
+               position="attributes">
+
+            <attribute name="t-if">
+                subtype_internal
+                and message.model != 'adi.helpdesk.enquiry'
+            </attribute>
+
+        </xpath>
+
+
         <!-- ============================================================
              FOOTER
              ============================================================ -->
 
-        <!-- Replace the standard company footer -->
         <xpath expr="//b[@t-out='company.name']/parent::div"
                position="replace">
 
             <div style="margin-top:32px;">
 
                 <hr width="100%"
-                    style="background-color:rgb(204,204,204);
-                           border:medium none;
-                           clear:both;
-                           display:block;
-                           font-size:0px;
-                           min-height:1px;
-                           line-height:0;
-                           margin:16px 0 10px 0;"/>
+                    style="
+                        background-color:rgb(204,204,204);
+                        border:medium none;
+                        clear:both;
+                        display:block;
+                        font-size:0px;
+                        min-height:1px;
+                        line-height:0;
+                        margin:16px 0 10px 0;
+                    "/>
 
-                <!-- Helpdesk message written by an internal Odoo user -->
+                <!-- Helpdesk message written by ADI/internal user -->
                 <t t-if="
                     message.model == 'helpdesk.ticket'
                     and (
@@ -279,49 +420,67 @@
 
                         <tbody>
                             <tr>
+
                                 <td valign="middle"
-                                    style="padding:0 14px 0 0;
-                                           vertical-align:middle;">
+                                    style="
+                                        padding:0 14px 0 0;
+                                        vertical-align:middle;
+                                    ">
 
                                     <img t-att-src="company.get_base_url() + '/adi_helpdesk_custom/static/src/img/adi_logo_2024.png'"
                                          alt="Applied Dynamics International"
                                          width="105"
-                                         style="display:block;
-                                                border:0;
-                                                width:105px;
-                                                height:auto;
-                                                max-height:55px;"/>
+                                         style="
+                                             display:block;
+                                             border:0;
+                                             width:105px;
+                                             height:auto;
+                                             max-height:55px;
+                                         "/>
 
                                 </td>
 
                                 <td valign="middle"
-                                    style="padding:0;
-                                           vertical-align:middle;
-                                           font-family:Verdana, Arial, sans-serif;
-                                           line-height:1.45;">
+                                    style="
+                                        padding:0;
+                                        vertical-align:middle;
+                                        font-family:Verdana, Arial, sans-serif;
+                                        line-height:1.45;
+                                    ">
 
-                                    <div style="font-size:11px;
-                                                font-weight:bold;
-                                                color:#454748;">
+                                    <div style="
+                                        font-size:11px;
+                                        font-weight:bold;
+                                        color:#454748;
+                                    ">
                                         <t t-out="message.author_id.name"/>
                                     </div>
 
-                                    <div style="font-size:11px;
-                                                font-weight:bold;
-                                                color:#454748;">
+                                    <div style="
+                                        font-size:11px;
+                                        font-weight:bold;
+                                        color:#454748;
+                                    ">
                                         Applied Dynamics International
                                     </div>
 
-                                    <div style="font-size:11px;
-                                                color:#999999;">
+                                    <div style="
+                                        font-size:11px;
+                                        color:#999999;
+                                    ">
+
                                         <a href="https://www.adi.com/"
-                                           style="text-decoration:none;
-                                                  color:#999999;">
+                                           style="
+                                               text-decoration:none;
+                                               color:#999999;
+                                           ">
                                             www.adi.com
                                         </a>
+
                                     </div>
 
                                 </td>
+
                             </tr>
                         </tbody>
 
@@ -329,19 +488,32 @@
 
                 </t>
 
-                <!-- Customer-authored Helpdesk message: no ADI footer -->
-                <t t-elif="message.model == 'helpdesk.ticket'"/>
+                <!--
+                    Customer-authored Helpdesk messages and Customer
+                    Enquiries do not receive an ADI/company footer.
 
-                <!-- Standard footer for all non-Helpdesk applications -->
+                    The horizontal line above remains as a clean end
+                    marker for the message.
+                -->
+                <t t-elif="
+                    message.model in (
+                        'helpdesk.ticket',
+                        'adi.helpdesk.enquiry'
+                    )
+                "/>
+
+                <!-- Standard footer for all other applications -->
                 <t t-else="">
 
                     <b t-out="company.name"
                        style="font-size:11px;"/>
                     <br/>
 
-                    <p style="color:#999999;
-                              margin-top:2px;
-                              font-size:11px;">
+                    <p style="
+                        color:#999999;
+                        margin-top:2px;
+                        font-size:11px;
+                    ">
 
                         <t t-out="company.phone"/>
 
@@ -351,19 +523,25 @@
 
                         <a t-if="company.email"
                            t-att-href="'mailto:%s' % company.email"
-                           style="text-decoration:none;
-                                  color:#999999;"
+                           style="
+                               text-decoration:none;
+                               color:#999999;
+                           "
                            t-out="company.email"/>
 
-                        <t t-if="company.website
-                                and (company.phone or company.email)">
+                        <t t-if="
+                            company.website
+                            and (company.phone or company.email)
+                        ">
                             |
                         </t>
 
                         <a t-if="company.website"
                            t-att-href="'%s' % company.website"
-                           style="text-decoration:none;
-                                  color:#999999;"
+                           style="
+                               text-decoration:none;
+                               color:#999999;
+                           "
                            t-out="company.website"/>
 
                     </p>
@@ -373,6 +551,7 @@
             </div>
 
         </xpath>
+
 
         <!-- Remove Powered by Odoo and Unfollow -->
         <xpath expr="//span[@id='mail_unfollow']/parent::div"
