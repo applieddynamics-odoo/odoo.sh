@@ -320,10 +320,7 @@ class HelpdeskTicket(models.Model):
                 vals.setdefault("adi_stage_entered_date", now)
             return super().create(vals_list)
 
-        validity_check_stage = self.env["helpdesk.stage"].search(
-            [("name", "=", "Validity Check")],
-            limit=1,
-        )
+
         new_stage = self.env["helpdesk.stage"].search(
             [("name", "=", "New")],
             limit=1,
@@ -399,25 +396,6 @@ class HelpdeskTicket(models.Model):
                     if existing_contact:
                         routing["trusted_contact_id"] = existing_contact.id
 
-                    if not routing["trusted_contact_id"]:
-                        matched_company = self.env["res.partner"].search([
-                            ("is_company", "=", True),
-                            ("active", "=", True),
-                            ("adi_approved_helpdesk_domain", "=ilike", domain),
-                        ], limit=1)
-
-                        if matched_company:
-                            routing["approved_domain"] = True
-
-                    if not routing["trusted_contact_id"]:
-                        matched_company = self.env["res.partner"].search([
-                            ("is_company", "=", True),
-                            ("active", "=", True),
-                            ("adi_approved_helpdesk_domain", "=ilike", domain),
-                        ], limit=1)
-
-                        if matched_company:
-                            routing["approved_domain"] = True
 
             prepared_vals_list.append(vals)
             routing_results.append(routing)
@@ -451,30 +429,6 @@ class HelpdeskTicket(models.Model):
                     values["stage_id"] = new_stage.id
                 ticket.write(values)
                 continue
-
-            if routing["approved_domain"]:
-                values = {
-                    "partner_id": False,
-                    "partner_email": False,
-                    "partner_name": False,
-                    "adi_validity_check_required": False,
-                    "adi_new_contact_review_required": True,
-                    "adi_matched_company_id": False,
-                }
-                if new_stage:
-                    values["stage_id"] = new_stage.id
-                ticket.write(values)
-                continue
-
-            if validity_check_stage:
-                ticket.write({
-                    "stage_id": validity_check_stage.id,
-                    "adi_validity_check_required": True,
-                    "adi_new_contact_review_required": False,
-                    "partner_id": False,
-                    "partner_email": False,
-                    "partner_name": False,
-                })
 
         return tickets
 

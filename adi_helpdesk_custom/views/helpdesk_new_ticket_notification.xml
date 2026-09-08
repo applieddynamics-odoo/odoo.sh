@@ -147,7 +147,7 @@
                             <strong>Ticket Type:</strong>
                         </td>
                         <td style="padding: 2px 0;">
-                            <t t-out="record.ticket_type_id.display_name or '-'"/>
+                            <t t-out="record.ticket_type_id.display_name or 'Raw Email Submission'"/>
                         </td>
                     </tr>
 
