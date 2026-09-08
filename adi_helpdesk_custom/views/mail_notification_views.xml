@@ -175,14 +175,12 @@
         <xpath expr="//t[@t-out=&quot;button_access['title']&quot;]"
                position="replace">
 
-            <t t-if="message.model == 'helpdesk.ticket'
-                     and message.author_id.user_ids
-                     and False in message.author_id.user_ids.mapped('share')">
+            <t t-if="message.model == 'helpdesk.ticket'">
                 View Ticket
             </t>
 
             <t t-else=""
-               t-out="button_access['title']"/>
+            t-out="button_access['title']"/>
 
         </xpath>
 
@@ -223,13 +221,9 @@
         <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/preceding-sibling::tr[1]"
                position="attributes">
 
-            <attribute name="t-if">
-                not (
-                    message.model == 'helpdesk.ticket'
-                    and message.author_id.user_ids
-                    and False in message.author_id.user_ids.mapped('share')
-                )
-            </attribute>
+                <attribute name="t-if">
+                    message.model != 'helpdesk.ticket'
+                </attribute>
 
         </xpath>
 
@@ -239,11 +233,7 @@
                position="attributes">
 
             <attribute name="t-if">
-                not (
-                    message.model == 'helpdesk.ticket'
-                    and message.author_id.user_ids
-                    and False in message.author_id.user_ids.mapped('share')
-                )
+                message.model != 'helpdesk.ticket'
             </attribute>
 
         </xpath>
