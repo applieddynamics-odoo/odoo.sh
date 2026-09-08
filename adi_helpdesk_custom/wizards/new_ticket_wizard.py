@@ -14,6 +14,9 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
             ("is_company", "=", True),
             ("active", "=", True),
             ("adi_helpdesk_approved_company", "=", True),
+            ("child_ids.is_company", "=", False),
+            ("child_ids.active", "=", True),
+            ("child_ids.email", "!=", False),
         ],
     )
 
