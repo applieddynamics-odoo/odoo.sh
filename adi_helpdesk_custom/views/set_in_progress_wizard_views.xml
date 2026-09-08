@@ -28,7 +28,7 @@
 
                     <field name="company_id"
                         options="{'no_create': True, 'no_open': True, 'search_more': False}"
-                        domain="[('is_company', '=', True), ('active', '=', True)]"
+                        domain="[('is_company', '=', True), ('active', '=', True), ('adi_helpdesk_approved_company', '=', True)]"
                         invisible="matched_contact_id"/>
 
                     <field name="contact_name"
