@@ -812,8 +812,32 @@ class HelpdeskTicket(models.Model):
 
             kwargs = dict(kwargs)
 
-            # The incoming email body is already stored in
-            # ticket.description, so keep chatter creation clean.
+            original_body = kwargs.get("body")
+            message_type = kwargs.get("message_type")
+
+            # -------------------------------------------------
+            # Raw email ticket creation
+            # -------------------------------------------------
+            #
+            # For a new ticket created directly from email,
+            # preserve the incoming email body as the ticket
+            # Problem/description before removing the duplicate
+            # copy from chatter.
+            #
+            # Website-created tickets already have description
+            # populated separately and are left untouched.
+            # -------------------------------------------------
+
+            if (
+                message_type == "email"
+                and original_body
+                and not ticket.description
+            ):
+                ticket.write({
+                    "description": original_body,
+                })
+
+            # Keep the Ticket Created chatter entry minimal.
             kwargs["body"] = ""
 
             kwargs["email_layout_xmlid"] = (
