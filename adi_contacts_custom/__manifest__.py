@@ -7,7 +7,9 @@
     "depends": [
         "contacts",
     ],
-    "data": [],
+    "data": [
+        "views/res_partner_views.xml",
+    ],
     "installable": True,
     "application": False,
     "license": "LGPL-3",
