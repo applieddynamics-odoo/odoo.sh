@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- =========================================================
+         ADI Helpdesk - Customer Reply Notification
+
+         Used when a customer-originated message is redistributed
+         through an existing Helpdesk ticket.
+
+         The customer's own message remains the content.
+         No ADI footer is added.
+         ========================================================= -->
+
+    <template id="adi_helpdesk_customer_reply_notification"
+              name="ADI Helpdesk Customer Reply Notification"
+              inherit_id="mail.mail_notification_layout"
+              primary="True">
+
+        <!-- =====================================================
+             VIEW TICKET BUTTON
+
+             Matches the established ADI Helpdesk New Ticket style.
+             Fixed dimensions are deliberate for desktop Outlook.
+             ===================================================== -->
+
+        <xpath expr="//td[@t-if='has_button_access']"
+               position="replace">
+
+            <td t-if="has_button_access">
+
+                <table role="presentation"
+                       cellspacing="0"
+                       cellpadding="0"
+                       border="0">
+                    <tr>
+
+                        <td width="140"
+                            height="40"
+                            align="center"
+                            valign="middle"
+                            bgcolor="#008C95"
+                            style="
+                                width: 140px;
+                                height: 40px;
+                                background-color: #008C95;
+                                text-align: center;
+                                vertical-align: middle;
+                            ">
+
+                            <a t-att-href="button_access['url']"
+                               style="
+                                   display: block;
+                                   width: 140px;
+                                   line-height: 40px;
+                                   font-family: Verdana, Arial, sans-serif;
+                                   font-size: 14px;
+                                   font-weight: bold;
+                                   color: #FFFFFF;
+                                   text-decoration: none;
+                               ">
+                                View Ticket
+                            </a>
+
+                        </td>
+
+                    </tr>
+                </table>
+
+            </td>
+
+        </xpath>
+
+
+        <!-- =====================================================
+             CUSTOMER REPLY CONTENT
+
+             No Customer / Contact / Ticket Type summary here.
+             The purpose is simply to make the incoming response
+             quick to identify and read.
+             ===================================================== -->
+
+        <xpath expr="//div[@t-out='message.body']"
+               position="replace">
+
+            <div style="
+                font-size: 13px;
+                line-height: 1.45;
+            ">
+
+                <p style="margin: 0 0 12px 0;">
+                    <strong style="font-size: 16px;">
+                        CUSTOMER REPLIED
+                    </strong>
+                </p>
+
+                <div t-out="message.body"/>
+
+            </div>
+
+        </xpath>
+
+    </template>
+
+</odoo>

@@ -33,6 +33,7 @@
         "views/helpdesk_portal_templates.xml",
         "views/helpdesk_website_form_templates.xml",
         "views/enquiry_complete_wizard_views.xml",
+        "views/helpdesk_customer_reply_notification.xml",
     ],
     "assets": {
         "web.assets_backend": [

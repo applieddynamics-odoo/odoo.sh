@@ -808,6 +808,64 @@ class HelpdeskTicket(models.Model):
                     ),
                 })
 
+            # ---------------------------------------------------------
+            # Customer reply email layout
+            # ---------------------------------------------------------
+            #
+            # Customer-originated Discussions remain authored by the
+            # customer, but are redistributed using the standard ADI
+            # Helpdesk visual presentation.
+            #
+            # Internal users, Notes and automatic Ticket Created messages
+            # are deliberately excluded.
+            # ---------------------------------------------------------
+
+            if not is_ticket_created_message:
+                author_id = kwargs.get("author_id")
+                message_type = kwargs.get("message_type")
+                subtype_id = kwargs.get("subtype_id")
+
+                discussion_subtype = self.env.ref(
+                    "mail.mt_comment",
+                    raise_if_not_found=False,
+                )
+
+                author = (
+                    self.env["res.partner"].browse(author_id).exists()
+                    if author_id
+                    else self.env["res.partner"]
+                )
+
+                internal_user = (
+                    author.user_ids.filtered(
+                        lambda user:
+                            user.active
+                            and not user.share
+                    )
+                    if author
+                    else self.env["res.users"]
+                )
+
+                is_customer_reply = (
+                    len(self) == 1
+                    and author
+                    and not internal_user
+                    and message_type in ("email", "comment")
+                    and discussion_subtype
+                    and subtype_id == discussion_subtype.id
+                )
+
+                if is_customer_reply:
+                    kwargs = dict(kwargs)
+
+                    kwargs["email_layout_xmlid"] = (
+                        "adi_helpdesk_custom."
+                        "adi_helpdesk_customer_reply_notification"
+                    )
+
+
+
+
         return super().message_post(**kwargs)
 
 
