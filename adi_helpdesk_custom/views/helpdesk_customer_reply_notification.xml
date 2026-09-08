@@ -19,12 +19,13 @@
         <!-- =====================================================
              CUSTOMER REPLY HEADER
 
-             Replace Odoo's complete notification header so the
-             message uses the standard ADI Helpdesk presentation
-             without duplicate separator lines.
+             Replace Odoo's complete standard notification header.
 
-             Fixed button dimensions are deliberate for desktop
-             Outlook compatibility.
+             This removes the duplicate separator lines and gives
+             customer replies the same ADI Helpdesk View Ticket
+             button used elsewhere.
+
+             Fixed dimensions are deliberate for desktop Outlook.
              ===================================================== -->
 
         <xpath expr="//div[@summary='o_mail_notification']"
@@ -98,8 +99,8 @@
 
              No Customer / Contact / Ticket Type summary.
 
-             The purpose is simply to make the incoming response
-             quick to identify and read.
+             The purpose is simply to identify the response quickly
+             and present the customer's actual message.
              ===================================================== -->
 
         <xpath expr="//div[@t-out='message.body']"
@@ -117,37 +118,6 @@
                 </p>
 
                 <div t-out="message.body"/>
-
-            </div>
-
-        </xpath>
-
-
-        <!-- =====================================================
-             END OF CUSTOMER MESSAGE
-
-             One separator only.
-
-             No ADI/company footer is shown because the message
-             itself was written by the customer.
-             ===================================================== -->
-
-        <xpath expr="//b[@t-out='company.name']/parent::div"
-               position="replace">
-
-            <div style="margin-top: 24px;">
-
-                <hr width="100%"
-                    style="
-                        background-color: rgb(204,204,204);
-                        border: medium none;
-                        clear: both;
-                        display: block;
-                        font-size: 0;
-                        min-height: 1px;
-                        line-height: 0;
-                        margin: 16px 0 4px 0;
-                    "/>
 
             </div>
 
