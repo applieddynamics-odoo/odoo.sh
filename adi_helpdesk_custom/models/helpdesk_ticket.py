@@ -782,10 +782,14 @@ class HelpdeskTicket(models.Model):
 
     def message_post(self, **kwargs):
         """
-        Use the configured Helpdesk identity for the automatic
-        blank Ticket Created notification instead of OdooBot.
+        Standardise the automatic Ticket Created message.
 
-        Genuine incoming customer messages are deliberately left alone.
+        For tickets created from inbound email, the original email
+        body is already stored in ticket.description. Do not repeat
+        that same content in the Ticket Created chatter message.
+
+        Subsequent customer replies are normal Discussions and are
+        deliberately left unchanged.
         """
 
         ticket_created_subtype = self.env.ref(
@@ -794,21 +798,23 @@ class HelpdeskTicket(models.Model):
         )
 
         subtype_id = kwargs.get("subtype_id")
-        body = kwargs.get("body")
 
-        is_automatic_ticket_created = (
+        is_ticket_created_message = (
             len(self) == 1
             and ticket_created_subtype
             and subtype_id == ticket_created_subtype.id
-            and not body
         )
 
-        if is_automatic_ticket_created:
+        if is_ticket_created_message:
             ticket = self[0]
             team = ticket.team_id
             author = team.adi_message_author_id
 
             kwargs = dict(kwargs)
+
+            # The incoming email body is already stored in
+            # ticket.description, so keep chatter creation clean.
+            kwargs["body"] = ""
 
             kwargs["email_layout_xmlid"] = (
                 "adi_helpdesk_custom.adi_helpdesk_new_ticket_notification"
