@@ -10,23 +10,11 @@
                  ========================================================= -->
             <xpath expr="//form/header" position="inside">
 
-                <button name="action_adi_open_review_validity_wizard"
-                        type="object"
-                        string="Review Validity"
-                        class="btn-primary"
-                        invisible="not adi_validity_check_required"/>
-
                 <button name="action_adi_open_set_in_progress_wizard"
                         type="object"
                         string="Set In Process"
                         class="btn-primary"
                         invisible="not adi_show_set_in_progress_button"/>
-
-                <button name="action_adi_send_back_to_validity_check"
-                        type="object"
-                        string="Repeat Validity Check"
-                        class="btn-secondary"
-                        invisible="not adi_can_repeat_validity"/>
 
                 <button name="action_adi_open_close_wizard"
                         type="object"
@@ -68,10 +56,7 @@
 
                 <field name="adi_show_set_in_progress_button" invisible="1"/>
                 <field name="adi_show_close_button" invisible="1"/>
-
-                <field name="adi_validity_check_required" invisible="1"/>
                 <field name="adi_new_contact_review_required" invisible="1"/>
-                <field name="adi_can_repeat_validity" invisible="1"/>
 
                 <field name="adi_non_contract" invisible="1"/>
                 <field name="adi_charge_to_order_domain" invisible="1"/>
@@ -107,21 +92,6 @@
                      Workflow warnings
                      ===================================================== -->
                 <div class="row mb-3">
-
-                    <div class="col-12"
-                         invisible="not adi_validity_check_required">
-
-                        <div class="adi_helpdesk_warning_card">
-                            <strong>Validity Check Required</strong>
-
-                            <div>
-                                Please press "Review Validity" to confirm
-                                or reject the email contact.
-                            </div>
-                        </div>
-
-                    </div>
-
 
                     <div class="col-12"
                          invisible="not adi_new_contact_review_required">
@@ -864,13 +834,7 @@
 
                         <group string="Validation Flags">
 
-                            <field name="adi_validity_check_required"
-                                   readonly="0"/>
-
                             <field name="adi_new_contact_review_required"
-                                   readonly="0"/>
-
-                            <field name="adi_can_repeat_validity"
                                    readonly="0"/>
 
                         </group>

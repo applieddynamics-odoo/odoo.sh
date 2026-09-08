@@ -112,7 +112,6 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
             "adi_software_version_id": self.adi_software_version_id.id,
             "adi_customer_input_serial_number": self.adi_customer_input_serial_number,
             "adi_customer_reference_number": self.adi_customer_reference_number or "None",
-            "adi_validity_check_required": False,
             "adi_new_contact_review_required": False,
             "adi_matched_company_id": self.company_id.id,
         })

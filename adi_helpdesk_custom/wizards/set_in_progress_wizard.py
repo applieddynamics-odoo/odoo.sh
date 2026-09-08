@@ -359,7 +359,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         self.ticket_id.write({
             "active": False,
             "adi_new_contact_review_required": False,
-            "adi_validity_check_required": False,
         })
 
         return {"type": "ir.actions.act_window_close"}
@@ -372,8 +371,7 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
 
         if self.adi_domain_status != "approved":
             raise UserError(
-                "This email domain is not approved for Helpdesk use. "
-                "Correct the email address or return the ticket to validity review."
+                "Please correct the contact email address."
             )
 
         if self.matched_contact_id:
@@ -394,7 +392,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 "partner_email": False,
                 "partner_name": False,
                 "adi_new_contact_review_required": False,
-                "adi_validity_check_required": False,
                 "adi_matched_company_id": self.company_id.id,
             })
             return
@@ -420,7 +417,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             "partner_email": contact.email,
             "partner_name": contact.name,
             "adi_new_contact_review_required": False,
-            "adi_validity_check_required": False,
             "adi_matched_company_id": contact.commercial_partner_id.id,
         })
 

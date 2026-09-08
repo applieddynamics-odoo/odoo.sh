@@ -105,12 +105,6 @@ class HelpdeskTicket(models.Model):
 
     adi_internal_notes = fields.Text(string="Internal Notes")
 
-    adi_validity_check_required = fields.Boolean(
-        string="Validity Check Required",
-        readonly=True,
-        copy=False,
-    )
-
     adi_new_contact_review_required = fields.Boolean(
         string="New Contact Review Required",
         readonly=True,
@@ -122,10 +116,6 @@ class HelpdeskTicket(models.Model):
         string="Matched Company",
         readonly=True,
         copy=False,
-    )
-
-    adi_can_repeat_validity = fields.Boolean(
-        compute="_compute_adi_can_repeat",
     )
 
     adi_show_set_in_progress_button = fields.Boolean(
@@ -410,7 +400,6 @@ class HelpdeskTicket(models.Model):
                     "partner_id": False,
                     "partner_email": False,
                     "partner_name": False,
-                    "adi_validity_check_required": False,
                     "adi_new_contact_review_required": False,
                     "active": False,
                 })
@@ -421,7 +410,6 @@ class HelpdeskTicket(models.Model):
                 values = {
                     "partner_id": contact.id,
                     "partner_email": submitted_email,
-                    "adi_validity_check_required": False,
                     "adi_new_contact_review_required": False,
                     "adi_matched_company_id": contact.commercial_partner_id.id,
                 }
@@ -508,10 +496,6 @@ class HelpdeskTicket(models.Model):
         return result
     
 
-    def _compute_adi_can_repeat(self):
-        for rec in self:
-            rec.adi_can_repeat_validity = not rec.active and not rec.partner_id
-
     @api.depends("stage_id")
     def _compute_adi_show_set_in_progress_button(self):
         for ticket in self:
@@ -531,40 +515,6 @@ class HelpdeskTicket(models.Model):
             },
         }
 
-    def action_adi_open_review_validity_wizard(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Review Validity Check",
-            "res_model": "adi.helpdesk.review.validity.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_ticket_id": self.id,
-                "default_user_id": self.user_id.id,
-            },
-        }
-
-    def action_adi_send_back_to_validity_check(self):
-        validity_check_stage = self.env["helpdesk.stage"].search(
-            [("name", "=", "Validity Check")],
-            limit=1,
-        )
-
-        if not validity_check_stage:
-            return True
-
-        for ticket in self:
-            ticket.write({
-                "active": True,
-                "stage_id": validity_check_stage.id,
-                "adi_validity_check_required": True,
-                "adi_new_contact_review_required": False,
-                "adi_matched_company_id": False,
-                "partner_id": False,
-            })
-
-        return True
 
     @api.depends("ticket_ref", "name")
     def _compute_display_name(self):
@@ -1086,11 +1036,9 @@ class HelpdeskTicket(models.Model):
     def _compute_adi_show_management_card(self):
         for ticket in self:
             ticket.adi_show_management_card = (
-                ticket.stage_id.name not in (
-                    "Validity Check",
-                    "New",
-                )
-            )        
+                ticket.stage_id.name != "New"
+            )
+            
 
     #-------------------------------------------------------------
     # Notification Contact Name / Company Name  
