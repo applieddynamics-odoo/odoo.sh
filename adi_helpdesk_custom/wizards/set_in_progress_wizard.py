@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-import difflib
+
 
 
 class AdiHelpdeskSetInProgressWizard(models.TransientModel):
@@ -44,31 +44,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         "res.partner",
         string="Matched Contact",
         readonly=True,
-    )
-
-    adi_company_domain = fields.Char(
-        string="Company Domain",
-        compute="_compute_adi_company_guidance",
-    )
-
-    adi_suggested_company_names = fields.Text(
-        string="Suggested Companies",
-        compute="_compute_adi_company_guidance",
-    )
-
-    adi_domain_status = fields.Selection(
-        [
-            ("approved", "Approved Customer Domain"),
-            ("unknown", "Unknown Domain"),
-            ("none", "No Domain"),
-        ],
-        string="Domain Status",
-        compute="_compute_adi_company_guidance",
-    )
-
-    adi_domain_status_message = fields.Html(
-        string="Domain Check",
-        compute="_compute_adi_company_guidance",
     )
 
     adi_severity = fields.Selection(
@@ -369,11 +344,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         if not contact_email or "@" not in contact_email:
             raise UserError("Please enter a valid contact email address before continuing.")
 
-        if self.adi_domain_status != "approved":
-            raise UserError(
-                "Please correct the contact email address."
-            )
-
         if self.matched_contact_id:
             contact = self.matched_contact_id
         else:
@@ -498,80 +468,6 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 wizard.adi_contract_status = "active"
             else:
                 wizard.adi_contract_status = "unknown"
-
-    # Compute guidance and domain checks based on the email address provided by the customer to help the agent identify
-    # the correct company to link to the ticket and ensure that customers from unapproved domains are flagged for review.
-    @api.depends("contact_email")
-
-    def _compute_adi_company_guidance(self):
-        for wizard in self:
-            email = (
-                wizard.contact_email
-                or wizard.ticket_id.adi_submitted_email
-                or wizard.ticket_id.partner_email
-            )
-
-            wizard.adi_company_domain = str([("id", "=", 0)])
-            wizard.adi_suggested_company_names = False
-            wizard.adi_domain_status = "none"
-            wizard.adi_domain_status_message = "No email/domain available."
-
-            if not email or "@" not in email:
-                continue
-
-            domain = email.strip().lower().split("@")[-1]
-
-            approved_domains = wizard.env["res.partner"].search([
-                ("is_company", "=", True),
-                ("active", "=", True),
-                ("adi_approved_helpdesk_domain", "!=", False),
-            ]).mapped("adi_approved_helpdesk_domain")
-
-            approved_domains = [
-                approved_domain.strip().lower()
-                for approved_domain in approved_domains
-                if approved_domain
-            ]
-
-            companies = wizard.env["res.partner"].search([
-                ("is_company", "=", True),
-                ("active", "=", True),
-                ("adi_approved_helpdesk_domain", "=ilike", domain),
-            ])
-
-            if companies:
-                wizard.adi_domain_status = "approved"
-                wizard.adi_domain_status_message = (
-                    f"<strong>{domain}</strong> is an approved customer domain."
-                )
-                wizard.adi_suggested_company_names = "\n\n".join(
-                    companies.mapped("display_name")
-                )
-                wizard.adi_company_domain = str([
-                    ("id", "in", companies.ids),
-                    ("is_company", "=", True),
-                    ("active", "=", True),
-                ])
-                continue
-
-            closest_matches = difflib.get_close_matches(
-                domain,
-                approved_domains,
-                n=1,
-                cutoff=0.8,
-            )
-
-            wizard.adi_domain_status = "unknown"
-
-            if closest_matches:
-                wizard.adi_domain_status_message = (
-                    f"<strong>{domain}</strong> is not listed as an approved customer domain. "
-                    f"Did you mean <strong>{closest_matches[0]}</strong>?"
-                )
-            else:
-                wizard.adi_domain_status_message = (
-                    f"<strong>{domain}</strong> is not listed as an approved customer domain."
-                )
 
     # Compute guidance for severity selection to help the agent choose the right level based on the customer's
     # description of the problem and its impact on their operations. This is to encourage consistent severity 

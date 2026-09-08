@@ -13,7 +13,6 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
         domain=[
             ("is_company", "=", True),
             ("active", "=", True),
-            ("adi_approved_helpdesk_domain", "!=", False),
         ],
     )
 
