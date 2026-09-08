@@ -17,21 +17,29 @@
               primary="True">
 
         <!-- =====================================================
-             VIEW TICKET BUTTON
+             CUSTOMER REPLY HEADER
 
-             Matches the established ADI Helpdesk New Ticket style.
-             Fixed dimensions are deliberate for desktop Outlook.
+             Replace Odoo's complete notification header so the
+             message uses the standard ADI Helpdesk presentation
+             without duplicate separator lines.
+
+             Fixed button dimensions are deliberate for desktop
+             Outlook compatibility.
              ===================================================== -->
 
-        <xpath expr="//td[@t-if='has_button_access']"
+        <xpath expr="//div[@summary='o_mail_notification']"
                position="replace">
 
-            <td t-if="has_button_access">
+            <div style="
+                padding: 0;
+                margin: 0 0 14px 0;
+            ">
 
                 <table role="presentation"
                        cellspacing="0"
                        cellpadding="0"
                        border="0">
+
                     <tr>
 
                         <td width="140"
@@ -47,7 +55,8 @@
                                 vertical-align: middle;
                             ">
 
-                            <a t-att-href="button_access['url']"
+                            <a t-if="has_button_access"
+                               t-att-href="button_access['url']"
                                style="
                                    display: block;
                                    width: 140px;
@@ -64,9 +73,22 @@
                         </td>
 
                     </tr>
+
                 </table>
 
-            </td>
+                <hr width="100%"
+                    style="
+                        background-color: rgb(204,204,204);
+                        border: medium none;
+                        clear: both;
+                        display: block;
+                        font-size: 0;
+                        min-height: 1px;
+                        line-height: 0;
+                        margin: 12px 0 14px 0;
+                    "/>
+
+            </div>
 
         </xpath>
 
@@ -74,7 +96,8 @@
         <!-- =====================================================
              CUSTOMER REPLY CONTENT
 
-             No Customer / Contact / Ticket Type summary here.
+             No Customer / Contact / Ticket Type summary.
+
              The purpose is simply to make the incoming response
              quick to identify and read.
              ===================================================== -->
@@ -94,6 +117,37 @@
                 </p>
 
                 <div t-out="message.body"/>
+
+            </div>
+
+        </xpath>
+
+
+        <!-- =====================================================
+             END OF CUSTOMER MESSAGE
+
+             One separator only.
+
+             No ADI/company footer is shown because the message
+             itself was written by the customer.
+             ===================================================== -->
+
+        <xpath expr="//b[@t-out='company.name']/parent::div"
+               position="replace">
+
+            <div style="margin-top: 24px;">
+
+                <hr width="100%"
+                    style="
+                        background-color: rgb(204,204,204);
+                        border: medium none;
+                        clear: both;
+                        display: block;
+                        font-size: 0;
+                        min-height: 1px;
+                        line-height: 0;
+                        margin: 16px 0 4px 0;
+                    "/>
 
             </div>
 
