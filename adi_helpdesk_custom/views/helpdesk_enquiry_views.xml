@@ -63,10 +63,16 @@
                         <i class="fa fa-info-circle adi_wizard_guidance_icon"/>
 
                         <div>
-                            This email was received from a sender who could not be matched to a trusted Helpdesk contact. <br>
-                            Please either: <br> 
-                                - manually create a new contact and ticket, then mark this record "Complete"  <br>
-                                - block the sender using the button provided.<br>
+                            This email was received from a sender who could not be matched to a trusted Helpdesk contact.<br/>
+                            Please either:
+                            <ul class="mb-0 mt-1">
+                                <li>
+                                    manually create a new contact and ticket, then mark this record "Completed";
+                                </li>
+                                <li>
+                                    block the sender using the button provided.
+                                </li>
+                            </ul>
                         </div>
 
                     </div>
