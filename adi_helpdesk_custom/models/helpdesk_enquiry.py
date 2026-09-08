@@ -113,41 +113,31 @@ class AdiHelpdeskEnquiry(models.Model):
         })
 
         # -----------------------------------------------------
-        # Notify active Helpdesk Managers.
+        # Notify the configured ADI Helpdesk team followers.
+        #
+        # These are the partners configured under:
+        # Helpdesk Team -> Follow All Team's Tickets -> Followers.
         #
         # Use the configured ADI Helpdesk identity but retain
-        # Odoo's standard notification layout. This deliberately
-        # avoids changing inbound mail routing or introducing a
-        # dedicated email layout.
+        # Odoo's standard notification layout.
         # -----------------------------------------------------
 
-        manager_group = self.env.ref(
-            "helpdesk.group_helpdesk_manager",
-            raise_if_not_found=False,
-        )
+        helpdesk_team = self.env[
+            "helpdesk.team"
+        ].search([
+            ("alias_id.alias_name", "=", "helpdesk"),
+        ], limit=1)
 
-        if manager_group:
-            manager_partners = (
-                manager_group.users.filtered(
-                    lambda user: user.active
-                ).partner_id
+        if helpdesk_team:
+            notification_partners = (
+                helpdesk_team.message_partner_ids
             )
 
-            if manager_partners:
-                helpdesk_team = self.env[
-                    "helpdesk.team"
-                ].search([
-                    ("alias_id.alias_name", "=", "helpdesk"),
-                ], limit=1)
-
-                author = (
-                    helpdesk_team.adi_message_author_id
-                    if helpdesk_team
-                    else False
-                )
+            if notification_partners:
+                author = helpdesk_team.adi_message_author_id
 
                 notify_values = {
-                    "partner_ids": manager_partners.ids,
+                    "partner_ids": notification_partners.ids,
                     "subject": f"<<Customer Enquiry>> {subject}",
                     "body": Markup(
                         "<p>"
