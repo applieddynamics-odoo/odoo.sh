@@ -736,14 +736,13 @@ class HelpdeskTicket(models.Model):
 
     def message_post(self, **kwargs):
         """
-        Standardise the automatic Ticket Created message.
+        Standardise Helpdesk Ticket Created messages and
+        customer reply email presentation.
 
-        For tickets created from inbound email, the original email
-        body is already stored in ticket.description. Do not repeat
-        that same content in the Ticket Created chatter message.
-
-        Subsequent customer replies are normal Discussions and are
-        deliberately left unchanged.
+        - Ticket Created chatter remains minimal.
+        - Raw email content is preserved in ticket.description.
+        - Customer Discussions use the ADI customer reply layout.
+        - Internal Notes and other Helpdesk messages are untouched.
         """
 
         ticket_created_subtype = self.env.ref(
@@ -759,6 +758,10 @@ class HelpdeskTicket(models.Model):
             and subtype_id == ticket_created_subtype.id
         )
 
+        # ---------------------------------------------------------
+        # Ticket Created
+        # ---------------------------------------------------------
+
         if is_ticket_created_message:
             ticket = self[0]
             team = ticket.team_id
@@ -773,13 +776,10 @@ class HelpdeskTicket(models.Model):
             # Raw email ticket creation
             # -------------------------------------------------
             #
-            # For a new ticket created directly from email,
-            # preserve the incoming email body as the ticket
-            # Problem/description before removing the duplicate
-            # copy from chatter.
+            # Preserve the incoming email body as the Problem
+            # before removing the duplicate chatter content.
             #
-            # Website-created tickets already have description
-            # populated separately and are left untouched.
+            # Website tickets already have description populated.
             # -------------------------------------------------
 
             if (
@@ -791,11 +791,12 @@ class HelpdeskTicket(models.Model):
                     "description": original_body,
                 })
 
-            # Keep the Ticket Created chatter entry minimal.
+            # Keep Ticket Created chatter minimal.
             kwargs["body"] = ""
 
             kwargs["email_layout_xmlid"] = (
-                "adi_helpdesk_custom.adi_helpdesk_new_ticket_notification"
+                "adi_helpdesk_custom."
+                "adi_helpdesk_new_ticket_notification"
             )
 
             if author:
@@ -808,66 +809,61 @@ class HelpdeskTicket(models.Model):
                     ),
                 })
 
-            # ---------------------------------------------------------
-            # Customer reply email layout
-            # ---------------------------------------------------------
-            #
-            # Customer-originated Discussions remain authored by the
-            # customer, but are redistributed using the standard ADI
-            # Helpdesk visual presentation.
-            #
-            # Internal users, Notes and automatic Ticket Created messages
-            # are deliberately excluded.
-            # ---------------------------------------------------------
+        # ---------------------------------------------------------
+        # Customer reply email layout
+        # ---------------------------------------------------------
+        #
+        # This block MUST be outside the Ticket Created block.
+        #
+        # Customer-originated Discussions remain authored by the
+        # customer but are redistributed using the standard ADI
+        # Helpdesk presentation.
+        # ---------------------------------------------------------
 
-            if not is_ticket_created_message:
-                author_id = kwargs.get("author_id")
-                message_type = kwargs.get("message_type")
-                subtype_id = kwargs.get("subtype_id")
+        if not is_ticket_created_message:
+            author_id = kwargs.get("author_id")
+            message_type = kwargs.get("message_type")
+            subtype_id = kwargs.get("subtype_id")
 
-                discussion_subtype = self.env.ref(
-                    "mail.mt_comment",
-                    raise_if_not_found=False,
+            discussion_subtype = self.env.ref(
+                "mail.mt_comment",
+                raise_if_not_found=False,
+            )
+
+            author = (
+                self.env["res.partner"].browse(author_id).exists()
+                if author_id
+                else self.env["res.partner"]
+            )
+
+            internal_user = (
+                author.user_ids.filtered(
+                    lambda user:
+                        user.active
+                        and not user.share
                 )
+                if author
+                else self.env["res.users"]
+            )
 
-                author = (
-                    self.env["res.partner"].browse(author_id).exists()
-                    if author_id
-                    else self.env["res.partner"]
+            is_customer_reply = (
+                len(self) == 1
+                and author
+                and not internal_user
+                and message_type in ("email", "comment")
+                and discussion_subtype
+                and subtype_id == discussion_subtype.id
+            )
+
+            if is_customer_reply:
+                kwargs = dict(kwargs)
+
+                kwargs["email_layout_xmlid"] = (
+                    "adi_helpdesk_custom."
+                    "adi_helpdesk_customer_reply_notification"
                 )
-
-                internal_user = (
-                    author.user_ids.filtered(
-                        lambda user:
-                            user.active
-                            and not user.share
-                    )
-                    if author
-                    else self.env["res.users"]
-                )
-
-                is_customer_reply = (
-                    len(self) == 1
-                    and author
-                    and not internal_user
-                    and message_type in ("email", "comment")
-                    and discussion_subtype
-                    and subtype_id == discussion_subtype.id
-                )
-
-                if is_customer_reply:
-                    kwargs = dict(kwargs)
-
-                    kwargs["email_layout_xmlid"] = (
-                        "adi_helpdesk_custom."
-                        "adi_helpdesk_customer_reply_notification"
-                    )
-
-
-
 
         return super().message_post(**kwargs)
-
 
     def message_post_with_source(self, source_ref, *args, **kwargs):
         """Set automated Helpdesk identities and simplify rating chatter."""
