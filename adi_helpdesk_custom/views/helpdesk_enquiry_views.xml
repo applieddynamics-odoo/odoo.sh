@@ -56,7 +56,7 @@
 
                 <sheet>
 
-                    <div class="adi_wizard_guidance o_form_full_width"
+                    <div class="adi_wizard_guidance o_form_full_width mb-3"
                          colspan="2"
                          invisible="state != 'new'">
 
