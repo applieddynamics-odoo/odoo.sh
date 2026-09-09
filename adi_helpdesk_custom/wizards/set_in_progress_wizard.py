@@ -443,14 +443,33 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     def _onchange_contact_email(self):
         self.matched_contact_id = False
         self.create_contact = True
+        self.company_id = False
 
-        contact = self._adi_find_contact_by_email(self.contact_email)
+        contact = self._adi_find_contact_by_email(
+            self.contact_email
+        )
 
-        if contact:
-            self.matched_contact_id = contact.id
-            self.contact_name = contact.name
-            self.company_id = contact.parent_id.id or contact.commercial_partner_id.id
-            self.create_contact = False
+        if not contact:
+            return
+
+        self.matched_contact_id = contact.id
+        self.contact_name = contact.name
+        self.create_contact = False
+
+        allowed_companies = (
+            self.ticket_id._adi_helpdesk_allowed_customer_companies(
+                contact
+            )
+        )
+
+        # Only preselect a company where there is exactly one
+        # possible customer.
+        #
+        # Partner contacts with several possible customers must
+        # remain blank until the user selects the correct company.
+        
+        if len(allowed_companies) == 1:
+            self.company_id = allowed_companies.id
 
     # Compute the contract date range and status based on the selected charge-to order. 
     # This is to help the agent quickly identify whether the customer is in contract, 
