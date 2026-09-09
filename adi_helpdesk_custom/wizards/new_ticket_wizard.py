@@ -6,16 +6,16 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
     _name = "adi.helpdesk.new.ticket.wizard"
     _description = "Create Internal Helpdesk Ticket"
 
-    selectable_company_ids = fields.Many2many(
-        "res.partner",
-        string="Selectable Companies",
-        compute="_compute_selectable_company_ids",
-    )
 
     company_id = fields.Many2one(
         "res.partner",
         string="Company",
         required=True,
+        domain=[
+            ("is_company", "=", True),
+            ("active", "=", True),
+            ("adi_helpdesk_approved_company", "=", True),
+        ],
     )
 
     allowed_contact_ids = fields.Many2many(
@@ -68,68 +68,6 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
         required=True,
     )
 
-    # ---------------------------------------------------------
-    # Companies available in the manual New Ticket wizard
-    # ---------------------------------------------------------
-
-    def _compute_selectable_company_ids(self):
-        Partner = self.env["res.partner"]
-
-        approved_companies = Partner.search([
-            ("is_company", "=", True),
-            ("active", "=", True),
-            ("adi_helpdesk_approved_company", "=", True),
-        ])
-
-        # Approved companies that already have at least one usable
-        # direct contact.
-        direct_contacts = Partner.search([
-            ("is_company", "=", False),
-            ("active", "=", True),
-            ("email", "!=", False),
-            ("parent_id", "in", approved_companies.ids),
-        ])
-
-        selectable_company_ids = set(
-            direct_contacts.mapped("parent_id").ids
-        )
-
-        # Helpdesk Partners that have at least one usable contact.
-        helpdesk_partners = Partner.search([
-            ("is_company", "=", True),
-            ("active", "=", True),
-            ("adi_helpdesk_partner", "=", True),
-            ("child_ids.is_company", "=", False),
-            ("child_ids.active", "=", True),
-            ("child_ids.email", "!=", False),
-        ])
-
-        # Any approved customer company supported by one of those
-        # Partners is also useful in the manual wizard, even when
-        # the customer company has no direct emailed contact.
-        for partner in helpdesk_partners:
-            supported_companies = (
-                partner.adi_helpdesk_customer_company_ids.filtered(
-                    lambda company:
-                        company.active
-                        and company.is_company
-                        and company.adi_helpdesk_approved_company
-                )
-            )
-
-            selectable_company_ids.update(
-                supported_companies.ids
-            )
-
-            # If the Partner itself is also an approved customer,
-            # its own contacts may raise tickets for its equipment.
-            if partner.adi_helpdesk_approved_company:
-                selectable_company_ids.add(partner.id)
-
-        for wizard in self:
-            wizard.selectable_company_ids = Partner.browse(
-                list(selectable_company_ids)
-            )
 
     # ---------------------------------------------------------
     # Contacts authorised for the selected customer company
