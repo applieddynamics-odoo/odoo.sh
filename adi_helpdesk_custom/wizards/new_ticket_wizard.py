@@ -6,48 +6,34 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
     _name = "adi.helpdesk.new.ticket.wizard"
     _description = "Create Internal Helpdesk Ticket"
 
+    selectable_company_ids = fields.Many2many(
+        "res.partner",
+        string="Selectable Companies",
+        compute="_compute_selectable_company_ids",
+    )
+
     company_id = fields.Many2one(
         "res.partner",
         string="Company",
         required=True,
-        domain=[
-            ("is_company", "=", True),
-            ("active", "=", True),
-            ("adi_helpdesk_approved_company", "=", True),
-            ("child_ids.is_company", "=", False),
-            ("child_ids.active", "=", True),
-            ("child_ids.email", "!=", False),
-        ],
+    )
+
+    allowed_contact_ids = fields.Many2many(
+        "res.partner",
+        string="Allowed Contacts",
+        compute="_compute_allowed_contact_ids",
     )
 
     contact_id = fields.Many2one(
         "res.partner",
         string="Contact",
         required=True,
-        domain="[('parent_id', '=', company_id), ('is_company', '=', False), ('active', '=', True), ('email', '!=', False)]",
         context={"adi_show_contact_name_only": True},
     )
 
     email = fields.Char(
         string="Email",
         readonly=True,
-    )
-
-    is_helpdesk_partner = fields.Boolean(
-        related="company_id.adi_helpdesk_partner",
-        string="Helpdesk Partner",
-        readonly=True,
-    )
-
-    allowed_customer_company_ids = fields.Many2many(
-        "res.partner",
-        string="Allowed Customer Companies",
-        compute="_compute_allowed_customer_company_ids",
-    )
-
-    customer_company_id = fields.Many2one(
-        "res.partner",
-        string="Customer Company",
     )
 
     ticket_type_id = fields.Many2one(
@@ -82,62 +68,118 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
         required=True,
     )
 
-    @api.depends(
-        "company_id",
-        "company_id.adi_helpdesk_partner",
-        "company_id.adi_helpdesk_approved_company",
-        "company_id.adi_helpdesk_customer_company_ids",
-        "company_id.adi_helpdesk_customer_company_ids.active",
-        "company_id.adi_helpdesk_customer_company_ids.adi_helpdesk_approved_company",
-    )
-    def _compute_allowed_customer_company_ids(self):
-        for wizard in self:
-            allowed_companies = self.env["res.partner"]
+    # ---------------------------------------------------------
+    # Companies available in the manual New Ticket wizard
+    # ---------------------------------------------------------
 
-            if (
-                wizard.company_id
-                and wizard.company_id.adi_helpdesk_partner
-            ):
-                # The Partner itself may be the actual customer
-                # where it owns equipment being supported.
-                if (
-                    wizard.company_id.active
-                    and wizard.company_id.is_company
-                    and wizard.company_id.adi_helpdesk_approved_company
-                ):
-                    allowed_companies |= wizard.company_id
+    def _compute_selectable_company_ids(self):
+        Partner = self.env["res.partner"]
 
-                # Add the approved customer companies that this
-                # Partner is authorised to support.
-                allowed_companies |= (
-                    wizard.company_id
-                    .adi_helpdesk_customer_company_ids
-                    .filtered(
-                        lambda company:
-                            company.active
-                            and company.is_company
-                            and company.adi_helpdesk_approved_company
-                    )
+        approved_companies = Partner.search([
+            ("is_company", "=", True),
+            ("active", "=", True),
+            ("adi_helpdesk_approved_company", "=", True),
+        ])
+
+        # Approved companies that already have at least one usable
+        # direct contact.
+        direct_contacts = Partner.search([
+            ("is_company", "=", False),
+            ("active", "=", True),
+            ("email", "!=", False),
+            ("parent_id", "in", approved_companies.ids),
+        ])
+
+        selectable_company_ids = set(
+            direct_contacts.mapped("parent_id").ids
+        )
+
+        # Helpdesk Partners that have at least one usable contact.
+        helpdesk_partners = Partner.search([
+            ("is_company", "=", True),
+            ("active", "=", True),
+            ("adi_helpdesk_partner", "=", True),
+            ("child_ids.is_company", "=", False),
+            ("child_ids.active", "=", True),
+            ("child_ids.email", "!=", False),
+        ])
+
+        # Any approved customer company supported by one of those
+        # Partners is also useful in the manual wizard, even when
+        # the customer company has no direct emailed contact.
+        for partner in helpdesk_partners:
+            supported_companies = (
+                partner.adi_helpdesk_customer_company_ids.filtered(
+                    lambda company:
+                        company.active
+                        and company.is_company
+                        and company.adi_helpdesk_approved_company
                 )
+            )
 
-            wizard.allowed_customer_company_ids = allowed_companies
+            selectable_company_ids.update(
+                supported_companies.ids
+            )
+
+            # If the Partner itself is also an approved customer,
+            # its own contacts may raise tickets for its equipment.
+            if partner.adi_helpdesk_approved_company:
+                selectable_company_ids.add(partner.id)
+
+        for wizard in self:
+            wizard.selectable_company_ids = Partner.browse(
+                list(selectable_company_ids)
+            )
+
+    # ---------------------------------------------------------
+    # Contacts authorised for the selected customer company
+    # ---------------------------------------------------------
+
+    @api.depends("company_id")
+    def _compute_allowed_contact_ids(self):
+        Partner = self.env["res.partner"]
+
+        for wizard in self:
+            if not wizard.company_id:
+                wizard.allowed_contact_ids = Partner
+                continue
+
+            # Direct contacts belonging to the selected customer.
+            direct_contacts = Partner.search([
+                ("parent_id", "=", wizard.company_id.id),
+                ("is_company", "=", False),
+                ("active", "=", True),
+                ("email", "!=", False),
+            ])
+
+            # Partner companies explicitly authorised to support
+            # this customer company.
+            helpdesk_partners = Partner.search([
+                ("is_company", "=", True),
+                ("active", "=", True),
+                ("adi_helpdesk_partner", "=", True),
+                (
+                    "adi_helpdesk_customer_company_ids",
+                    "in",
+                    [wizard.company_id.id],
+                ),
+            ])
+
+            partner_contacts = Partner.search([
+                ("parent_id", "in", helpdesk_partners.ids),
+                ("is_company", "=", False),
+                ("active", "=", True),
+                ("email", "!=", False),
+            ])
+
+            wizard.allowed_contact_ids = (
+                direct_contacts | partner_contacts
+            )
 
     @api.onchange("company_id")
     def _onchange_company_id(self):
         self.contact_id = False
         self.email = False
-        self.customer_company_id = False
-
-        return {
-            "domain": {
-                "contact_id": [
-                    ("parent_id", "=", self.company_id.id),
-                    ("is_company", "=", False),
-                    ("active", "=", True),
-                    ("email", "!=", False),
-                ]
-            }
-        }
 
     @api.onchange("contact_id")
     def _onchange_contact_id(self):
@@ -152,37 +194,11 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
                 "Please update the contact record before creating the ticket."
             )
 
-        # ---------------------------------------------------------
-        # Determine the actual customer company.
-        #
-        # Normal company:
-        #   The selected Company is the customer.
-        #
-        # Helpdesk Partner:
-        #   The user must explicitly select which authorised
-        #   customer company the ticket relates to.
-        # ---------------------------------------------------------
-
-        if self.is_helpdesk_partner:
-            if not self.customer_company_id:
-                raise UserError(
-                    "Please select the Customer Company that this "
-                    "Partner is raising the ticket for."
-                )
-
-            if (
-                self.customer_company_id
-                not in self.allowed_customer_company_ids
-            ):
-                raise UserError(
-                    "The selected Customer Company is not authorised "
-                    "for this Helpdesk Partner."
-                )
-
-            actual_customer_company = self.customer_company_id
-
-        else:
-            actual_customer_company = self.company_id
+        if self.contact_id not in self.allowed_contact_ids:
+            raise UserError(
+                "The selected contact is not authorised to support "
+                "the selected customer company."
+            )
 
         new_stage = self.env["helpdesk.stage"].search(
             [("name", "=", "New")],
@@ -211,13 +227,13 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
                 self.adi_customer_input_serial_number
             ),
             "adi_customer_reference_number": (
-                self.adi_customer_reference_number
-                or "None"
+                self.adi_customer_reference_number or "None"
             ),
             "adi_new_contact_review_required": False,
-            "adi_matched_company_id": (
-                actual_customer_company.id
-            ),
+
+            # The Company selected at the start of the manual
+            # process is always the actual customer company.
+            "adi_matched_company_id": self.company_id.id,
         })
 
         return {

@@ -8,28 +8,23 @@
 
             <form string="New Ticket">
 
-                <!-- Supporting fields for Partner logic -->
-                <field name="is_helpdesk_partner" invisible="1"/>
-                <field name="allowed_customer_company_ids" invisible="1"/>
+                <field name="selectable_company_ids" invisible="1"/>
+                <field name="allowed_contact_ids" invisible="1"/>
 
                 <group>
 
                     <group string="Customer">
 
-                        <field name="company_id"/>
+                        <field name="company_id"
+                               domain="[('id', 'in', selectable_company_ids)]"
+                               options="{'no_create': True, 'no_create_edit': True}"/>
 
                         <field name="contact_id"
+                               domain="[('id', 'in', allowed_contact_ids)]"
                                context="{'adi_show_contact_name_only': True}"
                                options="{'no_create': True, 'no_create_edit': True}"/>
 
                         <field name="email"/>
-
-                        <field name="customer_company_id"
-                               string="Customer Company"
-                               domain="[('id', 'in', allowed_customer_company_ids)]"
-                               options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
-                               invisible="not is_helpdesk_partner"
-                               required="is_helpdesk_partner"/>
 
                     </group>
 
