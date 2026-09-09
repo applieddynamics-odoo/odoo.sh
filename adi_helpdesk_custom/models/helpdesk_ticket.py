@@ -1099,6 +1099,10 @@ class HelpdeskTicket(models.Model):
 
     @api.depends(
         "partner_id",
+        "partner_id.parent_id",
+        "partner_id.parent_id.adi_helpdesk_partner",
+        "adi_matched_company_id",
+        "adi_matched_company_id.name",
         "adi_submitted_email",
         "adi_submitted_company_name",
         "adi_submitted_contact_name",
@@ -1107,35 +1111,111 @@ class HelpdeskTicket(models.Model):
         Partner = self.env["res.partner"]
 
         for ticket in self:
-            company_name = ticket.adi_submitted_company_name or False
-            contact_name = ticket.adi_submitted_contact_name or False
+            company_name = (
+                ticket.adi_submitted_company_name
+                or False
+            )
+
+            contact_name = (
+                ticket.adi_submitted_contact_name
+                or False
+            )
+
+            # -----------------------------------------------------
+            # Recognised contact
+            # -----------------------------------------------------
 
             if ticket.partner_id:
                 contact = ticket.partner_id
-                company = contact.commercial_partner_id
 
-                contact_name = contact.name or contact_name
+                contact_name = (
+                    contact.name
+                    or contact_name
+                )
 
-                if company:
-                    company_name = company.name or company_name
+                # The explicitly resolved customer company always
+                # takes priority.
+                if ticket.adi_matched_company_id:
+                    company_name = (
+                        ticket.adi_matched_company_id.name
+                        or company_name
+                    )
+
+                else:
+                    parent_company = (
+                        contact.parent_id
+                        or contact.commercial_partner_id
+                    )
+
+                    # A Helpdesk Partner contact may represent more
+                    # than one customer company. Until Set In Progress
+                    # resolves the customer, do not present the Partner
+                    # itself as though it were the customer.
+                    if (
+                        parent_company
+                        and parent_company.adi_helpdesk_partner
+                    ):
+                        company_name = "Partner - Company TBD"
+
+                    elif parent_company:
+                        company_name = (
+                            parent_company.name
+                            or company_name
+                        )
+
+            # -----------------------------------------------------
+            # Submitted email without partner_id
+            # -----------------------------------------------------
 
             elif ticket.adi_submitted_email:
                 contact = Partner.search([
-                    ("email", "=ilike", ticket.adi_submitted_email),
+                    (
+                        "email",
+                        "=ilike",
+                        ticket.adi_submitted_email,
+                    ),
                     ("active", "=", True),
                 ], limit=1)
 
                 if contact:
-                    contact_name = contact.name or contact_name
+                    contact_name = (
+                        contact.name
+                        or contact_name
+                    )
 
-                    company = contact.commercial_partner_id
-                    if company:
-                        company_name = company.name or company_name
+                    if ticket.adi_matched_company_id:
+                        company_name = (
+                            ticket.adi_matched_company_id.name
+                            or company_name
+                        )
 
-            ticket.adi_notification_company_name = company_name or "-"
-            ticket.adi_notification_contact_name = contact_name or "-"            
+                    else:
+                        parent_company = (
+                            contact.parent_id
+                            or contact.commercial_partner_id
+                        )
 
+                        if (
+                            parent_company
+                            and parent_company.adi_helpdesk_partner
+                        ):
+                            company_name = "Partner - Company TBD"
 
+                        elif parent_company:
+                            company_name = (
+                                parent_company.name
+                                or company_name
+                            )
+
+            ticket.adi_notification_company_name = (
+                company_name
+                or "-"
+            )
+
+            ticket.adi_notification_contact_name = (
+                contact_name
+                or "-"
+            )
 
     #-------------------------------------------------------------
     # Follower Subtype Configuration

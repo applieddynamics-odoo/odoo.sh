@@ -226,24 +226,19 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             if "@" not in name:
                 res["contact_name"] = name
 
-            if ticket.adi_matched_company_id:
-                res["company_id"] = ticket.adi_matched_company_id.id
-
-            contact = self._adi_find_contact_by_email(
-                res.get("contact_email")
-            )
-
-            if contact:
-                res.update({
-                    "matched_contact_id": contact.id,
-                    "contact_name": contact.name,
-                    "create_contact": False,
-                })
-
-                # Do not infer the company again here if ticket creation
-                # deliberately left it unresolved for a Partner contact.
                 if ticket.adi_matched_company_id:
                     res["company_id"] = ticket.adi_matched_company_id.id
+
+                contact = self._adi_find_contact_by_email(
+                    res.get("contact_email")
+                )
+
+                if contact:
+                    res.update({
+                        "matched_contact_id": contact.id,
+                        "contact_name": contact.name,
+                        "create_contact": False,
+                    })
 
         internal_followers = ticket.message_partner_ids.user_ids.filtered(
             lambda user:
