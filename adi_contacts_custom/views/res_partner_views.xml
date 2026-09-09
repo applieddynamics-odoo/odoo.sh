@@ -7,10 +7,22 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
 
         <field name="arch" type="xml">
+
             <xpath expr="//field[@name='website']" position="after">
+
                 <field name="adi_helpdesk_approved_company"
                        invisible="not is_company"/>
+
+                <field name="adi_helpdesk_partner"
+                       invisible="not is_company"/>
+
+                <field name="adi_helpdesk_customer_company_ids"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"
+                       invisible="not is_company or not adi_helpdesk_partner"/>
+
             </xpath>
+
         </field>
     </record>
 
