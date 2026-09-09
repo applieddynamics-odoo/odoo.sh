@@ -32,6 +32,19 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
         domain="[('is_company', '=', True)]",
     )
 
+    allowed_customer_company_ids = fields.Many2many(
+        "res.partner",
+        string="Allowed Customer Companies",
+        compute="_compute_allowed_customer_company_ids",
+    )
+
+    adi_customer_company_selection_required = fields.Boolean(
+        string="Customer Company Selection Required",
+        compute="_compute_allowed_customer_company_ids",
+    )
+
+
+
     contact_name = fields.Char(string="Contact Name")
     contact_email = fields.Char(string="Contact Email")
 
@@ -112,11 +125,18 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
     )
     def _compute_adi_charge_to_order_domain(self):
         for wizard in self:
-            company = (
-                wizard.company_id
-                or wizard.matched_contact_id.commercial_partner_id
-                or wizard.ticket_id.partner_id.commercial_partner_id
-            )
+            if (
+                wizard.adi_customer_company_selection_required
+                and not wizard.company_id
+            ):
+                company = False
+            else:
+                company = (
+                    wizard.company_id
+                    or wizard.ticket_id.adi_matched_company_id
+                    or wizard.matched_contact_id.commercial_partner_id
+                    or wizard.ticket_id.partner_id.commercial_partner_id
+                )
 
             if not company:
                 wizard.adi_charge_to_order_domain = [
@@ -206,18 +226,24 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             if "@" not in name:
                 res["contact_name"] = name
 
-        if ticket.adi_matched_company_id:
-            res["company_id"] = ticket.adi_matched_company_id.id
+            if ticket.adi_matched_company_id:
+                res["company_id"] = ticket.adi_matched_company_id.id
 
-        contact = self._adi_find_contact_by_email(res.get("contact_email"))
+            contact = self._adi_find_contact_by_email(
+                res.get("contact_email")
+            )
 
-        if contact:
-            res.update({
-                "matched_contact_id": contact.id,
-                "contact_name": contact.name,
-                "company_id": contact.parent_id.id or contact.commercial_partner_id.id,
-                "create_contact": False,
-            })
+            if contact:
+                res.update({
+                    "matched_contact_id": contact.id,
+                    "contact_name": contact.name,
+                    "create_contact": False,
+                })
+
+                # Do not infer the company again here if ticket creation
+                # deliberately left it unresolved for a Partner contact.
+                if ticket.adi_matched_company_id:
+                    res["company_id"] = ticket.adi_matched_company_id.id
 
         internal_followers = ticket.message_partner_ids.user_ids.filtered(
             lambda user:
@@ -244,6 +270,19 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             raise UserError(
                 "Please select an Assigned to user before continuing."
             )
+
+        if self.adi_customer_company_selection_required:
+            if not self.company_id:
+                raise UserError(
+                    "Please select the Customer Company that this "
+                    "ticket relates to."
+                )
+
+            if self.company_id not in self.allowed_customer_company_ids:
+                raise UserError(
+                    "The selected Customer Company is not authorised "
+                    "for this Helpdesk Partner."
+                )
 
         if not self.adi_charge_type:
             raise UserError(
@@ -280,6 +319,9 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
                 "Unknown",
             )
         }
+
+        if self.adi_customer_company_selection_required:
+            values["adi_matched_company_id"] = self.company_id.id
 
         if self.ticket_id.adi_new_contact_review_required:
             self._adi_prepare_contact_review_values(values)
@@ -514,3 +556,41 @@ class AdiHelpdeskSetInProgressWizard(models.TransientModel):
             wizard.adi_charge_to_order_id = False
             wizard.adi_contract_date_range = False
             wizard.adi_contract_status = "unknown"   
+
+
+    @api.depends(
+        "ticket_id",
+        "ticket_id.partner_id",
+        "ticket_id.adi_matched_company_id",
+    )
+    def _compute_allowed_customer_company_ids(self):
+        Partner = self.env["res.partner"]
+
+        for wizard in self:
+            wizard.allowed_customer_company_ids = Partner
+            wizard.adi_customer_company_selection_required = False
+
+            ticket = wizard.ticket_id
+
+            if not ticket or not ticket.partner_id:
+                continue
+
+            # If the ticket already has an explicitly resolved customer,
+            # there is nothing for Set In Progress to ask.
+            #
+            # This is particularly important for manually created
+            # tickets, where New Ticket has already selected the
+            # customer company.
+            if ticket.adi_matched_company_id:
+                continue
+
+            allowed_companies = (
+                ticket._adi_helpdesk_allowed_customer_companies(
+                    ticket.partner_id
+                )
+            )
+
+            wizard.allowed_customer_company_ids = allowed_companies
+
+            if len(allowed_companies) > 1:
+                wizard.adi_customer_company_selection_required = True            

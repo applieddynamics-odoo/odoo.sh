@@ -301,6 +301,50 @@ class HelpdeskTicket(models.Model):
     )
 
 
+    def _adi_helpdesk_allowed_customer_companies(self, contact):
+        """
+        Return the customer companies that a recognised Helpdesk
+        contact is authorised to raise tickets for.
+
+        Normal contact:
+            parent company only.
+
+        Helpdesk Partner contact:
+            Partner itself, where approved, plus the active approved
+            customer companies linked to that Partner.
+        """
+
+        Partner = self.env["res.partner"]
+
+        if not contact or not contact.parent_id:
+            return Partner
+
+        parent_company = contact.parent_id
+
+        if not parent_company.adi_helpdesk_partner:
+            return parent_company
+
+        allowed_companies = Partner
+
+        if (
+            parent_company.active
+            and parent_company.adi_helpdesk_approved_company
+        ):
+            allowed_companies |= parent_company
+
+        allowed_companies |= (
+            parent_company
+            .adi_helpdesk_customer_company_ids
+            .filtered(
+                lambda company:
+                    company.active
+                    and company.is_company
+                    and company.adi_helpdesk_approved_company
+            )
+        )
+
+        return allowed_companies
+
     @api.model_create_multi
     def create(self, vals_list):
         now = fields.Datetime.now()
@@ -396,15 +440,34 @@ class HelpdeskTicket(models.Model):
                 continue
 
             if routing["trusted_contact_id"]:
-                contact = self.env["res.partner"].browse(routing["trusted_contact_id"])
+                contact = self.env["res.partner"].browse(
+                    routing["trusted_contact_id"]
+                )
+
+                allowed_companies = (
+                    self._adi_helpdesk_allowed_customer_companies(contact)
+                )
+
                 values = {
                     "partner_id": contact.id,
                     "partner_email": submitted_email,
                     "adi_new_contact_review_required": False,
-                    "adi_matched_company_id": contact.commercial_partner_id.id,
                 }
+
+                # Where there is exactly one possible customer company,
+                # resolve it immediately.
+                #
+                # Where a Helpdesk Partner contact can act for several
+                # companies, leave the customer unresolved until the
+                # Set In Progress wizard.
+                if len(allowed_companies) == 1:
+                    values["adi_matched_company_id"] = allowed_companies.id
+                else:
+                    values["adi_matched_company_id"] = False
+
                 if new_stage:
                     values["stage_id"] = new_stage.id
+
                 ticket.write(values)
                 continue
 

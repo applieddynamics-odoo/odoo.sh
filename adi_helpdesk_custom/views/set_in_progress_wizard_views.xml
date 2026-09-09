@@ -9,6 +9,8 @@
                 <field name="adi_charge_to_order_domain" invisible="1"/>
                 <field name="adi_charge_type" invisible="1"/>
                 <field name="ticket_id" invisible="1"/>
+                <field name="allowed_customer_company_ids" invisible="1"/>
+                <field name="adi_customer_company_selection_required" invisible="1"/>
 
                 <div class="o_form_full_width mb-3"
                     invisible="not adi_new_contact_review_required">
@@ -57,10 +59,19 @@
                     <!-- Assignment - left column -->
                     <group string="Assignment">
 
+                        <field name="company_id"
+                            string="Customer Company"
+                            class="adi_wizard_select"
+                            domain="[('id', 'in', allowed_customer_company_ids)]"
+                            options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                            invisible="not adi_customer_company_selection_required"
+                            required="adi_customer_company_selection_required"/>
+
                         <field name="user_id"
                             string="Lead"
                             class="adi_wizard_select"
                             options="{'no_create': True}"/>
+
 
                         <field name="adi_interested_user_ids"
                             string="Followers"
