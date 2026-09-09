@@ -141,7 +141,6 @@ class MailThread(models.AbstractModel):
             blocked_email = Blocklist.search([
                 ("block_type", "=", "email"),
                 ("value", "=", sender_email),
-                ("active", "=", True),
             ], limit=1)
 
             if blocked_email:

@@ -25,9 +25,6 @@ class AdiHelpdeskBlocklist(models.Model):
         string="Reason",
     )
 
-    active = fields.Boolean(
-        default=True,
-    )
 
     _sql_constraints = [
         (

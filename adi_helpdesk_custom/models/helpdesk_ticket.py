@@ -361,7 +361,6 @@ class HelpdeskTicket(models.Model):
                 blocked_email = self.env["adi.helpdesk.blocklist"].search([
                     ("block_type", "=", "email"),
                     ("value", "=", submitted_email),
-                    ("active", "=", True),
                 ], limit=1)
 
                 if blocked_email:

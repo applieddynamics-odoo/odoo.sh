@@ -10,7 +10,6 @@
                 <field name="reason"/>
                 <field name="create_date" string="Blocked Date"/>
                 <field name="create_uid" string="Blocked By"/>
-                <field name="active"/>
             </tree>
         </field>
     </record>
@@ -25,7 +24,6 @@
 
                     <group string="Blocked Sender">
                         <field name="value"/>
-                        <field name="active"/>
                     </group>
 
                     <group string="Reason">
@@ -63,14 +61,6 @@
                 <filter name="blocked_last_14_days"
                         string="Blocked Last 14 Days"
                         domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=14)).strftime('%Y-%m-%d'))]"/>
-
-                <filter name="active"
-                        string="Active"
-                        domain="[('active', '=', True)]"/>
-
-                <filter name="inactive"
-                        string="Inactive"
-                        domain="[('active', '=', False)]"/>
 
                 <group expand="0" string="Group By">
                     <filter name="group_by_value"
