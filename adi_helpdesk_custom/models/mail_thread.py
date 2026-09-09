@@ -89,7 +89,6 @@ class MailThread(models.AbstractModel):
         if not sender_email or "@" not in sender_email:
             return routes
 
-        sender_domain = sender_email.rsplit("@", 1)[-1]
 
         # -----------------------------------------------------
         # Process each route returned by standard Odoo.
