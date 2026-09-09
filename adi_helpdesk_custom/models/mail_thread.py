@@ -145,13 +145,7 @@ class MailThread(models.AbstractModel):
                 ("active", "=", True),
             ], limit=1)
 
-            blocked_domain = Blocklist.search([
-                ("block_type", "=", "domain"),
-                ("value", "=", sender_domain),
-                ("active", "=", True),
-            ], limit=1)
-
-            if blocked_email or blocked_domain:
+            if blocked_email:
                 # Deliberately discard repeat blocked traffic.
                 continue
 

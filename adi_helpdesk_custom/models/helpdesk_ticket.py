@@ -355,25 +355,16 @@ class HelpdeskTicket(models.Model):
                 "email": submitted_email,
                 "blocked": False,
                 "trusted_contact_id": False,
-                "approved_domain": False,
             }
 
             if submitted_email and "@" in submitted_email:
-                domain = submitted_email.split("@")[-1].strip()
-
                 blocked_email = self.env["adi.helpdesk.blocklist"].search([
                     ("block_type", "=", "email"),
                     ("value", "=", submitted_email),
                     ("active", "=", True),
                 ], limit=1)
 
-                blocked_domain = self.env["adi.helpdesk.blocklist"].search([
-                    ("block_type", "=", "domain"),
-                    ("value", "=", domain),
-                    ("active", "=", True),
-                ], limit=1)
-
-                if blocked_email or blocked_domain:
+                if blocked_email:
                     routing["blocked"] = True
                 else:
                     existing_contact = self.env["res.partner"].search([
