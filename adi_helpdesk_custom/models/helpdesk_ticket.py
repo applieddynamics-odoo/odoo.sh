@@ -933,7 +933,7 @@ class HelpdeskTicket(models.Model):
                 message.write({
                     "body": """
                         <div>
-                            Customer acknowledgement sent
+                            Helpdesk ticket has been created
                         </div>
                     """,
                 })
