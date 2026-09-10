@@ -1319,7 +1319,14 @@ class HelpdeskTicket(models.Model):
 
         return result
 
-    def _adi_process_additional_email_recipients(self, msg):
+    def _adi_process_additional_email_recipients(
+        self,
+        msg,
+        existing_follower_partner_ids=None,
+    ):
+        existing_follower_partner_ids = (
+            existing_follower_partner_ids or set()
+        )
         """
         Review additional visible recipients on an inbound customer reply.
 
@@ -1478,6 +1485,30 @@ class HelpdeskTicket(models.Model):
                     )
 
                 continue
+
+            # Odoo may already have subscribed a recognised To / CC
+            # recipient while processing the inbound email.
+            #
+            # Remove it only if:
+            # - it was NOT already a follower before this email; and
+            # - it is NOT authorised for this ticket's customer.
+            current_follower_ids = set(
+                self.message_partner_ids.ids
+            )
+
+            newly_added_unauthorised_ids = [
+                contact.id
+                for contact in matching_contacts
+                if (
+                    contact.id in current_follower_ids
+                    and contact.id not in existing_follower_partner_ids
+                )
+            ]
+
+            if newly_added_unauthorised_ids:
+                self.message_unsubscribe(
+                    partner_ids=newly_added_unauthorised_ids,
+                )
 
             # -----------------------------------------------------
             # Ambiguous or unauthorised: management review
@@ -1698,12 +1729,25 @@ class HelpdeskTicket(models.Model):
                 # than risk losing genuine message content.
                 pass
 
+        # Remember who was already following the ticket before
+        # Odoo processes the incoming email.
+        #
+        # This lets us distinguish an existing legitimate follower
+        # from somebody Odoo has just subscribed because they were
+        # included in To / CC on this particular message.
+        existing_follower_partner_ids = set(
+            self.message_partner_ids.ids
+        )
+
         result = super().message_update(
             msg,
             update_vals=update_vals,
         )
 
-        self._adi_process_additional_email_recipients(msg)
+        self._adi_process_additional_email_recipients(
+            msg,
+            existing_follower_partner_ids=existing_follower_partner_ids,
+        )
 
         return result
 
