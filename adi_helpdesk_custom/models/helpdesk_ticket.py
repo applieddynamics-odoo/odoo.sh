@@ -855,7 +855,13 @@ class HelpdeskTicket(models.Model):
                 and not internal_user
                 and message_type in ("email", "comment")
                 and discussion_subtype
-                and subtype_id == discussion_subtype.id
+                and (
+                    subtype_id == discussion_subtype.id
+                    or (
+                        subtype_id is None
+                        and message_type == "comment"
+                    )
+                )
             )
 
             if is_customer_reply:
