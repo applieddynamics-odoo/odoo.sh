@@ -216,7 +216,7 @@
              ============================================================ -->
 
         <xpath expr="//td[@t-if='has_button_access']"
-               position="replace">
+            position="replace">
 
             <!-- Customer Enquiry -->
             <t t-if="message.model == 'adi.helpdesk.enquiry'">
@@ -235,24 +235,25 @@
                     ">
 
                     <a t-att-href="button_access['url']"
-                       style="
-                           display:block;
-                           width:140px;
-                           line-height:40px;
-                           font-family:Verdana, Arial, sans-serif;
-                           font-size:14px;
-                           font-weight:bold;
-                           color:#FFFFFF;
-                           text-decoration:none;
-                       ">
+                    style="
+                        display:block;
+                        width:140px;
+                        line-height:40px;
+                        font-family:Verdana, Arial, sans-serif;
+                        font-size:14px;
+                        font-weight:bold;
+                        color:#FFFFFF;
+                        text-decoration:none;
+                    ">
                         View Enquiry
                     </a>
 
                 </td>
 
             </t>
+
             <!-- Helpdesk Ticket -->
-            <t t-if="
+            <t t-elif="
                 message.model == 'helpdesk.ticket'
                 and has_button_access
             ">
@@ -288,7 +289,7 @@
 
             </t>
 
-            <!-- All other notifications -->
+            <!-- All other applications -->
             <t t-else="">
 
                 <td t-if="has_button_access"
@@ -316,7 +317,6 @@
             </t>
 
         </xpath>
-
 
         <!--
             Hide the duplicate record/subtitle information beside
@@ -376,20 +376,33 @@
 
 
         <!--
-            Helpdesk ticket layouts manage their own lower separator.
-
-            Customer Enquiry retains one standard separator after
-            the View Enquiry button.
+            Security warning for every Helpdesk email containing
+            a View Ticket access link.
         -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]"
-               position="attributes">
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
+               position="before">
 
-            <attribute name="t-if">
-                message.model != 'helpdesk.ticket'
-            </attribute>
+            <div t-if="
+                message.model == 'helpdesk.ticket'
+                and has_button_access
+            "
+                 style="
+                     margin: 8px 0 2px 0;
+                     font-family: Verdana, Arial, sans-serif;
+                     font-size: 11px;
+                     line-height: 1.4;
+                     color: #666666;
+                     white-space: normal;
+                 ">
+
+                <em>
+                    Please do not forward this email or share the View Ticket link,
+                    as it provides access to the Helpdesk ticket.
+                </em>
+
+            </div>
 
         </xpath>
-
 
         <!--
             Customer Enquiries are internal review notifications,
@@ -405,6 +418,18 @@
             </attribute>
 
         </xpath>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         <!-- ============================================================

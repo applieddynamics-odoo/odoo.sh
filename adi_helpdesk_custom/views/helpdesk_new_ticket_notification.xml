@@ -1,96 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- =========================================================
-         ADI Helpdesk - New Ticket Manager Notification
-
-         Used only for the automatic internal New Ticket
-         notification sent to Helpdesk followers/managers.
-
-         The underlying chatter message remains empty/minimal.
-         Ticket information is rendered here for email only.
-         ========================================================= -->
-
     <template id="adi_helpdesk_new_ticket_notification"
               name="ADI Helpdesk New Ticket Notification"
-              inherit_id="mail.mail_notification_layout"
+              inherit_id="adi_helpdesk_custom.adi_mail_notification_layout_footer"
               primary="True">
-
-    <!-- =====================================================
-        VIEW TICKET BUTTON
-
-        Fixed width/height is deliberate.
-        Desktop Outlook uses the Word rendering engine and
-        does not reliably honour padding on email links.
-        ===================================================== -->
-
-    <xpath expr="//td[@t-if='has_button_access']"
-        position="replace">
-
-        <td t-if="has_button_access">
-
-            <table role="presentation"
-                cellspacing="0"
-                cellpadding="0"
-                border="0">
-                <tr>
-
-                    <td width="140"
-                        height="40"
-                        align="center"
-                        valign="middle"
-                        bgcolor="#008C95"
-                        style="
-                            width: 140px;
-                            height: 40px;
-                            background-color: #008C95;
-                            text-align: center;
-                            vertical-align: middle;
-                        ">
-
-                        <a t-att-href="button_access['url']"
-                        style="
-                            display: block;
-                            width: 140px;
-                            line-height: 40px;
-                            font-family: Verdana, Arial, sans-serif;
-                            font-size: 14px;
-                            font-weight: bold;
-                            color: #FFFFFF;
-                            text-decoration: none;
-                        ">
-                            View Ticket
-                        </a>
-
-                    </td>
-
-                </tr>
-            </table>
-
-        </td>
-
-        <hr width="100%"
-            style="
-                background-color: rgb(204,204,204);
-                border: medium none;
-                clear: both;
-                display: block;
-                font-size: 0;
-                min-height: 1px;
-                line-height: 0;
-                margin: 12px 0 14px 0;
-            "/>
-
-    </xpath>
-
 
         <!-- =====================================================
              EMAIL CONTENT
-
-             Replace only the standard mail.message body.
-
-             This deliberately does NOT alter message.body itself,
-             so the information below is not duplicated in chatter.
              ===================================================== -->
 
         <xpath expr="//div[@t-out='message.body']"
@@ -103,23 +20,34 @@
 
                 <p style="margin: 0 0 12px 0;">
                     <strong style="font-size: 16px;">
-                        <t t-if="message.subject and message.subject.startswith('&lt;&lt;Lead Assigned&gt;&gt;')">
+
+                        <t t-if="
+                            message.subject
+                            and message.subject.startswith(
+                                '&lt;&lt;Lead Assigned&gt;&gt;'
+                            )
+                        ">
                             LEAD ASSIGNED
                         </t>
+
                         <t t-else="">
                             NEW TICKET
                         </t>
+
                     </strong>
                 </p>
 
-                <t t-if="message.subject and message.subject.startswith('&lt;&lt;Lead Assigned&gt;&gt;')">
+                <t t-if="
+                    message.subject
+                    and message.subject.startswith(
+                        '&lt;&lt;Lead Assigned&gt;&gt;'
+                    )
+                ">
                     <p style="margin: 0 0 12px 0;">
                         You have been assigned to lead this ticket.
                     </p>
                 </t>
 
-
-                <!-- Ticket summary -->
                 <table role="presentation"
                        cellspacing="0"
                        cellpadding="0"
@@ -129,48 +57,46 @@
                            line-height: 1.45;
                        ">
 
-                    <!-- Customer -->
                     <tr>
                         <td style="padding: 2px 14px 2px 0;">
                             <strong>Customer:</strong>
                         </td>
-
                         <td style="padding: 2px 0;">
-                            <t t-out="record.adi_notification_company_name or '-'"/>
+                            <t t-out="
+                                record.adi_notification_company_name
+                                or '-'
+                            "/>
                         </td>
                     </tr>
 
-
-                    <!-- Contact -->
                     <tr>
                         <td style="padding: 2px 14px 2px 0;">
                             <strong>Contact:</strong>
                         </td>
-
                         <td style="padding: 2px 0;">
-                            <t t-out="record.adi_notification_contact_name or '-'"/>
+                            <t t-out="
+                                record.adi_notification_contact_name
+                                or '-'
+                            "/>
                         </td>
                     </tr>
 
-
-                    <!-- Ticket Type -->
                     <tr>
                         <td style="padding: 2px 12px 2px 0;">
                             <strong>Ticket Type:</strong>
                         </td>
                         <td style="padding: 2px 0;">
-                            <t t-out="record.ticket_type_id.display_name or 'Raw Email Submission'"/>
+                            <t t-out="
+                                record.ticket_type_id.display_name
+                                or 'Raw Email Submission'
+                            "/>
                         </td>
                     </tr>
 
                 </table>
 
-
-                <!-- Problem statement -->
                 <p style="margin: 14px 0 4px 0;">
-                    <strong>
-                        PROBLEM
-                    </strong>
+                    <strong>PROBLEM</strong>
                 </p>
 
                 <div t-out="record.description or '-'"/>
@@ -178,7 +104,6 @@
             </div>
 
         </xpath>
-
 
     </template>
 
