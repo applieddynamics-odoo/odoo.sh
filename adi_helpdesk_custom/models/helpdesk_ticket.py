@@ -1341,7 +1341,7 @@ class HelpdeskTicket(models.Model):
                 )
 
 
-        msg["is_internal"] = bool(internal_user)
+        msg["is_internal"] = False
 
 
         # ---------------------------------------------------------
