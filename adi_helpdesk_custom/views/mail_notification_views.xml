@@ -405,16 +405,21 @@
         </xpath>
 
         <!--
-            Customer Enquiries are internal review notifications,
-            but the standard pink "Internal communication" warning
-            is unnecessary and misleading here.
+            Suppress Odoo's standard internal communication warning
+            for Helpdesk and Customer Enquiry emails.
+
+            ADI Helpdesk manages message visibility and notification
+            behaviour explicitly.
         -->
         <xpath expr="//p[@t-if='subtype_internal']"
-               position="attributes">
+            position="attributes">
 
             <attribute name="t-if">
                 subtype_internal
-                and message.model != 'adi.helpdesk.enquiry'
+                and message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
             </attribute>
 
         </xpath>
