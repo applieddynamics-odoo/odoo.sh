@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 from markupsafe import Markup, escape
 from lxml import etree
 import lxml.html
-from email.utils import parseaddr, formataddr
+from email.utils import parseaddr, formataddr, getaddresses
 
 
 class HelpdeskTicket(models.Model):
@@ -1319,6 +1319,221 @@ class HelpdeskTicket(models.Model):
 
         return result
 
+    def _adi_process_additional_email_recipients(self, msg):
+        """
+        Review additional visible recipients on an inbound customer reply.
+
+        - To and CC are considered.
+        - Internal ADI users and the Helpdesk alias are ignored.
+        - Known contacts authorised for the ticket customer are added
+        as followers.
+        - Unknown or unauthorised contacts are left untouched and
+        reported by internal note for management review.
+        """
+
+        self.ensure_one()
+
+        # ---------------------------------------------------------
+        # Actual customer company for this ticket
+        # ---------------------------------------------------------
+
+        customer_company = (
+            self.adi_matched_company_id
+            or self.partner_id.commercial_partner_id
+        )
+
+        # If the ticket company has not yet been resolved, do not
+        # make an automatic access decision.
+        if not customer_company:
+            return
+
+        # ---------------------------------------------------------
+        # Extract visible recipients from To + CC
+        # ---------------------------------------------------------
+
+        header_values = []
+
+        for key in ("to", "cc", "email_to", "email_cc"):
+            value = msg.get(key)
+
+            if value:
+                if isinstance(value, (list, tuple)):
+                    header_values.extend(value)
+                else:
+                    header_values.append(value)
+
+        recipient_emails = {
+            email.strip().lower()
+            for _name, email in getaddresses(header_values)
+            if email and "@" in email
+        }
+
+        if not recipient_emails:
+            return
+
+        # ---------------------------------------------------------
+        # Ignore the sender
+        # ---------------------------------------------------------
+
+        _sender_name, sender_email = parseaddr(
+            msg.get("email_from")
+            or msg.get("from")
+            or ""
+        )
+
+        if sender_email:
+            recipient_emails.discard(
+                sender_email.strip().lower()
+            )
+
+        # ---------------------------------------------------------
+        # Ignore the Helpdesk alias
+        # ---------------------------------------------------------
+
+        if self.team_id.alias_email:
+            recipient_emails.discard(
+                self.team_id.alias_email.strip().lower()
+            )
+
+        if not recipient_emails:
+            return
+
+        Partner = self.env["res.partner"]
+
+        review_items = []
+
+        # ---------------------------------------------------------
+        # Examine each additional recipient
+        # ---------------------------------------------------------
+
+        for email in sorted(recipient_emails):
+
+            matching_contacts = Partner.search([
+                ("email", "=ilike", email),
+                ("active", "=", True),
+            ])
+
+            # -----------------------------------------------------
+            # Internal ADI/Odoo recipient
+            # -----------------------------------------------------
+
+            internal_contacts = matching_contacts.filtered(
+                lambda partner:
+                    partner.user_ids.filtered(
+                        lambda user:
+                            user.active
+                            and not user.share
+                    )
+            )
+
+            if internal_contacts:
+                continue
+
+            # Customer contacts only.
+            matching_contacts = matching_contacts.filtered(
+                lambda partner:
+                    not partner.is_company
+                    and partner.parent_id
+            )
+
+            # -----------------------------------------------------
+            # Unknown recipient
+            # -----------------------------------------------------
+
+            if not matching_contacts:
+                review_items.append(
+                    (
+                        email,
+                        "No matching Helpdesk contact was found.",
+                    )
+                )
+                continue
+
+            # -----------------------------------------------------
+            # Find contacts authorised for this ticket company
+            # -----------------------------------------------------
+
+            authorised_contacts = Partner
+
+            for contact in matching_contacts:
+                allowed_companies = (
+                    self._adi_helpdesk_allowed_customer_companies(
+                        contact
+                    )
+                )
+
+                if customer_company in allowed_companies:
+                    authorised_contacts |= contact
+
+            # -----------------------------------------------------
+            # Exactly one authorised Contact: safe to subscribe
+            # -----------------------------------------------------
+
+            if len(authorised_contacts) == 1:
+                contact = authorised_contacts
+
+                if contact not in self.message_partner_ids:
+                    self.message_subscribe(
+                        partner_ids=[contact.id],
+                    )
+
+                continue
+
+            # -----------------------------------------------------
+            # Ambiguous or unauthorised: management review
+            # -----------------------------------------------------
+
+            if len(authorised_contacts) > 1:
+                reason = (
+                    "More than one authorised Contact uses this "
+                    "email address."
+                )
+            else:
+                reason = (
+                    "The email matches a Contact, but that Contact "
+                    "is not authorised for this ticket's customer."
+                )
+
+            review_items.append((email, reason))
+
+        # ---------------------------------------------------------
+        # One internal note for everything requiring review
+        # ---------------------------------------------------------
+
+        if review_items:
+            lines = "".join(
+                (
+                    "<li><strong>{email}</strong> - {reason}</li>"
+                ).format(
+                    email=escape(email),
+                    reason=escape(reason),
+                )
+                for email, reason in review_items
+            )
+
+            self.message_post(
+                body=Markup(
+                    "<div>"
+                    "<p><strong>"
+                    "Additional email recipient requires review"
+                    "</strong></p>"
+                    "<p>"
+                    "The following address was included on an incoming "
+                    "customer email but has not been added as a ticket "
+                    "follower:"
+                    "</p>"
+                    "<ul>{lines}</ul>"
+                    "<p>"
+                    "Review the address and add or create the Contact "
+                    "only if appropriate."
+                    "</p>"
+                    "</div>"
+                ).format(lines=Markup(lines)),
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+        )
+
+
     def message_update(self, msg, update_vals=None):
         """
         Process inbound Helpdesk replies.
@@ -1483,12 +1698,14 @@ class HelpdeskTicket(models.Model):
                 # than risk losing genuine message content.
                 pass
 
-
-        return super().message_update(
+        result = super().message_update(
             msg,
             update_vals=update_vals,
         )
 
+        self._adi_process_additional_email_recipients(msg)
+
+        return result
 
     #-------------------------------------------------------------
     # Inbound Raw Email Processing
