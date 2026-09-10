@@ -918,6 +918,31 @@ class HelpdeskTicket(models.Model):
             **kwargs,
         )
 
+        # ---------------------------------------------------------
+        # Simplify customer acknowledgement chatter
+        # ---------------------------------------------------------
+
+        if is_new_ticket_template and messages:
+            ticket_messages = messages.filtered(
+                lambda message:
+                    message.model == self._name
+                    and message.res_id in self.ids
+            )
+
+            for message in ticket_messages:
+                message.write({
+                    "body": """
+                        <div>
+                            Customer acknowledgement sent
+                        </div>
+                    """,
+                })
+
+        rating_template = self.env.ref(
+            "helpdesk.rating_ticket_request_email_template",
+            raise_if_not_found=False,
+        )
+
         rating_template = self.env.ref(
             "helpdesk.rating_ticket_request_email_template",
             raise_if_not_found=False,
