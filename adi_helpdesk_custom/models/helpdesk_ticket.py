@@ -943,11 +943,6 @@ class HelpdeskTicket(models.Model):
             raise_if_not_found=False,
         )
 
-        rating_template = self.env.ref(
-            "helpdesk.rating_ticket_request_email_template",
-            raise_if_not_found=False,
-        )
-
         is_helpdesk_rating_template = (
             rating_template
             and getattr(source_ref, "_name", False) == "mail.template"
