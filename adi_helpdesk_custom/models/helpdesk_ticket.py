@@ -1566,13 +1566,16 @@ class HelpdeskTicket(models.Model):
 
 
     def message_update(self, msg, update_vals=None):
+        
         """
         Process inbound Helpdesk replies.
 
-        - Replies from internal Odoo users are treated as internal notes.
-        - Customer replies remain normal discussions.
+        - Odoo retains the visibility of the email being replied to:
+        replies to Internal Notes remain internal, while replies to
+        customer-facing Discussions remain customer-facing.
         - Quoted email history is removed before the message is posted
         into Helpdesk chatter.
+        - Additional To / CC recipients are reviewed separately.
         """
 
 
@@ -1611,10 +1614,6 @@ class HelpdeskTicket(models.Model):
                 msg["email_from"] = formataddr(
                     (author.name, sender_email)
                 )
-
-
-        msg["is_internal"] = False
-
 
         # ---------------------------------------------------------
         # Remove quoted email history
