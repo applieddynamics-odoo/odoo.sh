@@ -6,40 +6,108 @@
               inherit_id="adi_helpdesk_custom.adi_mail_notification_layout_footer"
               primary="True">
 
-        <!-- Make the reply visually dominant -->
+        <!-- =====================================================
+             CUSTOMER REPLY
+
+             Reply is the primary content.
+             View Ticket is secondary navigation underneath.
+             ===================================================== -->
+
+
+        <!-- Hide the normal notification controls above the body -->
+        <xpath expr="//div[@summary='o_mail_notification']"
+               position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
+
+
+        <!-- Make the reply itself prominent -->
         <xpath expr="//div[@t-out='message.body']"
                position="attributes">
-
             <attribute name="style">
                 font-family: Verdana, Arial, sans-serif;
                 font-size: 15px;
                 line-height: 1.5;
-                margin: 0 0 18px 0;
+                margin: 0;
             </attribute>
-
         </xpath>
 
 
-        <!-- Move the Helpdesk controls below the reply -->
+        <!-- Put our Helpdesk controls directly after the reply -->
         <xpath expr="//div[@t-out='message.body']"
                position="after">
 
             <div style="
                 border-top: 1px solid #cccccc;
+                margin-top: 18px;
                 padding-top: 16px;
-                margin-top: 2px;
             ">
 
-                <xpath expr="//div[@summary='o_mail_notification']"
-                       position="move"/>
+                <table role="presentation"
+                       cellspacing="0"
+                       cellpadding="0"
+                       border="0"
+                       style="border-collapse: collapse;">
+
+                    <tbody>
+                        <tr>
+                            <td width="140"
+                                height="40"
+                                align="center"
+                                valign="middle"
+                                bgcolor="#008C95"
+                                style="
+                                    width: 140px;
+                                    height: 40px;
+                                    background-color: #008C95;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                ">
+
+                                <a t-att-href="button_access['url']"
+                                   style="
+                                       display: block;
+                                       width: 140px;
+                                       line-height: 40px;
+                                       font-family: Verdana, Arial, sans-serif;
+                                       font-size: 14px;
+                                       font-weight: bold;
+                                       color: #FFFFFF;
+                                       text-decoration: none;
+                                   ">
+                                    View Ticket
+                                </a>
+
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+                <div style="
+                    margin: 8px 0 0 0;
+                    font-family: Verdana, Arial, sans-serif;
+                    font-size: 11px;
+                    line-height: 1.4;
+                    color: #666666;
+                ">
+                    <em>
+                        Please do not forward this email or share the
+                        View Ticket link, as it provides access to the
+                        Helpdesk ticket.
+                    </em>
+                </div>
 
             </div>
 
         </xpath>
 
 
-        <!-- Remove the inherited separator below the warning -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
+        <!--
+            Customer reply has no ADI footer, therefore suppress
+            the otherwise orphaned footer separator as well.
+        -->
+        <xpath expr="//div[contains(@style, 'margin-top:32px')]/hr"
                position="replace"/>
 
     </template>
