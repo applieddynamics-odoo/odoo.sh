@@ -9,18 +9,25 @@
         <!-- =====================================================
              CUSTOMER REPLY LAYOUT
 
-             Standard Odoo order:
-                 Helpdesk controls
-                 Message body
-
-             Customer reply order:
-                 Message body
-                 Separator
-                 Helpdesk controls
+             Reply first, then Helpdesk controls.
              ===================================================== -->
 
+        <!-- Make the actual reply visually dominant -->
+        <xpath expr="//div[@t-out='message.body']"
+               position="attributes">
+
+            <attribute name="style">
+                font-family: Verdana, Arial, sans-serif;
+                font-size: 15px;
+                line-height: 1.5;
+                margin: 0 0 16px 0;
+            </attribute>
+
+        </xpath>
+
+
         <!-- Move the existing Helpdesk notification controls
-             immediately after the existing message body. -->
+             immediately after the reply body. -->
         <xpath expr="//div[@t-out='message.body']"
                position="after">
 
@@ -33,13 +40,22 @@
                     font-size: 0;
                     min-height: 1px;
                     line-height: 0;
-                    margin: 14px 0;
+                    margin: 14px 0 16px 0;
                 "/>
 
             <xpath expr="//div[@summary='o_mail_notification']"
                    position="move"/>
 
         </xpath>
+
+
+        <!--
+            For customer replies the warning is the final part of
+            the Helpdesk control block, so suppress the shared
+            separator immediately beneath it.
+        -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
+               position="replace"/>
 
     </template>
 
