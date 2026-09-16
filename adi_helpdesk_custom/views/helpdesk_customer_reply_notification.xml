@@ -9,7 +9,8 @@
         <!-- =====================================================
              CUSTOMER REPLY LAYOUT
 
-             Reply first, then Helpdesk controls.
+             Reply first, then a single separator, then
+             the Helpdesk controls.
              ===================================================== -->
 
         <!-- Make the actual reply visually dominant -->
@@ -20,14 +21,14 @@
                 font-family: Verdana, Arial, sans-serif;
                 font-size: 15px;
                 line-height: 1.5;
-                margin: 0 0 16px 0;
+                margin: 0 0 18px 0;
             </attribute>
 
         </xpath>
 
 
-        <!-- Move the existing Helpdesk notification controls
-             immediately after the reply body. -->
+        <!-- Move the Helpdesk controls below the reply and
+             place one separator immediately above them. -->
         <xpath expr="//div[@t-out='message.body']"
                position="after">
 
@@ -40,7 +41,7 @@
                     font-size: 0;
                     min-height: 1px;
                     line-height: 0;
-                    margin: 14px 0 16px 0;
+                    margin: 0 0 16px 0;
                 "/>
 
             <xpath expr="//div[@summary='o_mail_notification']"
@@ -49,11 +50,7 @@
         </xpath>
 
 
-        <!--
-            For customer replies the warning is the final part of
-            the Helpdesk control block, so suppress the shared
-            separator immediately beneath it.
-        -->
+        <!-- Remove the shared separator below the warning -->
         <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
                position="replace"/>
 
