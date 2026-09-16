@@ -6,14 +6,7 @@
               inherit_id="adi_helpdesk_custom.adi_mail_notification_layout_footer"
               primary="True">
 
-        <!-- =====================================================
-             CUSTOMER REPLY LAYOUT
-
-             Reply first, then a single separator, then
-             the Helpdesk controls.
-             ===================================================== -->
-
-        <!-- Make the actual reply visually dominant -->
+        <!-- Make the reply visually dominant -->
         <xpath expr="//div[@t-out='message.body']"
                position="attributes">
 
@@ -27,30 +20,25 @@
         </xpath>
 
 
-        <!-- Move the Helpdesk controls below the reply and
-             place one separator immediately above them. -->
+        <!-- Move the Helpdesk controls below the reply -->
         <xpath expr="//div[@t-out='message.body']"
                position="after">
 
-            <hr width="100%"
-                style="
-                    background-color: rgb(204,204,204);
-                    border: medium none;
-                    clear: both;
-                    display: block;
-                    font-size: 0;
-                    min-height: 1px;
-                    line-height: 0;
-                    margin: 0 0 16px 0;
-                "/>
+            <div style="
+                border-top: 1px solid #cccccc;
+                padding-top: 16px;
+                margin-top: 2px;
+            ">
 
-            <xpath expr="//div[@summary='o_mail_notification']"
-                   position="move"/>
+                <xpath expr="//div[@summary='o_mail_notification']"
+                       position="move"/>
+
+            </div>
 
         </xpath>
 
 
-        <!-- Remove the shared separator below the warning -->
+        <!-- Remove the inherited separator below the warning -->
         <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
                position="replace"/>
 
