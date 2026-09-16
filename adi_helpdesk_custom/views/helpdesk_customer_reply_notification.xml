@@ -9,50 +9,48 @@
         <!-- =====================================================
              CUSTOMER REPLY CONTENT
 
-             Put the actual reply first so the recipient sees the
-             message before the Helpdesk navigation controls.
+             Display the reply before the Helpdesk controls so the
+             message itself is the first content the recipient sees.
              ===================================================== -->
 
-        <xpath expr="//div[@summary='o_mail_notification']"
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]"
                position="before">
 
-            <div style="
-                font-size: 13px;
-                line-height: 1.45;
-                margin: 0 0 14px 0;
-            ">
-                <div t-out="message.body"/>
-            </div>
+            <tr>
+                <td style="
+                    font-family: Verdana, Arial, sans-serif;
+                    font-size: 13px;
+                    line-height: 1.45;
+                    padding: 0;
+                ">
+                    <div t-out="message.body"/>
+                </td>
+            </tr>
 
-            <hr width="100%"
-                style="
-                    background-color: rgb(204,204,204);
-                    border: medium none;
-                    clear: both;
-                    display: block;
-                    font-size: 0;
-                    min-height: 1px;
-                    line-height: 0;
-                    margin: 12px 0 14px 0;
-                "/>
+            <tr>
+                <td style="padding: 12px 0 14px 0;">
+                    <hr width="100%"
+                        style="
+                            background-color: rgb(204,204,204);
+                            border: medium none;
+                            clear: both;
+                            display: block;
+                            font-size: 0;
+                            min-height: 1px;
+                            line-height: 0;
+                            margin: 0;
+                        "/>
+                </td>
+            </tr>
 
         </xpath>
 
 
         <!--
-            The body has already been rendered above the Helpdesk
-            header, so remove Odoo's normal body position.
+            The reply is rendered above the View Ticket controls,
+            so suppress Odoo's normal body position.
         -->
         <xpath expr="//div[@t-out='message.body']"
-               position="replace"/>
-
-
-        <!--
-            For customer replies the warning is the final element,
-            so remove the shared separator that normally appears
-            underneath the warning.
-        -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
                position="replace"/>
 
     </template>
