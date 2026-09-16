@@ -8,27 +8,52 @@
 
         <!-- =====================================================
              CUSTOMER REPLY CONTENT
+
+             Put the actual reply first so the recipient sees the
+             message before the Helpdesk navigation controls.
              ===================================================== -->
 
-        <xpath expr="//div[@t-out='message.body']"
-               position="replace">
+        <xpath expr="//div[@summary='o_mail_notification']"
+               position="before">
 
             <div style="
                 font-size: 13px;
                 line-height: 1.45;
+                margin: 0 0 14px 0;
             ">
-
-                <p style="margin: 0 0 12px 0;">
-                    <strong style="font-size: 16px;">
-                        CUSTOMER REPLIED
-                    </strong>
-                </p>
-
                 <div t-out="message.body"/>
-
             </div>
 
+            <hr width="100%"
+                style="
+                    background-color: rgb(204,204,204);
+                    border: medium none;
+                    clear: both;
+                    display: block;
+                    font-size: 0;
+                    min-height: 1px;
+                    line-height: 0;
+                    margin: 12px 0 14px 0;
+                "/>
+
         </xpath>
+
+
+        <!--
+            The body has already been rendered above the Helpdesk
+            header, so remove Odoo's normal body position.
+        -->
+        <xpath expr="//div[@t-out='message.body']"
+               position="replace"/>
+
+
+        <!--
+            For customer replies the warning is the final element,
+            so remove the shared separator that normally appears
+            underneath the warning.
+        -->
+        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
+               position="replace"/>
 
     </template>
 
