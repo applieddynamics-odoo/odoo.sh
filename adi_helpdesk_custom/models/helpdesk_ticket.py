@@ -748,6 +748,28 @@ class HelpdeskTicket(models.Model):
         - Internal Notes and other Helpdesk messages are untouched.
         """
 
+        # ---------------------------------------------------------
+        # Unauthorised inbound sender
+        # ---------------------------------------------------------
+        #
+        # Odoo normally subscribes a recognised inbound email
+        # author when message_post() runs.
+        #
+        # message_update() marks unauthorised external senders so
+        # that their reply can be retained internally without
+        # granting them follower access to the ticket.
+        # ---------------------------------------------------------
+
+        sender_requires_review = kwargs.pop(
+            "adi_helpdesk_sender_requires_review",
+            False,
+        )
+
+        if sender_requires_review:
+            self = self.with_context(
+                mail_create_nosubscribe=True,
+            )
+
         ticket_created_subtype = self.env.ref(
             "helpdesk.mt_ticket_new",
             raise_if_not_found=False,
@@ -1566,7 +1588,7 @@ class HelpdeskTicket(models.Model):
 
 
     def message_update(self, msg, update_vals=None):
-        
+
         """
         Process inbound Helpdesk replies.
 
@@ -1596,6 +1618,175 @@ class HelpdeskTicket(models.Model):
             if author
             else self.env["res.users"]
         )
+
+        # ---------------------------------------------------------
+        # External sender authorisation
+        # ---------------------------------------------------------
+        #
+        # An external person can obtain a valid Helpdesk email
+        # thread without necessarily being authorised for the
+        # customer on this ticket, for example by being copied
+        # into an earlier customer email.
+        #
+        # The sender of every inbound external reply must therefore
+        # pass the same customer-company authorisation used for
+        # additional To / CC recipients.
+        #
+        # Unauthorised or unknown replies are retained as Internal
+        # Notes for review. They are not customer-visible and the
+        # sender must not be auto-subscribed as a follower.
+        # ---------------------------------------------------------
+
+        _sender_name, inbound_sender_email = parseaddr(
+            msg.get("email_from")
+            or msg.get("from")
+            or ""
+        )
+
+        inbound_sender_email = (
+            inbound_sender_email.strip().lower()
+            if inbound_sender_email
+            else False
+        )
+
+        sender_requires_review = False
+        sender_review_reason = False
+        sender_contact = self.env["res.partner"]
+
+        if not internal_user and inbound_sender_email:
+
+            Partner = self.env["res.partner"]
+
+            base_partner = self.env.ref(
+                "base.partner_root",
+                raise_if_not_found=False,
+            )
+
+            # Use the parsed author where Odoo has resolved a genuine
+            # customer Contact.
+            if (
+                author
+                and author != base_partner
+                and not author.is_company
+                and author.parent_id
+            ):
+                sender_contact = author
+
+            # Otherwise try the actual sender email ourselves.
+            if not sender_contact:
+                matching_contacts = Partner.search([
+                    ("email", "=ilike", inbound_sender_email),
+                    ("active", "=", True),
+                    ("is_company", "=", False),
+                    ("parent_id", "!=", False),
+                ])
+
+                if len(matching_contacts) == 1:
+                    sender_contact = matching_contacts
+
+                elif len(matching_contacts) > 1:
+                    sender_requires_review = True
+                    sender_review_reason = (
+                        "More than one Contact uses this email address, "
+                        "so the sender cannot be authorised automatically."
+                    )
+
+                else:
+                    sender_requires_review = True
+                    sender_review_reason = (
+                        "No matching Helpdesk contact was found."
+                    )
+
+            # -----------------------------------------------------
+            # Known external Contact
+            # -----------------------------------------------------
+
+            if sender_contact and not sender_requires_review:
+
+                customer_company = (
+                    self.adi_matched_company_id
+                    or self.partner_id.commercial_partner_id
+                )
+
+                # The ticket's existing Customer Lead is always valid.
+                if sender_contact == self.partner_id:
+                    sender_authorised = True
+
+                elif customer_company:
+                    allowed_companies = (
+                        self._adi_helpdesk_allowed_customer_companies(
+                            sender_contact
+                        )
+                    )
+
+                    sender_authorised = (
+                        customer_company in allowed_companies
+                    )
+
+                else:
+                    sender_authorised = False
+
+                if not sender_authorised:
+                    sender_requires_review = True
+                    sender_review_reason = (
+                        "The sender matches a Contact, but that Contact "
+                        "is not authorised for this ticket's customer."
+                    )
+
+
+        # ---------------------------------------------------------
+        # Hold unauthorised external replies internally
+        # ---------------------------------------------------------
+
+        if sender_requires_review:
+
+            # Odoo's mail router will convert this to mail.mt_note.
+            msg["is_internal"] = True
+
+            # Private marker consumed by our message_post() override.
+            # This prevents Odoo automatically subscribing the sender.
+            msg["adi_helpdesk_sender_requires_review"] = True
+
+            # If this Contact became a follower through an earlier
+            # forwarded/copied email path, remove that access now.
+            if (
+                sender_contact
+                and sender_contact != self.partner_id
+                and sender_contact in self.message_partner_ids
+            ):
+                self.message_unsubscribe(
+                    partner_ids=[sender_contact.id],
+                )
+
+            original_body = msg.get("body") or ""
+
+            msg["body"] = Markup(
+                "<div style=\""
+                "background-color:#fff3cd;"
+                "border:1px solid #ffe69c;"
+                "border-radius:6px;"
+                "padding:10px 12px;"
+                "margin-bottom:12px;"
+                "\">"
+                "<p style=\"margin:0 0 6px 0;\">"
+                "<strong>External reply requires review</strong>"
+                "</p>"
+                "<p style=\"margin:0;\">"
+                "<strong>Sender:</strong> {sender}<br/>"
+                "<strong>Reason:</strong> {reason}"
+                "</p>"
+                "</div>"
+                "{body}"
+            ).format(
+                sender=escape(
+                    inbound_sender_email or "Unknown sender"
+                ),
+                reason=escape(
+                    sender_review_reason
+                    or "Sender could not be authorised."
+                ),
+                body=Markup(original_body),
+            )
 
         # ---------------------------------------------------------
         # Normalise incoming sender display name
