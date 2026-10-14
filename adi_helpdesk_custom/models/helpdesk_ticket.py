@@ -1139,7 +1139,7 @@ class HelpdeskTicket(models.Model):
             })
 
             ticket.message_post(
-                body=(
+                body=Markup(
                     "<strong>Closure confirmed by ADI.</strong>"
                     "<p>Customer review completed.</p>"
                 ),
@@ -1175,7 +1175,7 @@ class HelpdeskTicket(models.Model):
             })
 
             ticket.message_post(
-                body=(
+                body=Markup(
                     "<strong>Customer review completed.</strong>"
                     "<p>Ticket returned to In Progress "
                     "for further action.</p>"
