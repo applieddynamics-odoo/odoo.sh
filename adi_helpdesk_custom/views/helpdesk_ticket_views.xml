@@ -18,9 +18,22 @@
 
                 <button name="action_adi_open_close_wizard"
                         type="object"
-                        string="Close Ticket"
+                        string="Submit for Customer Review"
                         class="btn-primary"
                         invisible="not adi_show_close_button"/>
+
+                <button name="action_adi_confirm_closure"
+                        type="object"
+                        string="Confirm Closure"
+                        class="btn-primary"
+                        confirm="Confirm that the customer review is complete and close this ticket?"
+                        invisible="not adi_show_review_buttons"/>
+
+                <button name="action_adi_return_to_in_progress"
+                        type="object"
+                        string="Return to In Progress"
+                        confirm="Return this ticket to In Progress for further work?"
+                        invisible="not adi_show_review_buttons"/>
 
             </xpath>
 
@@ -56,6 +69,7 @@
 
                 <field name="adi_show_set_in_progress_button" invisible="1"/>
                 <field name="adi_show_close_button" invisible="1"/>
+                <field name="adi_show_review_buttons" invisible="1"/>
                 <field name="adi_new_contact_review_required" invisible="1"/>
 
                 <field name="adi_non_contract" invisible="1"/>
@@ -108,6 +122,22 @@
 
                     </div>
 
+                        <div class="col-12"
+                            invisible="not adi_closure_review_required">
+
+                            <div class="adi_helpdesk_warning_card">
+                                <strong>Customer Response Requires Review</strong>
+
+                                <div>
+                                    The customer has responded during the closure
+                                    review period. Automatic closure is suspended.
+
+                                    Review the customer's message and select
+                                    Confirm Closure or Return to In Progress.
+                                </div>
+                            </div>
+
+                        </div>
                 </div>
 
 
@@ -634,13 +664,25 @@
 
                                 <i class="fa fa-calendar-check-o adi_summary_icon"/>
 
-                                <span class="fw-bold">
+                                <span class="fw-bold"
+                                    invisible="not close_date">
                                     Closed:
                                 </span>
 
                                 <field name="close_date"
-                                       readonly="1"
-                                       nolabel="1"/>
+                                    readonly="1"
+                                    nolabel="1"
+                                    invisible="not close_date"/>
+
+                                <span class="fw-bold"
+                                    invisible="not adi_closure_review_deadline">
+                                    Review deadline:
+                                </span>
+
+                                <field name="adi_closure_review_deadline"
+                                    readonly="1"
+                                    nolabel="1"
+                                    invisible="not adi_closure_review_deadline"/>
 
                             </span>
 

@@ -1,6 +1,8 @@
 from markupsafe import Markup, escape
 
+from datetime import timedelta
 from odoo import fields, models
+
 from odoo.exceptions import UserError
 
 
@@ -36,15 +38,23 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
     def action_confirm(self):
         self.ensure_one()
 
-        closed_stage = self.env["helpdesk.stage"].search(
-            [("name", "=", "Closed")],
+        review_stage = self.env["helpdesk.stage"].search(
+            [
+                ("name", "=", "Awaiting Customer Review"),
+                ("team_ids", "in", [self.ticket_id.team_id.id]),
+            ],
             limit=1,
         )
 
-        if not closed_stage:
+        if not review_stage:
             raise UserError(
-                "Could not find a Helpdesk stage called 'Closed'."
+                "Could not find the 'Awaiting Customer Review' "
+                "stage for this Helpdesk team."
             )
+
+        # One minute for staging tests.
+        # Change to timedelta(hours=48) after validation.
+        review_deadline = fields.Datetime.now() + timedelta(minutes=1)
 
         ticket = self.ticket_id
 
@@ -73,8 +83,13 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
         message_body = Markup("""
             <div>
                 <p>
-                    <strong>Ticket Closed:</strong>
-                    Your support request has now been completed.
+                    <strong>Resolution Submitted for Customer Review</strong>
+                </p>
+
+                <p>
+                    ADI considers your support request resolved.
+                    Please review the resolution below and reply to
+                    this email only if further action is required.
                 </p>
 
                 <p>
@@ -89,8 +104,8 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
                 <p>
                     <em>
-                        You will receive a separate email inviting you to rate
-                        the support you received.
+                        If no further action is required, this ticket
+                        will be closed after 48 hours.
                     </em>
                 </p>
             </div>
@@ -99,17 +114,33 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
             closure_statement=closure_statement_html,
         )
 
-        # Change stage only after the new closure values have been saved.
+        # Submit for customer review instead of closing immediately.
         ticket.write({
-            "stage_id": closed_stage.id,
-            "close_date": fields.Datetime.now(),
+            "stage_id": review_stage.id,
+            "adi_closure_review_deadline": review_deadline,
+            "adi_closure_review_required": False,
         })
 
+        # Customer-facing resolution notification.
         ticket.message_post(
             body=message_body,
-            subject=f"{ticket._adi_email_subject()}: Ticket closed",
+            subject=ticket._adi_email_subject("Customer Review"),
             message_type="comment",
             subtype_xmlid="mail.mt_comment",
+        )
+
+        # Internal audit trail. Do not notify the customer.
+        ticket.message_post(
+            body=Markup(
+                "<strong>Closure submitted for customer review.</strong>"
+                "<p>Automatic closure scheduled for: {deadline} UTC</p>"
+            ).format(
+                deadline=escape(
+                    review_deadline.strftime("%d %b %Y %H:%M")
+                ),
+            ),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
         )
 
         return {"type": "ir.actions.act_window_close"}

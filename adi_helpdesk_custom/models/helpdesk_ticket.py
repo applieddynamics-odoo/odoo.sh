@@ -127,6 +127,23 @@ class HelpdeskTicket(models.Model):
         copy=False,
     )
 
+    # ---------------------------------------------------------
+    # Customer closure review
+    # ---------------------------------------------------------
+
+    adi_closure_review_deadline = fields.Datetime(
+        string="Customer Review Deadline",
+        copy=False,
+        readonly=True,
+    )
+
+    adi_closure_review_required = fields.Boolean(
+        string="Customer Response Requires Review",
+        default=False,
+        copy=False,
+        readonly=True,
+    )
+
     adi_ticket_age_label = fields.Char(
         string="Open Age",
         compute="_compute_adi_ticket_kpi_labels",
@@ -486,6 +503,16 @@ class HelpdeskTicket(models.Model):
         # Maintain the date on which the ticket entered its current stage.
         if "stage_id" in vals:
             vals["adi_stage_entered_date"] = fields.Datetime.now()
+
+            # Cancel any pending customer review when leaving
+            # the Awaiting Customer Review stage.
+            new_stage = self.env["helpdesk.stage"].browse(
+                vals["stage_id"]
+            )
+
+            if new_stage.name != "Awaiting Customer Review":
+                vals["adi_closure_review_deadline"] = False
+                vals["adi_closure_review_required"] = False
 
         result = super().write(vals)
 
@@ -1069,6 +1096,95 @@ class HelpdeskTicket(models.Model):
                 "default_ticket_id": self.id,
             },
         }            
+
+    # ---------------------------------------------------------
+    # Customer closure review - manual decisions
+    # ---------------------------------------------------------
+
+    adi_show_review_buttons = fields.Boolean(
+        compute="_compute_adi_show_review_buttons",
+    )
+
+    @api.depends("stage_id")
+    def _compute_adi_show_review_buttons(self):
+        for ticket in self:
+            ticket.adi_show_review_buttons = (
+                ticket.stage_id.name == "Awaiting Customer Review"
+            )
+
+    def action_adi_confirm_closure(self):
+        """Confirm the resolution and close immediately."""
+        closed_stage = self.env["helpdesk.stage"].search(
+            [("name", "=", "Closed")],
+            limit=1,
+        )
+
+        if not closed_stage:
+            raise ValidationError(
+                "Could not find the Closed Helpdesk stage."
+            )
+
+        for ticket in self:
+            if ticket.stage_id.name != "Awaiting Customer Review":
+                raise ValidationError(
+                    "Only tickets awaiting customer review "
+                    "can be confirmed closed."
+                )
+
+            ticket.write({
+                "stage_id": closed_stage.id,
+                "close_date": fields.Datetime.now(),
+                "adi_closure_review_deadline": False,
+                "adi_closure_review_required": False,
+            })
+
+            ticket.message_post(
+                body=(
+                    "<strong>Closure confirmed by ADI.</strong>"
+                    "<p>Customer review completed.</p>"
+                ),
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        return True
+
+    def action_adi_return_to_in_progress(self):
+        """Return a reviewed ticket for further work."""
+        progress_stage = self.env["helpdesk.stage"].search(
+            [("name", "=", "In Progress")],
+            limit=1,
+        )
+
+        if not progress_stage:
+            raise ValidationError(
+                "Could not find the In Progress Helpdesk stage."
+            )
+
+        for ticket in self:
+            if ticket.stage_id.name != "Awaiting Customer Review":
+                raise ValidationError(
+                    "Only tickets awaiting customer review "
+                    "can be returned to In Progress."
+                )
+
+            ticket.write({
+                "stage_id": progress_stage.id,
+                "adi_closure_review_deadline": False,
+                "adi_closure_review_required": False,
+            })
+
+            ticket.message_post(
+                body=(
+                    "<strong>Customer review completed.</strong>"
+                    "<p>Ticket returned to In Progress "
+                    "for further action.</p>"
+                ),
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        return True
 
     @api.depends("message_partner_ids")
     def _compute_adi_interested_user_ids(self):
@@ -1929,6 +2045,21 @@ class HelpdeskTicket(models.Model):
             self.message_partner_ids.ids
         )
 
+        # ---------------------------------------------------------
+        # Customer closure review
+        # ---------------------------------------------------------
+        # Only an authorised external sender can suspend closure.
+        # Internal users and unauthorised external senders do not
+        # affect the review deadline.
+
+        authorised_customer_reply = (
+            not internal_user
+            and bool(inbound_sender_email)
+            and bool(sender_contact)
+            and not sender_requires_review
+            and not msg.get("is_internal")
+        )
+
         result = super().message_update(
             msg,
             update_vals=update_vals,
@@ -1938,6 +2069,31 @@ class HelpdeskTicket(models.Model):
             msg,
             existing_follower_partner_ids=existing_follower_partner_ids,
         )
+
+        if authorised_customer_reply:
+            review_tickets = self.filtered(
+                lambda ticket:
+                    ticket.stage_id.name == "Awaiting Customer Review"
+                    and ticket.adi_closure_review_deadline
+                )
+
+            if review_tickets:
+                review_tickets.write({
+                    "adi_closure_review_required": True,
+                })
+
+                for ticket in review_tickets:
+                    ticket.message_post(
+                        body=(
+                            "<strong>Customer response received.</strong>"
+                            "<p>Automatic closure has been suspended. "
+                            "Please review the customer's reply and "
+                            "select Confirm Closure or "
+                            "Return to In Progress.</p>"
+                        ),
+                        message_type="comment",
+                        subtype_xmlid="mail.mt_note",
+                    )
 
         return result
 
