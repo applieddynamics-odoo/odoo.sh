@@ -2010,6 +2010,33 @@ class HelpdeskTicket(models.Model):
                             parent.remove(node)
                             changed = True
 
+                # -------------------------------------------------
+                # Additional fallback:
+                # Outlook reply containing the original ADI
+                # Helpdesk notification as an HTML table.
+                # -------------------------------------------------
+
+                if not changed:
+                    for child in list(root):
+                        if child.tag != "table":
+                            continue
+
+                        ticket_links = child.xpath(
+                            './/a[contains(@href, "/mail/view") '
+                            'and contains(@href, "model=helpdesk.ticket")]'
+                        )
+
+                        if not ticket_links:
+                            continue
+
+                        children = list(root)
+                        start_index = children.index(child)
+
+                        for quoted_child in children[start_index:]:
+                            root.remove(quoted_child)
+
+                        changed = True
+                        break
 
                 # -------------------------------------------------
                 # Save cleaned body
