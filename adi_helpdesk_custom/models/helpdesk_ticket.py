@@ -2082,19 +2082,6 @@ class HelpdeskTicket(models.Model):
                     "adi_closure_review_required": True,
                 })
 
-                for ticket in review_tickets:
-                    ticket.message_post(
-                        body=(
-                            "<strong>Customer response received.</strong>"
-                            "<p>Automatic closure has been suspended. "
-                            "Please review the customer's reply and "
-                            "select Confirm Closure or "
-                            "Return to In Progress.</p>"
-                        ),
-                        message_type="comment",
-                        subtype_xmlid="mail.mt_note",
-                    )
-
         return result
 
     #-------------------------------------------------------------

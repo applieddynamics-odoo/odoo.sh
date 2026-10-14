@@ -8,7 +8,7 @@ from odoo.exceptions import UserError
 
 class AdiHelpdeskCloseWizard(models.TransientModel):
     _name = "adi.helpdesk.close.wizard"
-    _description = "Close Helpdesk Ticket"
+    _description = "Submit Helpdesk Ticket for Customer Review"
 
     ticket_id = fields.Many2one(
         "helpdesk.ticket",

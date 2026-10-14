@@ -4,7 +4,7 @@
             <field name="name">adi.helpdesk.close.wizard.form</field>
             <field name="model">adi.helpdesk.close.wizard</field>
             <field name="arch" type="xml">
-                <form string="Close Ticket">
+                <form string="Submit for Customer Review">
                     <sheet>
                         <field name="ticket_id" readonly="1"/>
 
@@ -28,7 +28,7 @@
 
                     <footer>
                         <button name="action_confirm"
-                                string="Close Ticket"
+                                string="Submit for Review"
                                 type="object"
                                 class="btn-primary"/>
                         <button string="Cancel"
