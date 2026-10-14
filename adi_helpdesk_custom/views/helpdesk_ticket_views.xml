@@ -71,6 +71,8 @@
                 <field name="adi_show_close_button" invisible="1"/>
                 <field name="adi_show_review_buttons" invisible="1"/>
                 <field name="adi_new_contact_review_required" invisible="1"/>
+                <field name="adi_closure_review_deadline" invisible="1"/>
+                <field name="adi_closure_review_required" invisible="1"/>
 
                 <field name="adi_non_contract" invisible="1"/>
                 <field name="adi_charge_to_order_domain" invisible="1"/>
