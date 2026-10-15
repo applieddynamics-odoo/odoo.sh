@@ -52,9 +52,8 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
                 "stage for this Helpdesk team."
             )
 
-        # One minute for staging tests.
-        # Change to timedelta(hours=48) after validation.
-        review_deadline = fields.Datetime.now() + timedelta(minutes=1)
+        # Allow the customer 48 hours to review the proposed resolution.
+        review_deadline = fields.Datetime.now() + timedelta(hours=48)
 
         ticket = self.ticket_id
 
@@ -88,8 +87,7 @@ class AdiHelpdeskCloseWizard(models.TransientModel):
 
                 <p>
                     ADI considers your support request resolved.
-                    Please review the resolution below and reply to
-                    this email only if further action is required.
+                    Please review below and reply only if further action is required.
                 </p>
 
                 <p>
