@@ -37,8 +37,6 @@ class CiCar(models.Model):
     _rec_name = "action_reference"
     _inherit = ["adi_improvement_app.imp_common", "mail.thread", "mail.activity.mixin"]
 
-    owner = fields.Char(string="Owner (legacy)")
-
     status = fields.Selection(STATUS, default="open")
     source = fields.Selection(SOURCE)
     occurrence = fields.Selection(OCCURRENCE, default="")

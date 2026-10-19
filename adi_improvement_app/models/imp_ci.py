@@ -41,7 +41,6 @@ class CiImprovement(models.Model):
     status = fields.Selection(STATUS, default="open")
     source = fields.Selection(SOURCE)
     type = fields.Selection(TYPE, default="")
-    owner = fields.Char(string="Owner (legacy)")
     summary = fields.Text()
     notes = fields.Text()
     actions = fields.Text()
