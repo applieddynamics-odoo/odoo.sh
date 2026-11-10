@@ -1,4 +1,7 @@
+
 from odoo import models, tools
+from lxml import html, etree
+from markupsafe import Markup, escape
 
 
 class MailThread(models.AbstractModel):
@@ -30,6 +33,97 @@ class MailThread(models.AbstractModel):
             extra_domain=extra_domain,
         )
 
+    def _adi_recover_empty_email_body(
+        self,
+        message,
+        message_dict,
+    ):
+        """
+        Recover text/plain content when Odoo 17 selects an
+        effectively empty text/html MIME alternative.
+
+        Called only for Helpdesk routes.
+
+        Preserve:
+        - Readable HTML
+        - Image-only HTML
+        - Attachments
+        - Existing message metadata
+        """
+
+        parsed_body = message_dict.get("body") or ""
+
+        # -----------------------------------------------------
+        # Check whether Odoo's parsed body contains readable
+        # text or inline images.
+        # -----------------------------------------------------
+
+        try:
+            root = html.fragment_fromstring(
+                str(parsed_body),
+                create_parent="div",
+            )
+
+            visible_text = " ".join(
+                root.itertext()
+            ).strip()
+
+            has_images = bool(
+                root.xpath(".//img | .//svg")
+            )
+
+        except (ValueError, TypeError, etree.ParserError):
+            # If HTML inspection fails, preserve Odoo's
+            # original result rather than risk data loss.
+            return
+
+        # A valid HTML message needs no recovery.
+        if visible_text or has_images:
+            return
+
+        # -----------------------------------------------------
+        # Find a nonempty plain-text MIME alternative.
+        # Ignore attachments.
+        # -----------------------------------------------------
+
+        plain_parts = []
+
+        for part in message.walk():
+
+            if part.get_content_type() != "text/plain":
+                continue
+
+            if part.get_content_disposition() == "attachment":
+                continue
+
+            try:
+                plain_text = part.get_content()
+
+            except (UnicodeError, LookupError, ValueError):
+                continue
+
+            if (
+                isinstance(plain_text, str)
+                and plain_text.strip()
+            ):
+                plain_parts.append(plain_text)
+
+        if not plain_parts:
+            return
+
+        # -----------------------------------------------------
+        # Recover the text as escaped HTML.
+        #
+        # Preserve line breaks without interpreting customer
+        # content as HTML markup.
+        # -----------------------------------------------------
+
+        recovered_text = "\n\n".join(plain_parts)
+
+        message_dict["body"] = Markup(
+            '<pre style="white-space:pre-wrap">%s</pre>'
+        ) % escape(recovered_text)
+
     def message_route(
         self,
         message,
@@ -42,7 +136,7 @@ class MailThread(models.AbstractModel):
         Route new inbound Helpdesk email according to ADI's
         trusted-contact rules.
 
-        Existing-thread replies are left completely unchanged.
+        Existing-thread replies retain their normal routing.
 
         For NEW mail addressed to the Helpdesk alias:
 
@@ -57,6 +151,9 @@ class MailThread(models.AbstractModel):
 
         - anything else:
               Customer Enquiry instead of Helpdesk ticket
+
+        For Helpdesk routes, recover plain-text content when
+        Odoo's parsed HTML alternative is effectively empty.
         """
 
         routes = super().message_route(
@@ -88,7 +185,6 @@ class MailThread(models.AbstractModel):
 
         if not sender_email or "@" not in sender_email:
             return routes
-
 
         # -----------------------------------------------------
         # Process each route returned by standard Odoo.
@@ -214,5 +310,24 @@ class MailThread(models.AbstractModel):
                 route_user_id,
                 route_alias,
             ))
+
+        # -----------------------------------------------------
+        # ADI MIME recovery
+        #
+        # Apply only if at least one surviving route targets
+        # Helpdesk, including replies to existing tickets.
+        #
+        # Do not modify Customer Enquiry-only messages or
+        # messages discarded by the blocklist.
+        # -----------------------------------------------------
+
+        if any(
+            route[0] == "helpdesk.ticket"
+            for route in final_routes
+        ):
+            self._adi_recover_empty_email_body(
+                message,
+                message_dict,
+            )
 
         return final_routes
