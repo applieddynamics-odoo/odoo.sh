@@ -61,7 +61,6 @@ class CiCar(models.Model):
     
     verification_notes = fields.Text(
         string="Verification Evidence",
-        placeholder="Objective evidence gathered during verification, findings and review notes..."
     )
 
     car_date_done = fields.Date(
