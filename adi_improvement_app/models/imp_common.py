@@ -20,14 +20,6 @@ class ImpCommon(models.AbstractModel):
     _name = "adi_improvement_app.imp_common"
     _description = "Improvement Common Fields"
 
-# Legacy employee field to maintain history and allow for reporting on legacy data. New records should use owner_id instead of this field.
-    owner_employee_id = fields.Many2one(
-        "hr.employee",
-        string="Owner (Legacy Employee)",
-        index=True,
-        ondelete="set null",
-    )
-
     process_area = fields.Selection(PROCESS_AREA)
     owner_id = fields.Many2one(
         "res.users",
@@ -59,8 +51,3 @@ class ImpCommon(models.AbstractModel):
                 )
             elif rec.date_opened:
                 rec.date_opened_display = rec.date_opened.strftime("%d %b %Y")
-
-
-    legacy_model = fields.Char(readonly=False, index=True)
-    legacy_id = fields.Integer(readonly=False, index=True)
-    legacy_ref = fields.Char(readonly=False)

@@ -37,8 +37,6 @@ class CiCar(models.Model):
     _rec_name = "action_reference"
     _inherit = ["adi_improvement_app.imp_common", "mail.thread", "mail.activity.mixin"]
 
-    owner = fields.Char(string="Owner (legacy)")
-
     status = fields.Selection(STATUS, default="open")
     source = fields.Selection(SOURCE)
     occurrence = fields.Selection(OCCURRENCE, default="")
@@ -63,7 +61,6 @@ class CiCar(models.Model):
     
     verification_notes = fields.Text(
         string="Verification Evidence",
-        placeholder="Objective evidence gathered during verification, findings and review notes..."
     )
 
     car_date_done = fields.Date(

@@ -1960,36 +1960,43 @@ class HelpdeskTicket(models.Model):
                         and "subject:" in text
                     ):
                         quote_start = paragraph
-
-                        parent = quote_start.getparent()
-
-                        if (
-                            parent is not None
-                            and parent.tag == "div"
-                        ):
-                            quote_start = parent
-                            parent = quote_start.getparent()
-
-                            if (
-                                parent is not None
-                                and parent.tag == "div"
-                            ):
-                                quote_start = parent
-
                         break
 
                 if quote_start is not None:
-                    parent = quote_start.getparent()
+                    boundary = quote_start
+
+                    # Move upwards only through containers that do not
+                    # contain meaningful text preceding the quote.
+                    while True:
+                        parent = boundary.getparent()
+
+                        if parent is None or parent is root:
+                            break
+
+                        preceding_text = (
+                            (parent.text or "")
+                            + "".join(
+                                sibling.text_content()
+                                + (sibling.tail or "")
+                                for sibling in boundary.itersiblings(preceding=True)
+                            )
+                        ).strip()
+
+                        if preceding_text:
+                            break
+
+                        boundary = parent
+
+                    parent = boundary.getparent()
 
                     if parent is not None:
                         children = list(parent)
-                        start_index = children.index(quote_start)
+                        start_index = children.index(boundary)
 
                         for child in children[start_index:]:
                             parent.remove(child)
 
                         changed = True
-
 
                 # -------------------------------------------------
                 # Fallback:
@@ -2043,19 +2050,42 @@ class HelpdeskTicket(models.Model):
                 # -------------------------------------------------
 
                 if changed:
-                    cleaned_body = "".join(
-                        etree.tostring(
-                            child,
-                            encoding="unicode",
-                            method="html",
+                    cleaned_body = (
+                        (root.text or "")
+                        + "".join(
+                            etree.tostring(
+                                child,
+                                encoding="unicode",
+                                method="html",
+                                with_tail=True,
+                            )
+                            for child in root
                         )
-                        for child in root
                     )
 
-                    if cleaned_body.strip():
-                        msg["body"] = Markup(
-                            cleaned_body
+                    original_visible_text = " ".join(
+                        lxml.html.fromstring(str(body)).itertext()
+                    ).strip()
+
+                    cleaned_visible_text = " ".join(
+                        root.itertext()
+                    ).strip()
+
+                    has_remaining_images = bool(
+                        root.xpath(".//img")
+                    )
+
+                    # Never replace a readable email with empty HTML.
+                    # Preserve image-only messages.
+                    if (
+                        cleaned_body.strip()
+                        and (
+                            cleaned_visible_text
+                            or has_remaining_images
+                            or not original_visible_text
                         )
+                    ):
+                        msg["body"] = Markup(cleaned_body)
 
             except (ValueError, etree.ParserError):
                 # Unusual email HTML: leave it untouched rather
