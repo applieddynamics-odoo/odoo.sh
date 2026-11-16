@@ -211,6 +211,24 @@
         </xpath>
 
 
+        <!--
+            Hide the duplicate record/subtitle information beside
+            Helpdesk and Customer Enquiry buttons.
+        -->
+        <xpath expr="//td[@t-if='subtitles']"
+            position="attributes">
+
+            <attribute name="t-if">
+                subtitles
+                and message.model not in (
+                    'helpdesk.ticket',
+                    'adi.helpdesk.enquiry'
+                )
+            </attribute>
+
+        </xpath>
+
+
         <!-- ============================================================
              HELPDESK / CUSTOMER ENQUIRY BUTTON
              ============================================================ -->
@@ -318,22 +336,7 @@
 
         </xpath>
 
-        <!--
-            Hide the duplicate record/subtitle information beside
-            Helpdesk and Customer Enquiry buttons.
-        -->
-        <xpath expr="//td[@t-if='subtitles']"
-               position="attributes">
 
-            <attribute name="t-if">
-                subtitles
-                and message.model not in (
-                    'helpdesk.ticket',
-                    'adi.helpdesk.enquiry'
-                )
-            </attribute>
-
-        </xpath>
 
 
         <!--
