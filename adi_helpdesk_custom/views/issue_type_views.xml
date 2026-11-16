@@ -1,0 +1,42 @@
+
+<odoo>
+    <record id="adi_helpdesk_issue_type_view_list" model="ir.ui.view">
+        <field name="name">adi.helpdesk.issue.type.list</field>
+        <field name="model">adi.helpdesk.issue.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="adi_helpdesk_issue_type_view_form" model="ir.ui.view">
+        <field name="name">adi.helpdesk.issue.type.form</field>
+        <field name="model">adi.helpdesk.issue.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="adi_helpdesk_issue_type_action" model="ir.actions.act_window">
+        <field name="name">Issue Types</field>
+        <field name="res_model">adi.helpdesk.issue.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="adi_helpdesk_issue_type_menu"
+              name="Issue Types"
+              parent="helpdesk.helpdesk_menu_config"
+              action="adi_helpdesk_issue_type_action"
+              sequence="51"/>
+</odoo>

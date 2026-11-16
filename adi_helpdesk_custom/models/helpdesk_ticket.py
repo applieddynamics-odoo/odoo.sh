@@ -37,6 +37,14 @@ class HelpdeskTicket(models.Model):
         string="Software Version",
     )
 
+    adi_issue_type_id = fields.Many2one(
+        "adi.helpdesk.issue.type",
+        string="Issue Type",
+        ondelete="restrict",
+    )
+
+
+
     adi_spr_number = fields.Char(string="ADI SPR Number")
 
     adi_sir_hardware_part_number_ids = fields.Many2many(

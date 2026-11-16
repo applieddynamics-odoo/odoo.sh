@@ -16,8 +16,10 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "data/issue_type_data.xml",        
         "data/mail_message_subtype_data.xml",
         "views/software_version_views.xml",
+        "views/issue_type_views.xml",
         "views/helpdesk_ticket_views.xml",
         "views/set_in_progress_wizard_views.xml",
         "views/helpdesk_blocklist_views.xml",

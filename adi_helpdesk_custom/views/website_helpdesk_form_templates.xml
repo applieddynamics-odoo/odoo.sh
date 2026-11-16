@@ -168,19 +168,21 @@
                                                         <span class="s_website_form_mark">*</span>
                                                     </label>
 
+
                                                     <select class="form-select s_website_form_input"
-                                                            name="ticket_type_id"
+                                                            name="adi_issue_type_id"
                                                             required="1">
 
                                                         <option value="" selected="selected"/>
 
-                                                        <t t-foreach="request.env['helpdesk.ticket.type'].sudo().search([])"
-                                                           t-as="ticket_type">
-                                                            <option t-att-value="ticket_type.id">
-                                                                <t t-esc="ticket_type.name"/>
+                                                        <t t-foreach="request.env['adi.helpdesk.issue.type'].sudo().search([('active', '=', True)])"
+                                                        t-as="issue_type">
+                                                            <option t-att-value="issue_type.id">
+                                                                <t t-esc="issue_type.name"/>
                                                             </option>
                                                         </t>
                                                     </select>
+
                                                 </div>
 
                                                 <!-- Software version -->

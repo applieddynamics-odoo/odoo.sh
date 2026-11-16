@@ -27,9 +27,9 @@
 
                     <group string="Ticket Details">
 
-                        <field name="ticket_type_id"
-                               widget="selection"
-                               options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                        <field name="adi_issue_type_id"
+                            widget="selection"
+                            options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
 
                         <field name="adi_software_version_id"
                                widget="selection"

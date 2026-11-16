@@ -204,13 +204,13 @@
 
                                 <i class="fa fa-wrench adi_summary_icon"/>
 
-                                <field name="ticket_type_id"
-                                       widget="selection"
-                                       options="{
-                                           'no_create': True,
-                                           'no_create_edit': True,
-                                           'no_open': True
-                                       }"/>
+                                <field name="adi_issue_type_id"
+                                    widget="selection"
+                                    options="{
+                                        'no_create': True,
+                                        'no_create_edit': True,
+                                        'no_open': True
+                                    }"/>
 
                             </span>
 

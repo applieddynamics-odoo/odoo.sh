@@ -36,8 +36,8 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
         readonly=True,
     )
 
-    ticket_type_id = fields.Many2one(
-        "helpdesk.ticket.type",
+    adi_issue_type_id = fields.Many2one(
+        "adi.helpdesk.issue.type",
         string="Issue Type",
         required=True,
     )
@@ -157,7 +157,7 @@ class AdiHelpdeskNewTicketWizard(models.TransientModel):
             "partner_id": self.contact_id.id,
             "partner_email": self.contact_id.email,
             "partner_name": self.contact_id.name,
-            "ticket_type_id": self.ticket_type_id.id,
+            "adi_issue_type_id": self.adi_issue_type_id.id,
             "adi_software_version_id": (
                 self.adi_software_version_id.id
             ),

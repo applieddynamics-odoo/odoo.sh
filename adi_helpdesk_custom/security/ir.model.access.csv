@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_adi_helpdesk_software_version_internal,access.adi.helpdesk.software.version.internal,model_adi_helpdesk_software_version,base.group_user,1,1,1,0
 access_adi_helpdesk_software_version_system,access.adi.helpdesk.software.version.system,model_adi_helpdesk_software_version,base.group_system,1,1,1,1
+access_adi_helpdesk_issue_type_internal,access.adi.helpdesk.issue.type.internal,model_adi_helpdesk_issue_type,base.group_user,1,1,1,0
+access_adi_helpdesk_issue_type_system,access.adi.helpdesk.issue.type.system,model_adi_helpdesk_issue_type,base.group_system,1,1,1,1
 access_adi_helpdesk_set_in_progress_wizard_user,access.adi.helpdesk.set.in.progress.wizard.user,model_adi_helpdesk_set_in_progress_wizard,base.group_user,1,1,1,1
 access_adi_helpdesk_blocklist_user,access.adi.helpdesk.blocklist.user,model_adi_helpdesk_blocklist,base.group_user,1,1,1,1
 access_adi_helpdesk_close_wizard_user,adi.helpdesk.close.wizard.user,model_adi_helpdesk_close_wizard,helpdesk.group_helpdesk_user,1,1,1,1
