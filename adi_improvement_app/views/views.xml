@@ -40,7 +40,7 @@
           <filter string="Overdue" name="overdue" domain="[('status','!=','closed'),('date_due','&lt;',context_today())]"/>
           <filter string="Type" name="type" domain="[('type','!=',False)]"/>
           <filter string="Submitted" name="submitted_for_verification" domain="[('date_submitted_for_verification','!=',False)]"/>
-          <group string="Group By">
+          <group>
             <filter string="Status" name="gb_status" context="{'group_by':'status'}"/>
             <filter string="Type" name="gb_type" context="{'group_by':'type'}"/>
             <filter string="Due Date" name="gb_due" context="{'group_by':'date_due'}"/>
@@ -338,7 +338,7 @@
           <filter string="Related SO" name="related_so" domain="[('related_so_applicable','=','yes')]"/>
           <filter string="Repeat Occurrence" name="repeat_occurrence" domain="[('occurrence','=','repeat')]"/>
 
-          <group string="Group By">
+          <group>
             <filter string="Status" name="gb_status" context="{'group_by':'status'}"/>
             <filter string="Risk" name="gb_risk" context="{'group_by':'risk'}"/>
             <filter string="Due Date" name="gb_due" context="{'group_by':'target_contained_date'}"/>
