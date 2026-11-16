@@ -211,18 +211,20 @@
         </xpath>
 
 
-        <!--
-            Hide the duplicate record/subtitle information beside
-            Helpdesk and Customer Enquiry buttons.
-        -->
+        <!-- Hide subtitle information for Helpdesk and Customer Enquiries
+            without changing Odoo's original t-if condition. -->
         <xpath expr="//td[@t-if='subtitles']"
             position="attributes">
 
-            <attribute name="t-if">
-                subtitles
-                and message.model not in (
-                    'helpdesk.ticket',
-                    'adi.helpdesk.enquiry'
+            <attribute name="t-att-style">
+                'font-size: 12px;'
+                + (
+                    'display:none;'
+                    if message.model in (
+                        'helpdesk.ticket',
+                        'adi.helpdesk.enquiry'
+                    )
+                    else ''
                 )
             </attribute>
 
@@ -336,27 +338,19 @@
 
         </xpath>
 
-
-
-
-        <!--
-            Hide the fallback record name beside the button.
-        -->
+        <!-- Hide the fallback record name for Helpdesk and Customer Enquiries
+            while retaining Odoo's original t-else structure. -->
         <xpath expr="//td[@t-else=''][span[@t-out]]"
-            position="replace">
+            position="attributes">
 
-            <td t-if="
-                message.model not in (
+            <attribute name="t-att-style">
+                'display:none;'
+                if message.model in (
                     'helpdesk.ticket',
                     'adi.helpdesk.enquiry'
                 )
-            ">
-
-                <span style="font-weight:bold;"
-                      t-out="record_name"/>
-                <br/>
-
-            </td>
+                else ''
+            </attribute>
 
         </xpath>
 
