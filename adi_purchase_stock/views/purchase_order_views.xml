@@ -28,9 +28,9 @@
   <record id="purchase_order_lines_view_adi" model="ir.ui.view">
     <field name="name">purchase.order.line.view.adi</field>
     <field name="model">purchase.order.line</field>
-    <field name="type">tree</field>
+    <field name="type">list</field>
     <field name="arch" type="xml">
-      <tree>
+      <list>
 	<header>
 	  <button name="action_mark_late" string="Mark Late" type="object"/>
 	  <button name="action_unmark_late" string="Mark On-Time" type="object"/>
@@ -43,14 +43,14 @@
 	<field name="name"/>
 	<field name="product_qty"/>
 	<field name="qty_received"/>
-      </tree>
+      </list>
     </field>
   </record>
 
   <record id="purchase_order_line_new_tree_adi" model="ir.actions.act_window">
     <field name="name">PO Lines View</field>
     <field name="res_model">purchase.order.line</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">list,form</field>
     <field name="type">ir.actions.act_window</field>
     <field name="view_id" ref="purchase_order_lines_view_adi"/>
   </record>

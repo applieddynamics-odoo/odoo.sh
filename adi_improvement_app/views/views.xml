@@ -10,7 +10,7 @@
       <field name="name">adi_improvement_app.improvement.tree</field>
       <field name="model">adi_improvement_app.improvement</field>
       <field name="arch" type="xml">
-        <tree default_order="action_reference desc">
+        <list default_order="action_reference desc">
           <field name="action_reference"/>
           <field name="status"/>
           <field name="process_area"/>
@@ -18,7 +18,7 @@
           <field name="summary"/>
           <field name="owner_id"/>
           <field name="date_due"/>
-        </tree>
+        </list>
       </field>
     </record>
 
@@ -293,7 +293,7 @@
       <field name="name">adi_improvement_app.car.tree</field>
       <field name="model">adi_improvement_app.car</field>
       <field name="arch" type="xml">
-        <tree default_order="action_reference desc">
+        <list default_order="action_reference desc">
           <field name="action_reference"/>
           <field name="status"/>
           <field name="process_area"/>
@@ -303,7 +303,7 @@
           <field name="target_contained_date"/>
           <field name="related_so"/>
           <field name="verification_counter"/>
-        </tree>
+        </list>
       </field>
     </record>
 
@@ -543,7 +543,7 @@
     <record id="action_ci_improvements" model="ir.actions.act_window">
       <field name="name">Continuous Improvements</field>
       <field name="res_model">adi_improvement_app.improvement</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
       <field name="search_view_id" ref="ci_improvement_search"/>
       <field name="context"> {'search_default_active': 1,'search_default_group_by_status': 1} </field>
     </record>
@@ -551,7 +551,7 @@
     <record id="action_cars" model="ir.actions.act_window">
       <field name="name">Corrective Actions (CAR)</field>
       <field name="res_model">adi_improvement_app.car</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
       <field name="search_view_id" ref="car_search"/>
       <field name="context"> {'search_default_active': 1,'search_default_group_by_status': 1} </field>
     </record>

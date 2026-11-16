@@ -3,11 +3,11 @@
         <field name="name">adi.helpdesk.software.version.tree</field>
         <field name="model">adi.helpdesk.software.version</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -30,7 +30,7 @@
     <record id="adi_helpdesk_software_version_action" model="ir.actions.act_window">
         <field name="name">Software Versions</field>
         <field name="res_model">adi.helpdesk.software.version</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 
