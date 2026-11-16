@@ -7,9 +7,9 @@
     This separates approval and actually performing the stock moves.
     """,
     'website':'',
-    'version':'0.0.1',
+    "version": "19.0.1.0.0",
     'license': 'LGPL-3',
-    'author':'ADI/Matthew Younger',
+    'author':'Paul Davies',
     'category':'Internal Development',
 
     'depends': ['stock'],

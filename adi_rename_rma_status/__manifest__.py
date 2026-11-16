@@ -8,7 +8,7 @@
     """,
     'author': 'M.Younger/ADI',
     'license': 'LGPL-3',
-    'version': '1.0.0',
+    "version": "19.0.1.0.0",
     'depends': ['repair'],
     'data': [
     ],

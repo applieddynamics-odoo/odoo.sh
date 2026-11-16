@@ -6,7 +6,7 @@
     "description": "Management of Corrective Actions (CAR) and Continuous Improvements (CI)",
     "author": "Paul Davies",
     "category": "ADI Custom Modules",
-    "version": "17.0.1.0.0",
+    "version": "19.0.1.0.0",
     "depends": ["base", "sale", "mail", "web", "hr"],
     "data": [
         "security/adi_improvement_app_groups.xml",

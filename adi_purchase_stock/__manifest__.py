@@ -9,7 +9,7 @@
     'sequence':100,
     'license':'OPL-1',
     'website':'https://www.adi.com',
-    'version':'1.1.1',
+    "version": "19.0.1.0.0",
     'author':'Odoo, Inc and ADI',
     'category':'Custom Development',
 

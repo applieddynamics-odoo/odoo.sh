@@ -10,7 +10,7 @@
     Also adds code related to negative inventory correction
     """,
     'website':'',
-    'version':'0.1.1',
+    "version": "19.0.1.0.0",
     'license': 'LGPL-3',
     'author':'ADI/Matthew Younger',
     'category':'Internal Development',
