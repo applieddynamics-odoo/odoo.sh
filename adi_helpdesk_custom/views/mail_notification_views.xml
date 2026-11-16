@@ -215,8 +215,8 @@
              HELPDESK / CUSTOMER ENQUIRY BUTTON
              ============================================================ -->
 
-        <xpath expr="//td[@t-if='has_button_access']"
-            position="replace">
+            <xpath expr="//td[@t-if='has_button_access'][a[@t-att-href]]"
+                position="replace">
 
             <!-- Customer Enquiry -->
             <t t-if="message.model == 'adi.helpdesk.enquiry'">
@@ -339,8 +339,8 @@
         <!--
             Hide the fallback record name beside the button.
         -->
-        <xpath expr="//td[@t-else='']/span[@t-out='record_name']/parent::td"
-               position="replace">
+        <xpath expr="//td[@t-else=''][span[@t-out]]"
+            position="replace">
 
             <td t-if="
                 message.model not in (
@@ -359,11 +359,11 @@
 
 
         <!--
-            Hide the separator ABOVE the button for both Helpdesk
+            Hide the separator BELOW the button for both Helpdesk
             tickets and Customer Enquiries.
         -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/preceding-sibling::tr[1]"
-               position="attributes">
+        <xpath expr="//div[@summary='o_mail_notification']//tr[td/hr]"
+            position="attributes">
 
             <attribute name="t-if">
                 message.model not in (
@@ -376,65 +376,38 @@
 
 
         <!--
-            Security warning for every Helpdesk email containing
+            Security warning for Helpdesk emails containing
             a View Ticket access link.
+
+            Insert a separate table row before the separator.
         -->
-        <xpath expr="//td[@t-if='has_button_access']/ancestor::tr[2]/following-sibling::tr[1]/td/hr"
+        <xpath expr="//div[@summary='o_mail_notification']//tr[td/hr]"
                position="before">
 
-            <div t-if="
+            <tr t-if="
                 message.model == 'helpdesk.ticket'
                 and has_button_access
-            "
-                 style="
-                     margin: 8px 0 2px 0;
-                     font-family: Verdana, Arial, sans-serif;
-                     font-size: 11px;
-                     line-height: 1.4;
-                     color: #666666;
-                     white-space: normal;
-                 ">
+            ">
+                <td valign="center">
 
-                <em>
-                    Please do not forward this email or share the View Ticket link,
-                    as it provides access to the Helpdesk ticket.
-                </em>
+                    <div style="
+                        margin: 8px 0 2px 0;
+                        font-family: Verdana, Arial, sans-serif;
+                        font-size: 11px;
+                        line-height: 1.4;
+                        color: #666666;
+                        white-space: normal;
+                    ">
+                        <em>
+                            Please do not forward this email or share the View Ticket link,
+                            as it provides access to the Helpdesk ticket.
+                        </em>
+                    </div>
 
-            </div>
-
-        </xpath>
-
-        <!--
-            Suppress Odoo's standard internal communication warning
-            for Helpdesk and Customer Enquiry emails.
-
-            ADI Helpdesk manages message visibility and notification
-            behaviour explicitly.
-        -->
-        <xpath expr="//p[@t-if='subtype_internal']"
-            position="attributes">
-
-            <attribute name="t-if">
-                subtype_internal
-                and message.model not in (
-                    'helpdesk.ticket',
-                    'adi.helpdesk.enquiry'
-                )
-            </attribute>
+                </td>
+            </tr>
 
         </xpath>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         <!-- ============================================================
