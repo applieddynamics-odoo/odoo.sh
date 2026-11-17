@@ -414,7 +414,7 @@
         <xpath expr="//b[@t-out='company.name']/parent::div"
                position="replace">
 
-            <div style="margin-top:32px;">
+            <div style="margin-top:16px;">
 
                 <hr width="100%"
                     style="
