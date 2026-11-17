@@ -94,8 +94,8 @@
             Customer reply has no ADI footer, therefore suppress
             the otherwise orphaned footer separator as well.
         -->
-        <xpath expr="//div[contains(@style, 'margin-top:32px')]/hr"
-               position="replace"/>
+        <xpath expr="//div[@style='margin-top:16px;']/hr"
+            position="replace"/>
 
     </template>
 
