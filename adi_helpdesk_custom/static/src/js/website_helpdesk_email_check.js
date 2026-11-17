@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 
 const SUBMISSION_RESET_FLAG = "adi_helpdesk_ticket_submitted";
 
@@ -173,7 +173,7 @@ publicWidget.registry.AdiHelpdeskEmailCheck = publicWidget.Widget.extend({
         );
 
         try {
-            const result = await jsonrpc(
+            const result = await rpc(
                 "/adi/helpdesk/check_email",
                 {
                     email,

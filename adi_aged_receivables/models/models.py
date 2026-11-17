@@ -6,8 +6,8 @@ from odoo import models
 class AgedReceivableTaxAndDescription(models.AbstractModel):
     _inherit = "account.aged.receivable.report.handler"
 
-    def _custom_line_postprocessor(self, report, options, lines, warnings=None, **kwargs):
-        lines = super()._custom_line_postprocessor(report, options, lines, warnings=warnings, **kwargs)
+    def _custom_line_postprocessor(self, report, options, lines, **kwargs):
+        lines = super()._custom_line_postprocessor(report, options, lines, **kwargs)
 
         # Locate Tax + Description columns by expression_label
         tax_col_idx = None

@@ -13,7 +13,7 @@ class ResPartner(models.Model):
             ('date_planned', '>', datetime.now() - timedelta(365)),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Office Supplies'),
             ('product_id.product_tmpl_id.categ_id.name', '!=', 'Production Supplies'),
-            ('product_id.product_tmpl_id.detailed_type', '!=', 'service'),
+            ('product_id.product_tmpl_id.type', '!=', 'service'),
             ('product_id.product_tmpl_id.default_code', '!=', 'Fixed Assets'),
             ('product_qty', '>', 0),            #'|', ('date_planned', '<=', datetime.now()),
             ('order_id.state', '!=', 'cancel')
@@ -42,7 +42,7 @@ class ResPartner(models.Model):
                          OR pol.qty_received = pol.product_qty)
                     AND pol.product_qty > 0
                     AND po.state != 'cancel'
-                    AND pt.detailed_type != 'service'
+                    AND pt.type != 'service'
                     AND pc.name != 'Office Supplies'
                     AND pc.name != 'Production Supplies'
                     AND pt.default_code != 'Fixed Assets';"""
