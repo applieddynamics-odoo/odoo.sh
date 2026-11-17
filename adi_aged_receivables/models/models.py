@@ -40,15 +40,15 @@ class AgedReceivableTaxAndDescription(models.AbstractModel):
                 col.update({"name": "", "no_format": 0.0, "is_zero": True})
                 return
 
+
             val = float(value)
             formatted = report.format_value(
                 options,
                 val,
                 figure_type=col.get("figure_type") or "monetary",
-                currency=col.get("currency"),
-                digits=col.get("digits"),
             )
             col.update({"no_format": val, "name": formatted, "is_zero": False})
+
 
         def _set_text(line_dict, value):
             if desc_col_idx is None or desc_col_idx >= len(line_dict.get("columns", [])):

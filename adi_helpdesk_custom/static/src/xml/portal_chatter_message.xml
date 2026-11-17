@@ -2,22 +2,19 @@
 <templates xml:space="preserve">
 
     <t t-name="adi_helpdesk_custom.PortalChatterMessageBody"
-       t-inherit="portal.chatter_messages"
+       t-inherit="mail.Message"
        t-inherit-mode="extension">
 
-        <xpath expr="//t[@t-out='message.body']"
-               position="replace">
+        <xpath expr="//div[hasclass('o-mail-Message-body') and @t-ref='body']"
+               position="attributes">
 
-            <t t-if="message.adi_is_internal_author
-                     and !message.adi_body_already_green">
-                <div class="adi_portal_message_body">
-                    <t t-out="message.body"/>
-                </div>
-            </t>
-
-            <t t-else="">
-                <t t-out="message.body"/>
-            </t>
+            <attribute name="t-att-class" add="
+                'adi_portal_message_body':
+                    env.inFrontendPortalChatter
+                    and message.adi_is_internal_author
+                    and !message.adi_body_already_green
+                    and !isEditing
+            " separator=","/>
 
         </xpath>
 
