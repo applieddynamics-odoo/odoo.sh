@@ -581,9 +581,12 @@
         </xpath>
 
 
-        <!-- Remove Powered by Odoo and Unfollow -->
-        <xpath expr="//span[@id='mail_unfollow']/parent::div"
-               position="replace"/>
+        <!-- Remove Powered by Odoo and Unfollow without removing
+            the element required by Odoo's invitation template. -->
+        <xpath expr="//span[@id='mail_unfollow']"
+            position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
 
     </template>
 
